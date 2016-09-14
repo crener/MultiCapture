@@ -4,9 +4,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using Hub.SaveLoad;
-using NUnit.Framework;
-using Hub.Camera;
 using Hub.Helpers;
+using NUnit.Framework;
 using SharedDeviceItems;
 
 namespace Hub.Threaded.Tests
@@ -23,7 +22,7 @@ namespace Hub.Threaded.Tests
             CameraConfiguration testConfig = new CameraConfiguration
             {
 #pragma warning disable 618
-                Address = AsynchronousClient.GrabIpv4(Dns.GetHostEntry(Dns.GetHostName())).Address,
+                Address = Helpers.Networking.GrabIpv4(Dns.GetHostEntry(Dns.GetHostName())).Address,
 #pragma warning restore 618
                 Port = 11003,
                 CamFileIdentity = "testCam",

@@ -46,8 +46,11 @@
     <Compile Include="Capture.cs" />
     <Compile Include="Helpers\ByteManipulation.cs" />
     <Compile Include="Helpers\DataClasses.cs" />
+    <Compile Include="Helpers\Networking.cs" />
     <Compile Include="HubMain.cs" />
-    <Compile Include="Threaded\LanNetworking.cs" />
+    <Compile Include="Networking\INetwork.cs" />
+    <Compile Include="Networking\AsynchronousNet.cs" />
+    <Compile Include="Networking\SynchronousNet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\SaveLoad.cs" />
     <Compile Include="Threaded\CameraThread.cs" />

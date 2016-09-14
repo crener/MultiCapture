@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using SharedDeviceItems;
 
@@ -53,6 +54,72 @@ namespace Hub.Helpers
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Check if the end of message string is inside the data 
+        /// </summary>
+        /// <param name="data">the data array to parse</param>
+        /// <param name="size">amount of data populated with valid data (starting from 0)</param>
+        /// <returns>true of the data contains the endof message string</returns>
+        public static bool SearchEndOfMessage(byte[] data, int size)
+        {
+            byte[] mesg = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
+
+            for (int i = size - 1; i >= 0; i--)
+            {
+                if (data[i] == mesg.Last())
+                {
+                    int i2 = i;
+                    bool valid = true;
+                    //last element has been found search for the lest of them
+                    for (int u = mesg.Length - 1; u >= 0; u--, i2--)
+                    {
+                        if (mesg[u] != data[i2])
+                        {
+                            valid = false;
+                            break;
+                        }
+                    }
+
+                    if (valid) return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Check if the end of message string is inside the data 
+        /// </summary>
+        /// <param name="data">the data array to parse</param>
+        /// <param name="size">amount of data populated with valid data (starting from 0)</param>
+        /// <returns>first byte location of the end of message</returns>
+        public static int SearchEndOfMessageInt(byte[] data, int size)
+        {
+            byte[] mesg = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
+
+            for (int i = size - 1; i >= 0; i--)
+            {
+                if (data[i] == mesg.Last())
+                {
+                    int i2 = i;
+                    bool valid = true;
+                    //last element has been found search for the lest of them
+                    for (int u = mesg.Length - 1; u >= 0; u--, i2--)
+                    {
+                        if (mesg[u] != data[i2])
+                        {
+                            valid = false;
+                            break;
+                        }
+                    }
+
+                    if (valid) return i2;
+                }
+            }
+
+            return -1;
         }
     }
 }

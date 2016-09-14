@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using System.Text;
-using Hub.Helpers;
 using SharedDeviceItems;
 
 namespace Hub.Helpers.Tests
@@ -87,6 +86,102 @@ namespace Hub.Helpers.Tests
 
             for (int i = 0; i < data.Length; i++)
                 Assert.IsTrue(data[i] == returnBytes[i]);
+        }
+
+        /// <summary>
+        /// Test that a byte array that contains an end of message string returns true
+        /// </summary>
+        [Test]
+        public void SearchEndOfMessageTrue()
+        {
+            byte[] garbageData = { 12, 233, 67, 255, 186, 243, 14, 15, 241, 178 };
+            byte[] endOfMessage = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
+
+            byte[] testData = new byte[garbageData.Length + endOfMessage.Length];
+            garbageData.CopyTo(testData, 0);
+            endOfMessage.CopyTo(testData, garbageData.Length);
+
+            Assert.True(ByteManipulation.SearchEndOfMessage(testData, testData.Length));
+            Assert.False(ByteManipulation.SearchEndOfMessageInt(testData, testData.Length) > 10);
+        }
+
+        /// <summary>
+        /// Test that a byte array that contains an end of message string returns true, with extra entries
+        /// after the end of string text
+        /// </summary>
+        [Test]
+        public void SearchEndOfMessageTrueOverhang()
+        {
+            byte[] garbageData = { 12, 233, 67, 255, 186, 243, 14, 15, 241, 178 };
+            byte[] endOfMessage = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
+            byte[] extra = {23,23,23,23,23,23};
+
+            byte[] testData = new byte[garbageData.Length + endOfMessage.Length + extra.Length];
+            garbageData.CopyTo(testData, 0);
+            endOfMessage.CopyTo(testData, garbageData.Length);
+            extra.CopyTo(testData, garbageData.Length + endOfMessage.Length);
+
+            Assert.True(ByteManipulation.SearchEndOfMessage(testData, testData.Length));
+            Assert.False(ByteManipulation.SearchEndOfMessageInt(testData, testData.Length) > 10);
+        }
+
+        /// <summary>
+        /// Test that a byte array that contains an end of message string returns true, with extra entries 
+        /// and a partial end of message 
+        /// </summary>
+        [Test]
+        public void SearchEndOfMessageTruePartialOverhang()
+        {
+            byte[] garbageData = { 12, 233, 67, 255, 186, 243, 14, 15, 241, 178 };
+            byte[] endOfMessage = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
+            byte[] extra = { 23, 23, 23, 23, 23, 23 };
+            byte[] partialMessage = Encoding.ASCII.GetBytes(Constants.EndOfMessage.Substring(1));
+
+            byte[] testData = new byte[garbageData.Length + endOfMessage.Length + extra.Length + partialMessage.Length];
+            garbageData.CopyTo(testData, 0);
+            endOfMessage.CopyTo(testData, garbageData.Length);
+            extra.CopyTo(testData, garbageData.Length + endOfMessage.Length);
+            partialMessage.CopyTo(testData, garbageData.Length + endOfMessage.Length + extra.Length);
+
+            Assert.True(ByteManipulation.SearchEndOfMessage(testData, testData.Length));
+            Assert.False(ByteManipulation.SearchEndOfMessageInt(testData, testData.Length) > 10 );
+        }
+
+        /// <summary>
+        /// Test that a byte array that DOESN'T contain a valid end of message string returns false
+        /// </summary>
+        [Test]
+        public void SearchEndOfMessageFalse()
+        {
+            byte[] garbageData = { 12, 233, 67, 255, 186, 243, 14, 15, 241, 178 };
+            byte[] endOfMessage = Encoding.ASCII.GetBytes(Constants.EndOfMessage.Substring(1));
+
+            byte[] testData = new byte[garbageData.Length + endOfMessage.Length];
+            garbageData.CopyTo(testData, 0);
+            endOfMessage.CopyTo(testData, garbageData.Length);
+
+            Assert.False(ByteManipulation.SearchEndOfMessage(testData, testData.Length));
+            Assert.True(ByteManipulation.SearchEndOfMessageInt(testData, testData.Length) == -1);
+        }
+
+        /// <summary>
+        /// Test that a byte array that DOESN'T contain a valid end of message string returns false, even with
+        /// extra values at the end
+        /// </summary>
+        [Test]
+        public void SearchEndOfMessageFalseOverhang()
+        {
+            byte[] garbageData = { 12, 233, 67, 255, 186, 243, 14, 15, 241, 178 };
+            byte[] endOfMessage = Encoding.ASCII.GetBytes(Constants.EndOfMessage.Substring(1));
+            byte[] extra = { 23, 23, 23, 23, 23, 23 };
+
+            byte[] testData = new byte[garbageData.Length + endOfMessage.Length + extra.Length];
+            garbageData.CopyTo(testData, 0);
+            endOfMessage.CopyTo(testData, garbageData.Length);
+            extra.CopyTo(testData, garbageData.Length + endOfMessage.Length);
+
+            Assert.False(ByteManipulation.SearchEndOfMessage(testData, testData.Length));
+            Assert.True(ByteManipulation.SearchEndOfMessageInt(testData, testData.Length) == -1);
         }
     }
 }

@@ -9,8 +9,9 @@
 
     public static class Constants
     {
-        public static string EndOfMessage = "xtx";
-        public static string MessageSeperator = "<,,,>";
-        public static string FailString = "FAIL";
+        public const string EndOfMessage = "xtx";
+        public const string MessageSeperator = "<,,,>";
+        public const string FailString = "FAIL";
+        public const int ByteArraySize = 10485760;
     }
 }

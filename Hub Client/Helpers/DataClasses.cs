@@ -18,12 +18,12 @@ namespace Hub.Helpers
             {
                 //check if the camera is active
                 DataSocket.Connect(new IPEndPoint(Config.Address, Config.Port));
-                DataSocket.Send(Encoding.ASCII.GetBytes(CameraRequest.Alive.ToString() + Constants.EndOfMessage));
+                DataSocket.Send(Encoding.ASCII.GetBytes((int)CameraRequest.Alive + Constants.EndOfMessage));
 
                 //grab data
                 byte[] recieveData = new byte[1000];
                 int bytesRec = DataSocket.Receive(recieveData);
-                Console.WriteLine("Echoed test = {0}", Encoding.ASCII.GetString(recieveData, 0, bytesRec));
+                Console.WriteLine("Camera response = {0}", Encoding.ASCII.GetString(recieveData, 0, bytesRec - Constants.EndOfMessage.Length));
 
                 //if there was no data the camera must have been off
                 if (bytesRec <= 0)

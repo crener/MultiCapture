@@ -4,8 +4,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using SharedDeviceItems;
-using Hub.Camera;
 using Hub.Helpers;
+using Hub.Networking;
 
 namespace Hub.Threaded
 {
@@ -15,14 +15,13 @@ namespace Hub.Threaded
         public volatile CameraRequest Request = CameraRequest.Alive;
 
         private CameraSocket config;
-        private AsynchronousClient connection;
+        private INetwork connection;
 
         public CameraThread(CameraSocket socket)
         {
             config = socket;
-            connection = new AsynchronousClient();
+            connection = new SynchronousNet();
         }
-
 
         public void Start()
         {
@@ -64,7 +63,6 @@ namespace Hub.Threaded
                 Shutdown();
             }
         }
-
 
         /// <summary>
         /// Close all sensitive parts of the thread that may cause problems later

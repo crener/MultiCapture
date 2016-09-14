@@ -1,27 +1,13 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using System.Text;
 using SharedDeviceItems;
 
-namespace Hub.Camera
+namespace Hub.Networking
 {
-    // State object for receiving data from remote device.
-    public class StateObject
-    {
-        // Client socket.
-        public Socket WorkSocket = null;
-        // Size of receive buffer.
-        public const int BufferSize = 10485760;
-        // Receive buffer.
-        public byte[] Buffer = new byte[BufferSize];
-
-        public int Saved = 0;
-    }
-
-    public class AsynchronousClient
+    public class AsynchronousNet : INetwork
     {
         // ManualResetEvent instances signal completion.
         private static ManualResetEvent connectDone = new ManualResetEvent(false);
@@ -35,7 +21,6 @@ namespace Hub.Camera
         {
             //check for valid input
             if (!socket.Connected) throw new Exception("Socket needs to be connnected");
-            if (request == CameraRequest.Alive) throw new Exception("You should't be using this to check if the camera is connectable");
 
             //send the request to the camera
             string sendRequest = ((int)request) + Constants.EndOfMessage;
@@ -46,7 +31,7 @@ namespace Hub.Camera
             StateObject state = new StateObject { WorkSocket = socket };
             try
             {
-                socket.BeginReceive(state.Buffer, 0, StateObject.BufferSize, 0, ReceiveDataComplete, state);
+                socket.BeginReceive(state.Buffer, 0, Constants.ByteArraySize, 0, ReceiveDataComplete, state);
             }
             catch (Exception e)
             {
@@ -181,7 +166,7 @@ namespace Hub.Camera
                 state.WorkSocket = client;
 
                 // Begin receiving the data from the remote device.
-                client.BeginReceive(state.Buffer, 0, StateObject.BufferSize, 0, ReceiveCallback, state);
+                client.BeginReceive(state.Buffer, 0, Constants.ByteArraySize, 0, ReceiveCallback, state);
             }
             catch (Exception e)
             {
@@ -252,24 +237,5 @@ namespace Hub.Camera
             }
         }
         #endregion
-
-
-        /// <summary>
-        /// Return the first IPv4 address that can be found
-        /// Useful for testing the code works locally
-        /// </summary>
-        /// <param name="ipHostInfo">IPHostEntry that will be tested</param>
-        /// <returns>Valid IPv4 address</returns>
-        public static IPAddress GrabIpv4(IPHostEntry ipHostInfo)
-        {
-            foreach (IPAddress item in ipHostInfo.AddressList)
-            {
-                if (item.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    return item;
-                }
-            }
-            return ipHostInfo.AddressList[0];
-        }
     }
 }

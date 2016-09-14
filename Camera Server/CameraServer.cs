@@ -58,21 +58,20 @@ public static class SynchronousSocketListener
                 // An incoming connection needs to be processed.
                 while (true)
                 {
+                    Console.WriteLine("Waiting for next request...");
                     bytes = new byte[bufferSize];
                     int bytesRec = handler.Receive(bytes);
                     data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
                     if (data.IndexOf(Constants.EndOfMessage) > -1)
                     {
-                        break;
+                        //process data
+                        data = data.Remove(data.Length - Constants.EndOfMessage.Length, Constants.EndOfMessage.Length);
+                        ProcessRequest(handler, data);
+
+                        // Show the data on the console.
+                        Console.WriteLine("Data received : {0}", data);
                     }
                 }
-
-                //process data
-                data = data.Remove(data.Length - Constants.EndOfMessage.Length, Constants.EndOfMessage.Length);
-                ProcessRequest(handler, data);
-
-                // Show the data on the console.
-                Console.WriteLine("Data received : {0}", data);
             }
 
         }
@@ -116,16 +115,17 @@ public static class SynchronousSocketListener
         CameraRequest request;
         if (!requestLookup.TryGetValue(message, out request))
         {
-            failedRequest(client);
+            FailedRequest(client);
             return;
         }
         if (request == CameraRequest.Alive)
         {
-            failedRequest(client);
+            AliveRequest(client);
             return;
         }
 
-        Console.WriteLine("Executing request ++: " + request);
+        Console.WriteLine("Executing request: " + request);
+        byte[] messageData = null;
 
         switch (request)
         {
@@ -134,32 +134,63 @@ public static class SynchronousSocketListener
             case CameraRequest.SendTestImage:
                 //For testing, send a static image saved on the device
                 byte[] name = Encoding.ASCII.GetBytes("test.jpg" + Constants.MessageSeperator),
-                    file = File.ReadAllBytes(Path.AltDirectorySeparatorChar + "scanimage" + Path.AltDirectorySeparatorChar + "test.jpg");
+                    file = File.ReadAllBytes(Path.AltDirectorySeparatorChar + "scanimage" + Path.AltDirectorySeparatorChar + "test.jpg"),
+                    eom = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
 
-                byte[] data = new byte[name.Length + file.Length];
-                name.CopyTo(data, 0);
-                file.CopyTo(data, name.Length);
-
-                sendResponse(client, data);
+                messageData = new byte[name.Length + file.Length + eom.Length];
+                name.CopyTo(messageData, 0);
+                file.CopyTo(messageData, name.Length);
+                eom.CopyTo(messageData, name.Length + file.Length);
                 break;
             default:
-                failedRequest(client);
+                FailedRequest(client);
                 break;
         }
+
+        SendResponse(client, EndOfMessage(messageData));
     }
 
-    private static void failedRequest(Socket client)
+    /// <summary>
+    /// quick method for adding end of message string to the end of a data transmission
+    /// </summary>
+    /// <param name="data">the data message</param>
+    private static byte[] EndOfMessage(byte[] data)
     {
-        byte[] msg = Encoding.ASCII.GetBytes(Constants.FailString);
+        byte[] message = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
+        byte[] outData = new byte[data.Length + message.Length];
+
+        data.CopyTo(outData, 0);
+        message.CopyTo(outData, data.Length);
+
+        return outData;
+    }
+
+    /// <summary>
+    /// wrapper for the standard failed response 
+    /// </summary>
+    /// <param name="client"></param>
+    private static void FailedRequest(Socket client)
+    {
+        byte[] msg = Encoding.ASCII.GetBytes(Constants.FailString + Constants.EndOfMessage);
         client.Send(msg);
     }
 
     /// <summary>
-    /// Wrapper for sending bytes to get cleaner code 
+    /// wrapper for the alive request to be handled
+    /// </summary>
+    /// <param name="client"></param>
+    private static void AliveRequest(Socket client)
+    {
+        byte[] msg = Encoding.ASCII.GetBytes("Cammera Active" + Constants.EndOfMessage);
+        client.Send(msg);
+    }
+
+    /// <summary>
+    /// wrapper for sending bytes to get cleaner code 
     /// </summary>
     /// <param name="client">Socket that data will be sent too</param>
     /// <param name="reponse">The data that will be sent</param>
-    private static void sendResponse(Socket client, Byte[] reponse)
+    private static void SendResponse(Socket client, Byte[] reponse)
     {
         client.Send(reponse);
     }
