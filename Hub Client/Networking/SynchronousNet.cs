@@ -12,7 +12,7 @@ namespace Hub.Networking
 {
     class SynchronousNet : INetwork
     {
-        public byte[] MakeRequest(Socket socket, CameraRequest request)
+        public byte[] MakeRequest(ISocket socket, CameraRequest request)
         {
             byte[] bytes = new byte[Constants.ByteArraySize];
 
@@ -24,7 +24,7 @@ namespace Hub.Networking
                 byte[] msg = Encoding.ASCII.GetBytes((int)request + Constants.EndOfMessage);
 
                 socket.Send(msg);
-                socket.Receive(bytes);
+                //socket.Receive(bytes);
 
                 //grab the bytes
                 bytes = new byte[Constants.ByteArraySize];

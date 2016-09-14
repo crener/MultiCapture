@@ -17,7 +17,7 @@ namespace Hub.Networking
         private ManualResetEvent sentData = new ManualResetEvent(false),
             recieveData = new ManualResetEvent(false);
 
-        public byte[] MakeRequest(Socket socket, CameraRequest request)
+        public byte[] MakeRequest(ISocket socket, CameraRequest request)
         {
             //check for valid input
             if (!socket.Connected) throw new Exception("Socket needs to be connnected");
@@ -42,7 +42,7 @@ namespace Hub.Networking
             return state.Buffer;
         }
 
-        private void SendData(Socket client, string data)
+        private void SendData(ISocket client, string data)
         {
             byte[] byteData = Encoding.ASCII.GetBytes(data);
             client.BeginSend(byteData, 0, byteData.Length, 0, SendDataComplete, client);
@@ -74,7 +74,7 @@ namespace Hub.Networking
             {
                 // Retrieve the state object and the client socket from the asynchronous state object.
                 StateObject state = (StateObject)ar.AsyncState;
-                Socket client = state.WorkSocket;
+                ISocket client = state.WorkSocket;
                 int bytesRead = client.EndReceive(ar);
 
                 //put data into the buffer
@@ -100,7 +100,7 @@ namespace Hub.Networking
 
 
         #region MS code
-        public void StartClient(uint staticIpAddress = 2668101289, int port = 11003)
+        /*public void StartClient(uint staticIpAddress = 2668101289, int port = 11003)
         {
             // Connect to a remote device.
             try
@@ -157,7 +157,7 @@ namespace Hub.Networking
             }
         }
 
-        private void Receive(Socket client)
+        private void Receive(ISocket client)
         {
             try
             {
@@ -181,7 +181,7 @@ namespace Hub.Networking
                 // Retrieve the state object and the client socket 
                 // from the asynchronous state object.
                 StateObject state = (StateObject)ar.AsyncState;
-                Socket client = state.WorkSocket;
+                ISocket client = state.WorkSocket;
 
                 // Read data from the remote device.
                 int bytesRead = client.EndReceive(ar);
@@ -235,7 +235,7 @@ namespace Hub.Networking
             {
                 Console.WriteLine(e.ToString());
             }
-        }
+        }*/
         #endregion
     }
 }

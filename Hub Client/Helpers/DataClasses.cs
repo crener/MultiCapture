@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Hub.Networking;
 using Hub.SaveLoad;
 using SharedDeviceItems;
 
@@ -9,11 +10,14 @@ namespace Hub.Helpers
 {
     public class CameraSocket
     {
-        public Socket DataSocket { get; set; }
+        public ISocket DataSocket { get; set; }
         public CameraConfiguration Config { get; set; }
 
         public bool Setup()
         {
+            if (Config.Address == 0) throw new InvalidOperationException("Configuration address not configured");
+            if (Config.Port == 0) throw new InvalidOperationException("Configuration port not configured");
+
             try
             {
                 //check if the camera is active

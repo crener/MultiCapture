@@ -3,8 +3,10 @@ using System.Configuration;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using Camera;
 using Hub.SaveLoad;
 using Hub.Helpers;
+using Hub.Helpers.Wrapper;
 using NUnit.Framework;
 using SharedDeviceItems;
 
@@ -31,7 +33,7 @@ namespace Hub.Threaded.Tests
 
             CameraSocket testSocket = new CameraSocket
             {
-                DataSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp),
+                DataSocket = new WSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp),
                 Config = testConfig
             };
 

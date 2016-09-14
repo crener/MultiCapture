@@ -46,9 +46,11 @@
     <Compile Include="Capture.cs" />
     <Compile Include="Helpers\ByteManipulation.cs" />
     <Compile Include="Helpers\DataClasses.cs" />
+    <Compile Include="Helpers\Interface\ISocket.cs" />
     <Compile Include="Helpers\Networking.cs" />
+    <Compile Include="Helpers\Wrapper\WSocket.cs" />
     <Compile Include="HubMain.cs" />
-    <Compile Include="Networking\INetwork.cs" />
+    <Compile Include="Helpers\Interface\INetwork.cs" />
     <Compile Include="Networking\AsynchronousNet.cs" />
     <Compile Include="Networking\SynchronousNet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

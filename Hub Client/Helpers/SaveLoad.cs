@@ -102,6 +102,7 @@ namespace Hub.SaveLoad
                 Cameras[0] = new CameraConfiguration
                 {
                     Address = 2668101289,
+                    //Address = 3190423209,
                     CamFileIdentity = "0",
                     Port = 11003,
                     Id = 0

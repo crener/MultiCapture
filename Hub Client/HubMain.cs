@@ -4,6 +4,7 @@ using System.Threading;
 
 using Hub.SaveLoad;
 using Hub.Helpers;
+using Hub.Helpers.Wrapper;
 using Hub.Threaded;
 using SharedDeviceItems;
 
@@ -69,7 +70,7 @@ namespace Hub
                 //check that the camera is avalible
                 cameraSockets[i] = new CameraSocket
                 {
-                    DataSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp),
+                    DataSocket = new WSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp),
                     Config = config.Cameras[i]
                 };
 

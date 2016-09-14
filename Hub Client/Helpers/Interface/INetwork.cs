@@ -1,16 +1,15 @@
-﻿using System.Net.Sockets;
-using SharedDeviceItems;
+﻿using SharedDeviceItems;
 
 namespace Hub.Networking
 {
     internal interface INetwork
     {
-        byte[] MakeRequest(Socket socket, CameraRequest request);
+        byte[] MakeRequest(ISocket socket, CameraRequest request);
     }
 
     public class StateObject
     {
-        public Socket WorkSocket = null;
+        public ISocket WorkSocket = null;
         public byte[] Buffer = new byte[Constants.ByteArraySize];
 
         public int Saved = 0;
