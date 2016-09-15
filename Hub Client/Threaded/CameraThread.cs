@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using SharedDeviceItems;
 using Hub.Helpers;
@@ -38,6 +37,7 @@ namespace Hub.Threaded
                         string imageName;
                         byte[] imageData;
                         ByteManipulation.SeperateData(out imageName, data, out imageData);
+                        if (imageName == "" || imageData.Length <= 0) break;
 
                         //write file
                         using (FileStream fileStream = new FileStream(imageName, FileMode.CreateNew))
