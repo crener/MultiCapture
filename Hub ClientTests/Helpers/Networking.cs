@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Linq;
+using System.Net.Sockets;
 using NUnit.Framework;
 using System.Text;
-using Hub.Helpers;
+using Hub.Helpers.Wrapper;
 using SharedDeviceItems;
 
 namespace Hub.Helpers.Tests
@@ -64,6 +64,16 @@ namespace Hub.Helpers.Tests
             {
                 if(returnData[i] != data[i]) Assert.Fail("Return value " + i + " didn;t match original data");
             }
+        }
+
+        [Test]
+        public void Connected()
+        {
+            WSocket socket = new WSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+            Assert.IsFalse(socket.Connected);
+
+            //todo find a way to test if a socket is connected without having to connect to an external device
         }
     }
 }

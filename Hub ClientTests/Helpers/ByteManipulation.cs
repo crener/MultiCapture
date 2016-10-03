@@ -7,6 +7,9 @@ namespace Hub.Helpers.Tests
     [TestFixture]
     public class ByteManipulationTests
     {
+        /// <summary>
+        /// Tests the correct byte arrays return true as expected
+        /// </summary>
         [Test]
         public void SeperateDataTestCorrect()
         {
@@ -31,6 +34,9 @@ namespace Hub.Helpers.Tests
                 Assert.IsTrue(data[i] == returnBytes[i]);
         }
 
+        /// <summary>
+        /// Tests the incorrect byte arrays returns false as expected
+        /// </summary>
         [Test]
         public void SeperateDataTestIncorrect()
         {

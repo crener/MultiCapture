@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Sockets;
 using NUnit.Framework;
 using Hub.Helpers.Wrapper;
 using Hub.Networking;
-using Hub.SaveLoad;
 using NUnit.Framework.Internal;
 using SharedDeviceItems;
 #pragma warning disable 618
@@ -61,16 +61,46 @@ namespace Hub.Helpers.Tests
                 Config = new CameraConfiguration()
             };
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => testSocket.Setup());
-            Assert.That(ex.Message, Is.EqualTo("Configuration address not configured"));
+            Boolean threw = false;
+
+            try
+            {
+                testSocket.Setup();
+            }
+            catch (Exception e)
+            {
+                Assert.IsTrue(e is InvalidOperationException);
+                Assert.IsTrue(e.Message.Equals("Configuration address not configured"));
+                threw = true;
+            }
+
+            Assert.IsTrue(threw);
+            threw = false;
 
             IPAddress address = Networking.GrabIpv4();
             testSocket.Config.Address = address.Address;
-            ex = Assert.Throws<InvalidOperationException>(() => testSocket.Setup());
-            Assert.That(ex.Message, Is.EqualTo("Configuration port not configured"));
+            try
+            {
+                testSocket.Setup();
+            }
+            catch (Exception e)
+            {
+                Assert.IsTrue(e is InvalidOperationException);
+                Assert.IsTrue(e.Message.Equals("Configuration port not configured"));
+                threw = true;
+            }
+            Assert.IsTrue(threw);
+            threw = false;
 
             testSocket.Config.Port = 700;
-            Assert.IsFalse(testSocket.Setup());
+            try
+            {
+                Assert.IsFalse(testSocket.Setup());
+            }
+            catch (Exception e)
+            {
+                Assert.Fail("Shouldn't throw an exception");
+            }
 
         }
     }

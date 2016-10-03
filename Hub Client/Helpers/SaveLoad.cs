@@ -2,7 +2,7 @@
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace Hub.SaveLoad
+namespace Hub.Helpers
 {
     /// <summary>
     /// Container for multipul camera configurations and other data.
@@ -11,8 +11,8 @@ namespace Hub.SaveLoad
     {
         public static Data Conf { get; set; }
 
-        private static string saveDir = Path.AltDirectorySeparatorChar + "scanImage" + 
-            Path.AltDirectorySeparatorChar + "canfiguration.conf";
+        public static string DefaultSaveDirectory = Path.AltDirectorySeparatorChar + "scanImage" +
+            Path.AltDirectorySeparatorChar + "configuration.conf";
 
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace Hub.SaveLoad
         /// <returns>configuration data structure</returns>
         public static Data Load()
         {
-            return Load(saveDir);
+            return Load(DefaultSaveDirectory);
         }
 
         /// <summary>
@@ -31,13 +31,13 @@ namespace Hub.SaveLoad
         /// <returns>configuration data structure</returns>
         public static Data Load(string path)
         {
-            if (!File.Exists(path)) return new Data().Default();
+            if (!File.Exists(path)) throw new InvalidDataException();
 
             BinaryFormatter formatter = new BinaryFormatter();
             FileStream stream = null;
             try
             {
-                stream = File.Create(path);
+                stream = File.OpenRead(path);
                 Conf = (Data)formatter.Deserialize(stream);
             }
             catch (Exception e)
@@ -57,7 +57,7 @@ namespace Hub.SaveLoad
         /// </summary>
         public static void Save()
         {
-            Save(saveDir);
+            Save(DefaultSaveDirectory);
         }
 
         /// <summary>
@@ -66,7 +66,8 @@ namespace Hub.SaveLoad
         /// <param name="path">Place to save the configuration file</param>
         public static void Save(string path)
         {
-            if (Conf.Cameras == null) return;
+            if (Conf.CameraCount == 0) throw new NullReferenceException();
+            if (path == null) throw new NullReferenceException();
 
             BinaryFormatter formatter = new BinaryFormatter();
             FileStream stream = null;
@@ -90,10 +91,11 @@ namespace Hub.SaveLoad
         /// <summary>
         /// Structure to hold various configurations
         /// </summary>
+        [Serializable]
         public struct Data
         {
             public CameraConfiguration[] Cameras { get; set; }
-            public int CameraCount => Cameras.Length;
+            public int CameraCount => Cameras == null ? 0 : Cameras.Length;
             public Data Default()
             {
                 Cameras = new CameraConfiguration[1];
@@ -144,6 +146,7 @@ namespace Hub.SaveLoad
     /// <summary>
     /// class whcih stores configuration for talking to camera servers
     /// </summary>
+    [Serializable]
     public class CameraConfiguration
     {
         public long Address { get; set; }
