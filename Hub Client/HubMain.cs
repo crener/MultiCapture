@@ -54,7 +54,7 @@ namespace Hub
             {
                 if (cameraThreads[i] != null && cameraThreads[i].IsAlive)
                 {
-                    threadConfiguration[i].Request = CameraRequest.SendTestImage;
+                    threadConfiguration[i].Request = CameraRequest.SendFullResImage;
                 }
             }
         }

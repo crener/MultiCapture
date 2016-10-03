@@ -5,15 +5,17 @@ using System.Text;
 using System.Collections.Generic;
 using System.IO;
 using SharedDeviceItems;
+using SharedDeviceItems.Interface;
 
 namespace Camera
 {
     public static class SynchronousSocketListener
     {
-        private const int bufferSize = 1048576;
+        private const int BufferSize = 1048576;
 
         // Incoming data from the client.
-        private static string data = null;
+        private static string data;
+        private static ICamera camera = new PythonCamera.Camera("0");
 
         private static Dictionary<string, CameraRequest> requestLookup = new Dictionary<string, CameraRequest>()
         {
@@ -25,7 +27,7 @@ namespace Camera
         public static void StartListening()
         {
             // Data buffer for incoming data.
-            byte[] bytes = new byte[bufferSize];
+            byte[] bytes = new byte[BufferSize];
 
             // Establish the local endpoint for the socket.
             // Dns.GetHostName returns the name of the 
@@ -62,7 +64,7 @@ namespace Camera
                     while (true)
                     {
                         Console.WriteLine("Waiting for next request...");
-                        bytes = new byte[bufferSize];
+                        bytes = new byte[BufferSize];
                         int bytesRec = handler.Receive(bytes);
                         data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
                         if (data.IndexOf(Constants.EndOfMessage) > -1)
@@ -122,7 +124,7 @@ namespace Camera
             CameraRequest request;
             if (!requestLookup.TryGetValue(message, out request))
             {
-                FailedRequest(client);
+                SendResponse(client, EndOfMessage(FailedRequest()));
                 return;
             }
             if (request == CameraRequest.Alive)
@@ -137,26 +139,17 @@ namespace Camera
             switch (request)
             {
                 case CameraRequest.SendFullResImage:
+                    messageData = FileToBytes(camera.CaptureImage(0.ToString()));
+
                     break;
                 case CameraRequest.SendTestImage:
                     //For testing, send a static image saved on the device
-                    byte[] name = Encoding.ASCII.GetBytes("test.jpg" + Constants.MessageSeperator),
-                        file = File.ReadAllBytes(Path.AltDirectorySeparatorChar + "scanimage" +
-                                              Path.AltDirectorySeparatorChar + "test.jpg"),
-                        eom = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
-
-                    messageData = new byte[name.Length + file.Length + eom.Length];
-                    name.CopyTo(messageData, 0);
-                    file.CopyTo(messageData, name.Length);
-                    eom.CopyTo(messageData, name.Length + file.Length);
-
-                    for (int i = 0; i < 12; i++)
-                    {
-                        Console.WriteLine("Data " + i + ": " + messageData[i]);
-                    }
+                    messageData =
+                        FileToBytes(Path.AltDirectorySeparatorChar + "scanimage" +
+                                              Path.AltDirectorySeparatorChar + "test.jpg");
                     break;
                 default:
-                    FailedRequest(client);
+                    messageData = FailedRequest();
                     break;
             }
 
@@ -181,11 +174,23 @@ namespace Camera
         /// <summary>
         /// wrapper for the standard failed response 
         /// </summary>
-        /// <param name="client"></param>
-        private static void FailedRequest(Socket client)
+        private static byte[] FailedRequest()
         {
-            byte[] msg = Encoding.ASCII.GetBytes(Constants.FailString + Constants.EndOfMessage);
-            client.Send(msg);
+            return Encoding.ASCII.GetBytes(Constants.FailString + Constants.EndOfMessage);
+        }
+
+        private static byte[] FileToBytes(string location)
+        {
+            string fileName = location.Substring(location.LastIndexOf(Path.AltDirectorySeparatorChar));
+            byte[] name = Encoding.ASCII.GetBytes(fileName + Constants.MessageSeperator),
+                        file = File.ReadAllBytes(location),
+                        eom = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
+
+            var messageData = new byte[name.Length + file.Length + eom.Length];
+            name.CopyTo(messageData, 0);
+            file.CopyTo(messageData, name.Length);
+            eom.CopyTo(messageData, name.Length + file.Length);
+            return messageData;
         }
 
         /// <summary>
@@ -208,6 +213,11 @@ namespace Camera
             client.Send(reponse);
         }
 
+        /// <summary>
+        /// test if the socket is connected to a device
+        /// </summary>
+        /// <param name="s">socket that needs to be tested</param>
+        /// <returns>true if connected to a client</returns>
         public static bool Connected(Socket s)
         {
             if (s.Connected && s.Poll(1000, SelectMode.SelectRead) && s.Available == 0)

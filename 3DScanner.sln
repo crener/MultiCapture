@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedDeviceItems", "Shared
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hub ClientTests", "Hub ClientTests\Hub ClientTests.csproj", "{2E9F0C10-FEBA-4296-BA0E-42FE98E7536B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Python Camera", "Python Camera\Python Camera.csproj", "{EDE424B0-FDFC-476C-AD52-981837DD076A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{2E9F0C10-FEBA-4296-BA0E-42FE98E7536B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E9F0C10-FEBA-4296-BA0E-42FE98E7536B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E9F0C10-FEBA-4296-BA0E-42FE98E7536B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDE424B0-FDFC-476C-AD52-981837DD076A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDE424B0-FDFC-476C-AD52-981837DD076A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDE424B0-FDFC-476C-AD52-981837DD076A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDE424B0-FDFC-476C-AD52-981837DD076A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,32 @@
+﻿import picamera
+from time import sleep
+
+class python:
+    camera = picamera.PiCamera()
+    imgEnd = ".jpg"
+    imgLocation = "/scanImage/"
+    piName = "unknown"
+
+    def captureAutomatic(self, codeName):
+        camera.capture(imgLocation + piName + codeName + imgEnd)
+        return imgLocation + piName + codeName + imgEnd
+
+    def changeLocation(self, location):
+        imgLocation = location
+        return
+
+    def setCamName(self, name):
+        piName = name
+        return name
+
+    def sleepCamera(self, time):
+        sleep(time)
+        return
+
+    def setResulution(self, x, y):
+        camera.resolution = (x, y)
+        return
+
+    def shutdown(self):
+        camera.close()
+        return
