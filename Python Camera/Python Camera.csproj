@@ -69,7 +69,9 @@
     <Content Include="using\ipy.exe" />
     <Content Include="using\ipyw.exe" />
     <Content Include="using\IronPython.dll" />
-    <Content Include="using\IronPython.Modules.dll" />
+    <Content Include="using\IronPython.Modules.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="using\Microsoft.Dynamic.dll" />
     <Content Include="using\Microsoft.Scripting.dll" />
   </ItemGroup>

@@ -33,31 +33,16 @@ namespace PythonCamera
                 //ScriptRuntime run = IronPython.Hosting.Python.CreateRuntime();
                 engine = Python.CreateEngine();
                 ICollection<string> paths = engine.GetSearchPaths();
-
-                paths.Add("/usr/lib/python2.7/dist-packages/pygame/tests");
-                paths.Add("/usr/lib/python2.7/dist-packages/pygame");
+                
                 paths.Add("/usr/lib/python2.7");
-                paths.Add("/usr/lib/python2.7/plat-arm-linux-gnueabihf");
-                paths.Add("/usr/lib/python2.7/lib-tk");
                 paths.Add("/usr/lib/python2.7/lib-old");
-                paths.Add("/usr/lib/python2.7/lib-dynload");
+                paths.Add("/usr/lib/pymodules/python2.7");
+                paths.Add("/usr/lib/python2.7/dist-packages");
                 paths.Add("/usr/local/lib/python2.7/dist-packages");
-                paths.Add("/usr/lib/python2.7/dist-packages");
-                paths.Add("/usr/lib/python2.7/dist-packages/gtk-2.0");
-                paths.Add("/usr/lib/pymodules/python2.7");
-                paths.Add("/usr/lib/pypy/lib-python/2.7/plat-irix5");
-                paths.Add("/usr/lib/pypy/lib-python/2.7/plat-irix5/__pycache__/");
-                paths.Add("");
-
-                /*
-                paths.Add("/usr/lib/python2.7");
-                paths.Add("/usr/lib/python2.7/lib-old");
-                paths.Add("/usr/lib/pymodules/python2.7");
-                paths.Add("/usr/lib/python2.7/dist-packages");
-                paths.Add("/usr/local/lib/python2.7/dist-packages");*/
+                paths.Add("using/");
                 engine.SetSearchPaths(paths);
-                ScriptRuntime run = engine.Runtime;
-                pyCam = run.UseFile("Python.py");
+
+                pyCam = engine.Runtime.UseFile("Python.py");
 
                 var type = script.GetVariable("python");
                 pyCam = ops.CreateInstance(type);
@@ -85,6 +70,11 @@ namespace PythonCamera
             {
                 Console.WriteLine("Error Instantiating: " + e.Message);
                 Console.WriteLine("Camera Module shutting down!");
+                shutdown = true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Unknown error: " + e.Message);
                 shutdown = true;
             }
         }

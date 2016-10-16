@@ -1,5 +1,9 @@
-﻿import picamera
+﻿import clr
+clr.AddReference("using/IronPython.Modules");
+
+from ctypes import *
 from time import sleep
+import picamera
 
 class python:
     camera = picamera.PiCamera()
