@@ -97,7 +97,7 @@ namespace Hub.Helpers.Tests
             {
                 Assert.IsFalse(testSocket.Setup());
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Assert.Fail("Shouldn't throw an exception");
             }

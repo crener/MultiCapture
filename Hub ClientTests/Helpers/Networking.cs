@@ -23,7 +23,7 @@ namespace Hub.Helpers.Tests
             {
                 Networking.TrimExcessByteData(data);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //threw an exception
                 exceptionThrown = true;
