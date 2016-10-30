@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\CaptureFailedException.cs" />
     <Compile Include="Interface\ICamera.cs" />
     <Compile Include="Shared.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

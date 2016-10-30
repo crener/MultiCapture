@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -21,7 +22,14 @@ namespace Hub.Helpers
         /// <returns>configuration data structure</returns>
         public static Data Load()
         {
-            return Load(DefaultSaveDirectory);
+            try
+            {
+                return Load(DefaultSaveDirectory);
+            }
+            catch (InvalidDataException)
+            {
+                return new Data().Default();
+            }
         }
 
         /// <summary>
@@ -103,7 +111,7 @@ namespace Hub.Helpers
                 //Pi3
                 Cameras[0] = new CameraConfiguration
                 {
-                    Address = 2668101289,
+                    Address = 1401530560,
                     //Address = 3190423209,
                     CamFileIdentity = "0",
                     Port = 11003,

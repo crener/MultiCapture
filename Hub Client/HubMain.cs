@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 using Hub.Helpers;
@@ -26,7 +27,14 @@ namespace Hub
 
         public HubMain()
         {
-            config = SaveContainer.Load();
+            try
+            {
+                config = SaveContainer.Load();
+            }
+            catch (InvalidDataException)
+            {
+                config = config.Default();
+            }
 
             Start();
         }
