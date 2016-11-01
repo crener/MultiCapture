@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
-using Camera;
 using SharedDeviceItems;
+using SharedDeviceItems.Helpers;
 using SharedDeviceItems.Interface;
+using Shell_Camera;
 
 namespace Camera_Server
 {
@@ -15,16 +14,22 @@ namespace Camera_Server
     {
         private ICamera camera = new ShellCamera("0");
         private Socket client;
-        private static Dictionary<string, CameraRequest> requestLookup = new Dictionary<string, CameraRequest>()
-        {
-            {"0", CameraRequest.Alive},
-            {"1", CameraRequest.SendFullResImage},
-            {"9", CameraRequest.SendTestImage}
-        };
+        private static Dictionary<string, CameraRequest> requestLookup = new Dictionary<string, CameraRequest>();
 
         public RequestProcess(Socket client)
         {
             this.client = client;
+
+            if (requestLookup.Count <= 0)
+            {
+                Console.WriteLine("request initialisation");
+                CameraRequest[] enums = (CameraRequest[])Enum.GetValues(typeof(CameraRequest));
+                foreach (CameraRequest value in enums)
+                {
+                    Console.WriteLine("Key = " + "" + (int)value + ", value = " + value);
+                    requestLookup.Add("" + (int)value, value);
+                }
+            }
         }
 
         public void ProcessRequest(string message)
@@ -32,6 +37,7 @@ namespace Camera_Server
             CameraRequest request;
             if (!requestLookup.TryGetValue(message, out request))
             {
+                Console.WriteLine("404 - Request not found!!");
                 SendResponse(client, EndOfMessage(FailedRequest()));
                 return;
             }
@@ -42,21 +48,21 @@ namespace Camera_Server
             }
 
             Console.WriteLine("Executing request: " + request);
-            byte[] messageData = null;
+            byte[] messageData;
 
             switch (request)
             {
                 case CameraRequest.SendFullResImage:
                     string imageLocation = camera.CaptureImage("0");
 
-                    messageData = FileToBytes(imageLocation);
+                    messageData = ByteHelpers.FileToBytes(imageLocation);
                     SendResponse(client, EndOfMessage(messageData));
 
-                    File.Delete(imageLocation);
+                    if (File.Exists(imageLocation)) File.Delete(imageLocation);
                     return;
                 case CameraRequest.SendTestImage:
                     //For testing, send a static image saved on the device
-                    messageData = FileToBytes(Path.AltDirectorySeparatorChar + "scanimage" + Path.AltDirectorySeparatorChar + "test.jpg");
+                    messageData = ByteHelpers.FileToBytes(Path.DirectorySeparatorChar + "scanimage" + Path.DirectorySeparatorChar + "test.jpg");
                     SendResponse(client, EndOfMessage(messageData));
                     return;
                 default:
@@ -90,20 +96,6 @@ namespace Camera_Server
             return Encoding.ASCII.GetBytes(Constants.FailString + Constants.EndOfMessage);
         }
 
-        private static byte[] FileToBytes(string location)
-        {
-            string fileName = location.Substring(location.LastIndexOf(Path.AltDirectorySeparatorChar));
-            byte[] name = Encoding.ASCII.GetBytes(fileName + Constants.MessageSeperator),
-                        file = File.ReadAllBytes(location),
-                        eom = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
-
-            var messageData = new byte[name.Length + file.Length + eom.Length];
-            name.CopyTo(messageData, 0);
-            file.CopyTo(messageData, name.Length);
-            eom.CopyTo(messageData, name.Length + file.Length);
-            return messageData;
-        }
-
         /// <summary>
         /// wrapper for sending bytes to get cleaner code 
         /// </summary>
@@ -120,7 +112,7 @@ namespace Camera_Server
         /// <param name="client"></param>
         private static void AliveRequest(Socket client)
         {
-            byte[] msg = Encoding.ASCII.GetBytes("Cammera Active" + Constants.EndOfMessage);
+            byte[] msg = Encoding.ASCII.GetBytes("Camera Active" + Constants.EndOfMessage);
             client.Send(msg);
         }
     }

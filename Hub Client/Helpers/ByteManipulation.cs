@@ -71,18 +71,18 @@ namespace Hub.Helpers
                 if (data[i] == mesg.Last())
                 {
                     int i2 = i;
-                    bool valid = true;
                     //last element has been found search for the lest of them
                     for (int u = mesg.Length - 1; u >= 0; u--, i2--)
                     {
+                        if(u == 0 && mesg[u] == data[i2])
+                        {
+                            return true;
+                        }
                         if (mesg[u] != data[i2])
                         {
-                            valid = false;
                             break;
                         }
                     }
-
-                    if (valid) return true;
                 }
             }
 
@@ -95,7 +95,7 @@ namespace Hub.Helpers
         /// <param name="data">the data array to parse</param>
         /// <param name="size">amount of data populated with valid data (starting from 0)</param>
         /// <returns>first byte location of the end of message</returns>
-        public static int SearchEndOfMessageInt(byte[] data, int size)
+        public static int SearchEndOfMessageIndex(byte[] data, int size)
         {
             byte[] mesg = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
 

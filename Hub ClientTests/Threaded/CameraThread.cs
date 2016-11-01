@@ -1,13 +1,12 @@
-﻿using System;
-using System.Configuration;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using Camera;
+using Camera_Server;
 using Hub.Helpers;
 using Hub.Helpers.Wrapper;
 using NUnit.Framework;
 using SharedDeviceItems;
+using SharedDeviceItems.Helpers;
 
 namespace Hub.Threaded.Tests
 {
@@ -17,13 +16,13 @@ namespace Hub.Threaded.Tests
         //[Test]
         public void CameraThreadConnectionTest()
         {
-            Thread camServer = new Thread(SynchronousSocketListener.StartListening);
+            Thread camServer = new Thread(new Listener().StartListening);
             camServer.Name = "CameraServer";
             camServer.Start();
             CameraConfiguration testConfig = new CameraConfiguration
             {
 #pragma warning disable 618
-                Address = Helpers.Networking.GrabIpv4(Dns.GetHostEntry(Dns.GetHostName())).Address,
+                Address = NetworkHelpers.GrabIpv4(Dns.GetHostEntry(Dns.GetHostName())).Address,
 #pragma warning restore 618
                 Port = 11003,
                 CamFileIdentity = "testCam",

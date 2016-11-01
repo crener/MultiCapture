@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -12,8 +11,10 @@ namespace Hub.Helpers
     {
         public static Data Conf { get; set; }
 
-        public static string DefaultSaveDirectory = Path.AltDirectorySeparatorChar + "scanImage" +
-            Path.AltDirectorySeparatorChar + "configuration.conf";
+        private static string defaultSaveDirectory = Path.GetPathRoot(Directory.GetCurrentDirectory()) +
+            "scanimage" + Path.DirectorySeparatorChar + "configuration.conf";
+
+        private static string customSaveDirectory = null;
 
 
         /// <summary>
@@ -24,7 +25,7 @@ namespace Hub.Helpers
         {
             try
             {
-                return Load(DefaultSaveDirectory);
+                return Load(string.IsNullOrEmpty(CustomSaveDirectory) ? DefaultSaveDirectory : CustomSaveDirectory);
             }
             catch (InvalidDataException)
             {
@@ -65,7 +66,7 @@ namespace Hub.Helpers
         /// </summary>
         public static void Save()
         {
-            Save(DefaultSaveDirectory);
+            Save(string.IsNullOrEmpty(CustomSaveDirectory) ? DefaultSaveDirectory : CustomSaveDirectory);
         }
 
         /// <summary>
@@ -93,14 +94,24 @@ namespace Hub.Helpers
             {
                 if (stream != null) stream.Close();
             }
+        }
 
+        public static string DefaultSaveDirectory
+        {
+            get { return defaultSaveDirectory; }
+        }
+
+        public static string CustomSaveDirectory
+        {
+            get { return customSaveDirectory; }
+            set { customSaveDirectory = value; }
         }
 
         /// <summary>
         /// Structure to hold various configurations
         /// </summary>
         [Serializable]
-        public struct Data
+        public struct Data : IEquatable<Data>
         {
             public CameraConfiguration[] Cameras { get; set; }
             public int CameraCount => Cameras == null ? 0 : Cameras.Length;
@@ -111,7 +122,7 @@ namespace Hub.Helpers
                 //Pi3
                 Cameras[0] = new CameraConfiguration
                 {
-                    Address = 1401530560,
+                    Address = 2492049600,
                     //Address = 3190423209,
                     CamFileIdentity = "0",
                     Port = 11003,
@@ -147,6 +158,21 @@ namespace Hub.Helpers
                 };*/
 
                 return this;
+            }
+
+            public bool Equals(Data other)
+            {
+                if (CameraCount != other.CameraCount) return false;
+
+                for (int i = 0; i < Cameras.Length; i++)
+                {
+                    if (Cameras[i].Address != other.Cameras[i].Address) return false;
+                    if (Cameras[i].Id != other.Cameras[i].Id) return false;
+                    if (Cameras[i].Port != other.Cameras[i].Port) return false;
+                    if (Cameras[i].CamFileIdentity != other.Cameras[i].CamFileIdentity) return false;
+                }
+
+                return true;
             }
         }
     }

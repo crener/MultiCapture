@@ -33,6 +33,8 @@ namespace PythonCamera
                 //ScriptRuntime run = IronPython.Hosting.Python.CreateRuntime();
                 engine = Python.CreateEngine();
                 ICollection<string> paths = engine.GetSearchPaths();
+                script = engine.CreateScope();
+                ops = engine.Operations;
                 
                 paths.Add("/usr/lib/python2.7");
                 paths.Add("/usr/lib/python2.7/lib-old");

@@ -30,28 +30,11 @@ namespace Hub.Threaded
                 {
                     if (Request != CameraRequest.Alive)
                     {
-                        //start asking the camera for a new image
-                        byte[] data = connection.MakeRequest(config.DataSocket, Request);
-
-                        //extract image data
-                        string imageName;
-                        byte[] imageData;
-                        ByteManipulation.SeperateData(out imageName, data, out imageData);
-                        if (imageName == "" || imageData.Length <= 0) break;
-
-                        //write file
-                        using (FileStream fileStream = new FileStream(imageName, FileMode.CreateNew))
-                        {
-                            for (int i = 0; i < imageData.Length; i++)
-                            {
-                                fileStream.WriteByte(imageData[i]);
-                            }
-                        }
-
+                        ProcessRequest(Request);
                         Request = CameraRequest.Alive;
                     }
 
-                    Thread.Sleep(30);
+                    Thread.Sleep(10);
                 }
             }
             catch (ThreadAbortException)
@@ -76,7 +59,32 @@ namespace Hub.Threaded
             }
             catch (Exception e)
             {
-                Console.WriteLine("While Trying to close socket something went wrong... " + e);
+                Console.WriteLine("While Trying to close socket something went wrong... " + e.Message);
+                Console.WriteLine(e);
+            }
+        }
+
+        private void ProcessRequest(CameraRequest request)
+        {
+            //start asking the camera for a new image
+            byte[] data = connection.MakeRequest(config.DataSocket, Request);
+
+            //extract image data
+            string imageName;
+            byte[] imageData;
+            ByteManipulation.SeperateData(out imageName, data, out imageData);
+            if (imageName == "" || imageData.Length <= 0)
+            {
+                Console.WriteLine("No Image data recieved!!");
+                return;
+            }
+
+            using (FileStream fileStream = new FileStream(Path.DirectorySeparatorChar + "scanimage" + imageName, FileMode.CreateNew))
+            {
+                for (int i = 0; i < imageData.Length; i++)
+                {
+                    fileStream.WriteByte(imageData[i]);
+                }
             }
         }
     }

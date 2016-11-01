@@ -1,118 +1,38 @@
 ﻿using System;
-using System.IO;
-using System.Net.Sockets;
-using System.Threading;
 using Hub.Helpers;
-using Hub.Helpers.Wrapper;
-using Hub.Threaded;
+using Hub_Client.Threaded;
 using SharedDeviceItems;
 
 namespace Hub
 {
     public class HubMain
     {
-        private SaveContainer.Data config;
-        private Thread[] cameraThreads;
-        private CameraThread[] threadConfiguration;
-        private CameraSocket[] cameraSockets;
-
         public static int Main(String[] args)
         {
             HubMain program = new HubMain();
             program.Start();
-            program.Finish();
             return 0;
         }
 
-
         public HubMain()
         {
-            try
-            {
-                config = SaveContainer.Load();
-            }
-            catch (InvalidDataException)
-            {
-                config = config.Default();
-            }
-
             Start();
         }
 
         /// <summary>
         /// Main runtime loop used to collect and send data off too the computer
         /// </summary>
-        public void Start()
+        private void Start()
         {
-            config = SaveContainer.Load();
-            ConfigureThreads();
-            while (Console.ReadLine() != "e")
+            ThreadManager manager = new ThreadManager(SaveContainer.Load());
+
+            string command = "";
+            while ((command = Console.ReadLine()) != "e")
             {
-                CaptureImageSet();
+                if(command == "t") manager.CaptureImageSet(CameraRequest.SendTestImage);
+                else manager.CaptureImageSet();
             }
             Console.WriteLine("Quitting");
-            Finish();
-        }
-
-        public void CaptureImageSet()
-        {
-            for (int i = 0; i < cameraThreads.Length; i++)
-            {
-                if (cameraThreads[i] != null && cameraThreads[i].IsAlive)
-                {
-                    threadConfiguration[i].Request = CameraRequest.SendFullResImage;
-                }
-            }
-        }
-
-        private void ConfigureThreads()
-        {
-            cameraSockets = new CameraSocket[config.CameraCount];
-            cameraThreads = new Thread[config.CameraCount];
-            threadConfiguration = new CameraThread[config.CameraCount];
-
-            for (int i = 0; i < config.CameraCount; i++)
-            {
-                //check that the camera is avalible
-                cameraSockets[i] = new CameraSocket
-                {
-                    DataSocket = new WSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp),
-                    Config = config.Cameras[i]
-                };
-
-                if (cameraSockets[i].Setup())
-                {
-                    Console.WriteLine("Connected to camera " + config.Cameras[i].Id + " assigning a thread");
-                    CameraThread threadTask = new CameraThread(cameraSockets[i]);
-                    threadConfiguration[i] = threadTask;
-                    cameraThreads[i] = new Thread(threadTask.Start);
-                    cameraThreads[i].Name = "CameraThread " + cameraSockets[i].Config.Id;
-                    cameraThreads[i].Start();
-                }
-                else
-                {
-                    Console.WriteLine("Failed to connect to camera " + config.Cameras[i].Id + "!!");
-                    cameraSockets[i] = null;
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// Always do this to correctly end all actions currently being done
-        /// </summary>
-        private void Finish()
-        {
-            for (int i = 0; i < cameraThreads.Length; i++)
-                threadConfiguration[i].Finish = true;
-
-            Thread.Sleep(50);
-
-            for (int i = 0; i < cameraThreads.Length; i++)
-                cameraThreads[i].Join();
-
-            foreach (Thread thread in cameraThreads)
-                if (thread.IsAlive) thread.Abort();
         }
     }
 }

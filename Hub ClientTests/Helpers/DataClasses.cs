@@ -7,6 +7,8 @@ using Hub.Helpers.Wrapper;
 using Hub.Networking;
 using NUnit.Framework.Internal;
 using SharedDeviceItems;
+using SharedDeviceItems.Helpers;
+
 #pragma warning disable 618
 
 namespace Hub.Helpers.Tests
@@ -61,7 +63,7 @@ namespace Hub.Helpers.Tests
                 Config = new CameraConfiguration()
             };
 
-            Boolean threw = false;
+            bool threw = false;
 
             try
             {
@@ -77,7 +79,7 @@ namespace Hub.Helpers.Tests
             Assert.IsTrue(threw);
             threw = false;
 
-            IPAddress address = Networking.GrabIpv4();
+            IPAddress address = NetworkHelpers.GrabIpv4();
             testSocket.Config.Address = address.Address;
             try
             {
@@ -90,7 +92,6 @@ namespace Hub.Helpers.Tests
                 threw = true;
             }
             Assert.IsTrue(threw);
-            threw = false;
 
             testSocket.Config.Port = 700;
             try

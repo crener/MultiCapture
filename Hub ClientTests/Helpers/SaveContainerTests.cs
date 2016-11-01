@@ -46,6 +46,7 @@ namespace Hub.Helpers.Tests
         [Test]
         public void StandardLoadSave()
         {
+            SaveContainer.CustomSaveDirectory = null;
             SaveContainer.Conf = new SaveContainer.Data().Default();
             try
             {
@@ -55,13 +56,83 @@ namespace Hub.Helpers.Tests
                 SaveContainer.Load();
                 File.Delete(SaveContainer.DefaultSaveDirectory);
             }
+            catch (Exception e)
+            {
+                Assert.Fail("Shouldn't throw an error, " + e.Message);
+            }
+            finally
+            {
+                if (File.Exists(SaveContainer.DefaultSaveDirectory)) File.Delete(SaveContainer.DefaultSaveDirectory);
+            }
+        }
+
+        [Test]
+        public void AlternateSave()
+        {
+            #region initialise
+            SaveContainer.CustomSaveDirectory = SaveContainer.DefaultSaveDirectory;
+            SaveContainer.Data testCase = new SaveContainer.Data
+            {
+                Cameras = new[]
+                {
+                    new CameraConfiguration()
+                    {
+                        Address = 3556734,
+                        CamFileIdentity = "test1",
+                        Id = 67,
+                        Port = 3165
+                    },
+                    new CameraConfiguration()
+                    {
+                        Address = 7489,
+                        CamFileIdentity = "test1WE",
+                        Id = 562,
+                        Port = 673
+                    }
+                }
+            };
+            #endregion
+
+            try
+            {
+                SaveContainer.Conf = testCase;
+                SaveContainer.Save();
+                Assert.IsTrue(File.Exists(SaveContainer.CustomSaveDirectory));
+
+                SaveContainer.Load();
+                File.Delete(SaveContainer.CustomSaveDirectory);
+
+                Assert.IsTrue(SaveContainer.Conf.Equals(testCase));
+            }
+            catch (Exception e)
+            {
+                Assert.Fail("Shouldn't throw an error, " + e.Message);
+            }
+            finally
+            {
+                if (File.Exists(SaveContainer.DefaultSaveDirectory)) File.Delete(SaveContainer.DefaultSaveDirectory);
+            }
+        }
+
+        [Test]
+        public void InvalidLoad()
+        {
+            string save = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "testSave";
+            SaveContainer.CustomSaveDirectory = save;
+            try
+            {
+                if (File.Exists(save)) File.Delete(save);
+
+                SaveContainer.Data config = SaveContainer.Load();
+                Assert.True(config.Equals(new SaveContainer.Data().Default()));
+            }
             catch (Exception)
             {
                 Assert.Fail("Shouldn't throw an error");
             }
             finally
             {
-                if (File.Exists(SaveContainer.DefaultSaveDirectory)) File.Delete(SaveContainer.DefaultSaveDirectory);
+                if (File.Exists(save)) File.Delete(save);
             }
         }
 

@@ -14,7 +14,6 @@ namespace Hub.Networking
                 buffer = new byte[bufferSize];
 
             if (!socket.Connected) throw new Exception("Socket needs to be connnected");
-            //if (!socket.Connected) socket.Connect();
             try
             {
                 // Encode the data string into a byte array.
@@ -24,13 +23,12 @@ namespace Hub.Networking
                 //grab the bytes
                 bytes = new byte[Constants.ByteArraySize];
                 int totalData = 0;
-                while (true)
+                do
                 {
                     int bytesRec = socket.Receive(buffer);
                     Array.Copy(buffer, 0, bytes, totalData, bytesRec);
                     totalData += bytesRec;
-                    if (ByteManipulation.SearchEndOfMessage(bytes, totalData)) break;
-                }
+                } while (!ByteManipulation.SearchEndOfMessage(bytes, totalData));
 
                 return Helpers.Networking.TrimExcessByteData(bytes, totalData - 1);
             }

@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
-using Camera;
 using SharedDeviceItems;
-using SharedDeviceItems.Interface;
+using SharedDeviceItems.Helpers;
 
 namespace Camera_Server
 {
-    class Listener
+    public class Listener
     {
         private const int BufferSize = 1048576;
         private static string data;
@@ -25,7 +21,7 @@ namespace Camera_Server
             // Dns.GetHostName returns the name of the 
             // host running the application.
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-            IPAddress ipAddress = GrabIpv4(ipHostInfo);
+            IPAddress ipAddress = NetworkHelpers.GrabIpv4(ipHostInfo);
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11003);
 
             Console.WriteLine("IP address = " + ipAddress);
@@ -57,7 +53,6 @@ namespace Camera_Server
                     while (true)
                     {
                         RequestProcess process = new RequestProcess(handler);
-                        Console.WriteLine("Waiting for request...");
                         bytes = new byte[BufferSize];
                         int bytesRec = handler.Receive(bytes);
                         data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
@@ -72,6 +67,7 @@ namespace Camera_Server
                             Console.WriteLine("Data received : {0}", data);
                             data = "";
                         }
+                        Console.WriteLine("Waiting for next request...");
 
                         if (!Connected(handler)) break;
                     }
@@ -93,23 +89,6 @@ namespace Camera_Server
 
             Console.WriteLine("\nPress ENTER to continue...");
             Console.Read();
-        }
-
-        /// <summary>
-        /// Get the ipv4 address out of all the possible ip addresses that are avalible
-        /// </summary>
-        /// <param name="ipHostInfo">host info</param>
-        /// <returns>ipv4 address</returns>
-        private IPAddress GrabIpv4(IPHostEntry ipHostInfo)
-        {
-            foreach (IPAddress item in ipHostInfo.AddressList)
-            {
-                if (item.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    return item;
-                }
-            }
-            return ipHostInfo.AddressList[0];
         }
 
         /// <summary>

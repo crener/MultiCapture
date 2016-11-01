@@ -108,7 +108,7 @@ namespace Hub.Helpers.Tests
             endOfMessage.CopyTo(testData, garbageData.Length);
 
             Assert.True(ByteManipulation.SearchEndOfMessage(testData, testData.Length));
-            Assert.False(ByteManipulation.SearchEndOfMessageInt(testData, testData.Length) > 10);
+            Assert.False(ByteManipulation.SearchEndOfMessageIndex(testData, testData.Length) > 10);
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace Hub.Helpers.Tests
             extra.CopyTo(testData, garbageData.Length + endOfMessage.Length);
 
             Assert.True(ByteManipulation.SearchEndOfMessage(testData, testData.Length));
-            Assert.False(ByteManipulation.SearchEndOfMessageInt(testData, testData.Length) > 10);
+            Assert.False(ByteManipulation.SearchEndOfMessageIndex(testData, testData.Length) > 10);
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace Hub.Helpers.Tests
             partialMessage.CopyTo(testData, garbageData.Length + endOfMessage.Length + extra.Length);
 
             Assert.True(ByteManipulation.SearchEndOfMessage(testData, testData.Length));
-            Assert.False(ByteManipulation.SearchEndOfMessageInt(testData, testData.Length) > 10 );
+            Assert.False(ByteManipulation.SearchEndOfMessageIndex(testData, testData.Length) > 10 );
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace Hub.Helpers.Tests
             endOfMessage.CopyTo(testData, garbageData.Length);
 
             Assert.False(ByteManipulation.SearchEndOfMessage(testData, testData.Length));
-            Assert.True(ByteManipulation.SearchEndOfMessageInt(testData, testData.Length) == -1);
+            Assert.True(ByteManipulation.SearchEndOfMessageIndex(testData, testData.Length) == -1);
         }
 
         /// <summary>
@@ -187,7 +187,7 @@ namespace Hub.Helpers.Tests
             extra.CopyTo(testData, garbageData.Length + endOfMessage.Length);
 
             Assert.False(ByteManipulation.SearchEndOfMessage(testData, testData.Length));
-            Assert.True(ByteManipulation.SearchEndOfMessageInt(testData, testData.Length) == -1);
+            Assert.True(ByteManipulation.SearchEndOfMessageIndex(testData, testData.Length) == -1);
         }
     }
 }
