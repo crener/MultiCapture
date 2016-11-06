@@ -12,7 +12,7 @@ namespace Hub.Helpers
         public static Data Conf { get; set; }
 
         private static string defaultSaveDirectory = Path.GetPathRoot(Directory.GetCurrentDirectory()) +
-            "scanimage" + Path.DirectorySeparatorChar + "configuration.conf";
+                                                     "scanimage" + Path.DirectorySeparatorChar + "configuration.conf";
 
         private static string customSaveDirectory = null;
 
@@ -40,7 +40,14 @@ namespace Hub.Helpers
         /// <returns>configuration data structure</returns>
         public static Data Load(string path)
         {
-            if (!File.Exists(path)) throw new InvalidDataException();
+            try
+            {
+                if (!File.Exists(path)) throw new InvalidDataException();
+            }
+            catch (Exception)
+            {
+                throw new InvalidDataException();
+            }
 
             BinaryFormatter formatter = new BinaryFormatter();
             FileStream stream = null;
@@ -122,7 +129,7 @@ namespace Hub.Helpers
                 //Pi3
                 Cameras[0] = new CameraConfiguration
                 {
-                    Address = 2492049600,
+                    Address = 579446976,
                     //Address = 3190423209,
                     CamFileIdentity = "0",
                     Port = 11003,

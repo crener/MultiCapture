@@ -116,7 +116,7 @@ namespace Shell_Camera
             this.name = name;
         }
 
-        public void SetResulution(int x, int y)
+        public void SetResolution(int x, int y)
         {
             resX = x;
             resY = y;

@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D9C3E348-042C-4EB8-941F-C1891F2DAD46}</ProjectGuid>
+    <ProjectGuid>{A7148438-CBD9-447E-99C9-D187C5422D9F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SharedDeviceItems</RootNamespace>
-    <AssemblyName>SharedDeviceItems</AssemblyName>
+    <RootNamespace>Python_Shell_Camera</RootNamespace>
+    <AssemblyName>Python Shell Camera</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -32,15 +32,27 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Exceptions\CameraInitialisationException.cs" />
-    <Compile Include="Exceptions\CaptureFailedException.cs" />
-    <Compile Include="Helpers\ByteHelpers.cs" />
-    <Compile Include="Helpers\NetworkHelpers.cs" />
-    <Compile Include="Interface\ICamera.cs" />
-    <Compile Include="Shared.cs" />
+    <Compile Include="PythonShellCamera.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharedDeviceItems\SharedDeviceItems.csproj">
+      <Project>{d9c3e348-042c-4eb8-941f-c1891f2dad46}</Project>
+      <Name>SharedDeviceItems</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="camera.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

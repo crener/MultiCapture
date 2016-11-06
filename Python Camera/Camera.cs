@@ -8,11 +8,10 @@ using SharedDeviceItems.Interface;
 
 namespace PythonCamera
 {
-    public class Camera : ICamera
+    public class PythonCamera : ICamera
     {
         private ScriptEngine engine;
         private ScriptScope script;
-        private ObjectOperations ops;
         private dynamic pyCam;
 
         //thread control parameters
@@ -26,7 +25,7 @@ namespace PythonCamera
         private string camName;
         private int x = 3280, y = 2464;
 
-        public Camera(string name, string saveLocation = "/scanImage/")
+        public PythonCamera(string name, string saveLocation = "/scanImage/")
         {
             try
             {
@@ -34,7 +33,6 @@ namespace PythonCamera
                 engine = Python.CreateEngine();
                 ICollection<string> paths = engine.GetSearchPaths();
                 script = engine.CreateScope();
-                ops = engine.Operations;
                 
                 paths.Add("/usr/lib/python2.7");
                 paths.Add("/usr/lib/python2.7/lib-old");
@@ -43,11 +41,21 @@ namespace PythonCamera
                 paths.Add("/usr/local/lib/python2.7/dist-packages");
                 paths.Add("using/");
                 engine.SetSearchPaths(paths);
+                try
+                {
+                    Console.WriteLine("start camera");
+                    dynamic start = engine.Runtime.UseFile("camstart.py");
+                    Console.WriteLine("camera done");
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e);
+                }
 
                 pyCam = engine.Runtime.UseFile("Python.py");
 
                 var type = script.GetVariable("python");
-                pyCam = ops.CreateInstance(type);
+                pyCam = engine.Operations.CreateInstance(type);
 
                 camName = name;
                 var newName = pyCam.setCamName("23");
@@ -104,7 +112,7 @@ namespace PythonCamera
             return imageName;
         }
 
-        public void SetResulution(int x, int y)
+        public void SetResolution(int x, int y)
         {
             this.x = x;
             this.y = y;

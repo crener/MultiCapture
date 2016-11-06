@@ -46,6 +46,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Python Shell Camera\Python Shell Camera.csproj">
+      <Project>{a7148438-cbd9-447e-99c9-d187c5422d9f}</Project>
+      <Name>Python Shell Camera</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharedDeviceItems\SharedDeviceItems.csproj">
       <Project>{d9c3e348-042c-4eb8-941f-c1891f2dad46}</Project>
       <Name>SharedDeviceItems</Name>

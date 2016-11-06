@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using Python_Shell_Camera;
 using SharedDeviceItems;
 using SharedDeviceItems.Helpers;
 using SharedDeviceItems.Interface;
@@ -12,7 +13,8 @@ namespace Camera_Server
 {
     class RequestProcess
     {
-        private ICamera camera = new ShellCamera("0");
+        //private ICamera camera = new ShellCamera("0");
+        private ICamera camera = new PythonShellCamera();
         private Socket client;
         private static Dictionary<string, CameraRequest> requestLookup = new Dictionary<string, CameraRequest>();
 

@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SharedDeviceItems.Interface
+﻿namespace SharedDeviceItems.Interface
 {
     public interface ICamera
     {
@@ -30,10 +22,10 @@ namespace SharedDeviceItems.Interface
         string CaptureImage(string identifier);
 
         /// <summary>
-        /// set the resulution of the camera
+        /// set the resolution of the camera
         /// </summary>
         /// <param name="x">X-axis reulution</param>
         /// <param name="y">Y-axis reulution</param>
-        void SetResulution(int x, int y);
+        void SetResolution(int x, int y);
     }
 }

@@ -8,7 +8,7 @@ import picamera
 class python:
     camera = picamera.PiCamera()
     imgEnd = ".jpg"
-    imgLocation = "/scanImage/"
+    imgLocation = "/scanimage/"
     piName = "unknown"
 
     def captureAutomatic(self, codeName):
