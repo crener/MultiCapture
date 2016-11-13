@@ -17,7 +17,14 @@ namespace Hub.Networking
         private ManualResetEvent sentData = new ManualResetEvent(false),
             recieveData = new ManualResetEvent(false);
 
-        public byte[] MakeRequest(ISocket socket, CameraRequest request)
+        private ISocket socket;
+
+        public AsynchronousNet(ISocket socket)
+        {
+            this.socket = socket;
+        }
+
+        public byte[] MakeRequest(CameraRequest request)
         {
             //check for valid input
             if (!socket.Connected) throw new Exception("Socket needs to be connnected");
@@ -40,6 +47,11 @@ namespace Hub.Networking
             recieveData.WaitOne();
 
             return state.Buffer;
+        }
+
+        public byte[] MakeRequest(byte[] requestData)
+        {
+            throw new NotImplementedException();
         }
 
         private void SendData(ISocket client, string data)

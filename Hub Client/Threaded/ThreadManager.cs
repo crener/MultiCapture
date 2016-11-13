@@ -10,7 +10,7 @@ using Hub.Helpers.Wrapper;
 using Hub.Threaded;
 using SharedDeviceItems;
 
-namespace Hub_Client.Threaded
+namespace Hub.Threaded
 {
     class ThreadManager
     {

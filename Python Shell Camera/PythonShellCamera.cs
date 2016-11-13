@@ -38,7 +38,7 @@ namespace Python_Shell_Camera
                     //FileName = "/usr/bin/pyhton2.7",
                     //Arguments = "camera.py",
                     FileName = "/bin/bash",
-                    Arguments = "-c \"python camera.py\"",
+                    Arguments = "-c python camera.py",
                     UseShellExecute = false,
                     RedirectStandardInput = false
                     //RedirectStandardOutput = true

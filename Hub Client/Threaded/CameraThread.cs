@@ -19,7 +19,7 @@ namespace Hub.Threaded
         public CameraThread(CameraSocket socket)
         {
             config = socket;
-            connection = new SynchronousNet();
+            connection = new SynchronousNet(socket.DataSocket);
         }
 
         public void Start()
@@ -67,7 +67,7 @@ namespace Hub.Threaded
         private void ProcessRequest(CameraRequest request)
         {
             //start asking the camera for a new image
-            byte[] data = connection.MakeRequest(config.DataSocket, Request);
+            byte[] data = connection.MakeRequest(Request);
 
             //extract image data
             string imageName;

@@ -39,6 +39,7 @@
   <ItemGroup>
     <Compile Include="Capture.cs" />
     <Compile Include="Helpers\ByteManipulation.cs" />
+    <Compile Include="Helpers\CommandBuilder.cs" />
     <Compile Include="Helpers\DataClasses.cs" />
     <Compile Include="Helpers\Interface\ISocket.cs" />
     <Compile Include="Helpers\Networking.cs" />

@@ -1,6 +1,6 @@
 ﻿using System;
 using Hub.Helpers;
-using Hub_Client.Threaded;
+using Hub.Threaded;
 using SharedDeviceItems;
 
 namespace Hub

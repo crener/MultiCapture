@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="Exceptions\CameraInitialisationException.cs" />
     <Compile Include="Exceptions\CaptureFailedException.cs" />
+    <Compile Include="Exceptions\CommandException.cs" />
     <Compile Include="Helpers\ByteHelpers.cs" />
     <Compile Include="Helpers\NetworkHelpers.cs" />
     <Compile Include="Interface\ICamera.cs" />

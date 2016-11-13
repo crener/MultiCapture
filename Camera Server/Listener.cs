@@ -9,17 +9,15 @@ namespace Camera_Server
 {
     public class Listener
     {
-        private const int BufferSize = 1048576;
         private static string data;
 
         public void StartListening()
         {
             // Data buffer for incoming data.
-            byte[] bytes = new byte[BufferSize];
+            byte[] bytes = new byte[Constants.CameraBufferSize];
 
             // Establish the local endpoint for the socket.
-            // Dns.GetHostName returns the name of the 
-            // host running the application.
+            // Dns.GetHostName returns the name of the host running the application.
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = NetworkHelpers.GrabIpv4(ipHostInfo);
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11003);
@@ -53,7 +51,7 @@ namespace Camera_Server
                     while (true)
                     {
                         RequestProcess process = new RequestProcess(handler);
-                        bytes = new byte[BufferSize];
+                        bytes = new byte[Constants.CameraBufferSize];
                         int bytesRec = handler.Receive(bytes);
                         data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
                         if (data.IndexOf(Constants.EndOfMessage) > -1)

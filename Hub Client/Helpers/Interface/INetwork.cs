@@ -1,10 +1,12 @@
-﻿using SharedDeviceItems;
+﻿using System;
+using SharedDeviceItems;
 
 namespace Hub.Networking
 {
     internal interface INetwork
     {
-        byte[] MakeRequest(ISocket socket, CameraRequest request);
+        byte[] MakeRequest(CameraRequest request);
+        byte[] MakeRequest(Byte[] requestData);
     }
 
     public class StateObject
