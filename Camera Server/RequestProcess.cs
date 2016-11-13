@@ -17,10 +17,12 @@ namespace Camera_Server
         private ICamera camera = new PythonShellCamera();
         private Socket client;
         private static Dictionary<string, CameraRequest> requestLookup = new Dictionary<string, CameraRequest>();
+        private string imageName = "0";
 
         public RequestProcess(Socket client)
         {
             this.client = client;
+            camera.SetCameraName(CameraSettings.GetSetting("name"));
 
             if (requestLookup.Count <= 0)
             {
@@ -32,6 +34,20 @@ namespace Camera_Server
                     requestLookup.Add("" + (int)value, value);
                 }
             }
+        }
+
+        public void ProcessRequest(byte[] message)
+        {
+            CommandReader requestMessage = new CommandReader(message);
+            imageName = requestMessage.Parameters["id"];
+
+            if (requestMessage.Request == CameraRequest.SetProporties)
+            {
+                CameraSettings.AddSetting("name", requestMessage.Parameters["name"]);
+                camera.SetCameraName(requestMessage.Parameters["name"]);
+            }
+
+            internalProcess(requestMessage.Request);
         }
 
         public void ProcessRequest(string message)
@@ -49,13 +65,18 @@ namespace Camera_Server
                 return;
             }
 
+            internalProcess(request);
+        }
+
+        private void internalProcess(CameraRequest request)
+        {
             Console.WriteLine("Executing request: " + request);
             byte[] messageData;
 
             switch (request)
             {
                 case CameraRequest.SendFullResImage:
-                    string imageLocation = camera.CaptureImage("0");
+                    string imageLocation = camera.CaptureImage(imageName);
 
                     messageData = ByteHelpers.FileToBytes(imageLocation);
                     SendResponse(client, EndOfMessage(messageData));
@@ -66,6 +87,8 @@ namespace Camera_Server
                     //For testing, send a static image saved on the device
                     messageData = ByteHelpers.FileToBytes(Path.DirectorySeparatorChar + "scanimage" + Path.DirectorySeparatorChar + "test.jpg");
                     SendResponse(client, EndOfMessage(messageData));
+                    return;
+                case CameraRequest.SetProporties:
                     return;
                 default:
                     messageData = FailedRequest();

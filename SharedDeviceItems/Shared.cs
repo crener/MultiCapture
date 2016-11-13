@@ -4,7 +4,8 @@
     {
         Alive = 0,
         SendFullResImage = 1,
-        SendTestImage = 9
+        SendTestImage = 9,
+        SetProporties = 8
     }
 
     public static class Constants

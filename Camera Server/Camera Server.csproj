@@ -38,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CameraServer.cs" />
+    <Compile Include="CameraSettings.cs" />
     <Compile Include="CommandReader.cs" />
     <Compile Include="Listener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

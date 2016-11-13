@@ -16,6 +16,8 @@ namespace Hub.Threaded
         private CameraSocket config;
         private INetwork connection;
 
+        public int picId {get; set;}
+
         public CameraThread(CameraSocket socket)
         {
             config = socket;
@@ -26,6 +28,8 @@ namespace Hub.Threaded
         {
             try
             {
+                SetCameraProporties();
+
                 while (!Finish)
                 {
                     if (Request != CameraRequest.Alive)
@@ -67,7 +71,7 @@ namespace Hub.Threaded
         private void ProcessRequest(CameraRequest request)
         {
             //start asking the camera for a new image
-            byte[] data = connection.MakeRequest(Request);
+            byte[] data = connection.MakeRequest(PropertyRequest(request));
 
             //extract image data
             string imageName;
@@ -86,6 +90,31 @@ namespace Hub.Threaded
                     fileStream.WriteByte(imageData[i]);
                 }
             }
+        }
+
+        private byte[] PropertyRequest(CameraRequest request)
+        {
+            CommandBuilder builder = new CommandBuilder().Request(request);
+
+            if(request == CameraRequest.Alive || request == CameraRequest.SendTestImage)
+                return builder.Build();
+
+            builder.AddParam("id", picId.ToString());
+
+            return builder.Build();
+        }
+
+        /// <summary>
+        /// Sets the camera proporties
+        /// </summary>
+        private void SetCameraProporties()
+        {
+            CommandBuilder builder = new CommandBuilder().Request(CameraRequest.SetProporties);
+            builder.AddParam("name", config.Config.CamFileIdentity);
+            builder.AddParam("id", "0");
+            builder.AddParam("port", config.Config.Port.ToString());
+
+            connection.MakeRequest(builder.Build());
         }
     }
 }

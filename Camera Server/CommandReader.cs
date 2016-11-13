@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
 using System.Text;
-using System.Threading.Tasks;
-using System.Collections;
 using System.Text.RegularExpressions;
 using SharedDeviceItems;
 
@@ -15,7 +11,7 @@ namespace Camera_Server
     /// </summary>
     public class CommandReader
     {
-        public Dictionary<String, String> Parameters { get; private set; }
+        public Dictionary<string, string> Parameters { get; private set; }
         public CameraRequest Request { get; private set; }
 
         public CommandReader(byte[] data)
