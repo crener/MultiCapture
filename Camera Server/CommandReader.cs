@@ -17,17 +17,13 @@ namespace Camera_Server
         public CommandReader(byte[] data)
         {
             Parameters = new Dictionary<string, string>();
-            byte[] formattedData = new byte[data.Length - Constants.EndOfMessage.Length];
-            Array.Copy(data, formattedData, formattedData.Length);
-
-            string decoded = Encoding.ASCII.GetString(formattedData);
-            String[] listed = Regex.Split(decoded, Constants.ParamSeperator);
+            string[] listed = Regex.Split(Encoding.ASCII.GetString(StripToBasicMessage(data)), Constants.ParamSeperator);
 
             CameraRequest pre;
             CameraRequest.TryParse(listed[0], out pre);
             Request = pre;
 
-            for(int i = 1; i < listed.Length; i++)
+            for (int i = 1; i < listed.Length; i++)
             {
                 int sepindex = listed[i].IndexOf(Constants.ParamKeyValueSeperator);
                 string key = listed[i].Substring(0, sepindex);
@@ -35,6 +31,33 @@ namespace Camera_Server
 
                 Parameters.Add(key, value);
             }
+        }
+
+        private byte[] StripToBasicMessage(byte[] data)
+        {
+            byte[] check = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
+
+            for (int i = 0; i <= data.Length - check.Length; i++)
+            {
+                if (data[i] == check[0])
+                {
+                    for (int j = 1; j < check.Length; j++)
+                    {
+                        if (data[i + j] == check[j])
+                        {
+                            if (j == check.Length - 1)
+                            {
+                                byte[] putput = new byte[i];
+                                Array.Copy(data, putput, putput.Length);
+                                return putput;
+                            }
+                        }
+                        else break;
+                    }
+                }
+            }
+
+            return data;
         }
     }
 }

@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Hub.Helpers;
 using Hub.Helpers.Wrapper;
-using Hub.Threaded;
 using SharedDeviceItems;
 
 namespace Hub.Threaded
@@ -18,6 +14,10 @@ namespace Hub.Threaded
         private Thread[] cameraThreads;
         private CameraThread[] threadConfiguration;
         private CameraSocket[] cameraSockets;
+
+        //proporties
+        private int imagesetId = -1;
+        private string savePath = Path.DirectorySeparatorChar + "scanimage";
 
         public ThreadManager(SaveContainer.Data config)
         {
@@ -37,12 +37,29 @@ namespace Hub.Threaded
 
         public void CaptureImageSet(CameraRequest wanted)
         {
+            UpdateCameraParams(wanted);
+
             for (int i = 0; i < cameraThreads.Length; i++)
             {
                 if (cameraThreads[i] != null && cameraThreads[i].IsAlive)
                 {
+                    threadConfiguration[i].ImageSetName = imagesetId.ToString();
                     threadConfiguration[i].Request = wanted;
                 }
+            }
+        }
+
+        public void UpdateCameraParams(CameraRequest image)
+        {
+            if (image == CameraRequest.Alive ||
+               image == CameraRequest.SendTestImage ||
+               image == CameraRequest.SetProporties)
+                return;
+
+            //iterate the image identifier name
+            if (image == CameraRequest.SendFullResImage)
+            {
+                ++imagesetId;
             }
         }
 
@@ -78,6 +95,24 @@ namespace Hub.Threaded
                     Console.WriteLine("Failed to connect to camera " + config.Cameras[i].Id + "!!");
                     cameraSockets[i] = null;
                 }
+            }
+        }
+
+        public string SavePath
+        {
+            set
+            {
+                savePath = value;
+
+                if (!Directory.Exists(savePath))
+                    Directory.CreateDirectory(savePath);
+
+                foreach (CameraThread thread in threadConfiguration)
+                    thread.savePath = value;
+            }
+            get
+            {
+                return savePath;
             }
         }
 

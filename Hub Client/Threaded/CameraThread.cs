@@ -13,15 +13,17 @@ namespace Hub.Threaded
         public volatile bool Finish = false;
         public volatile CameraRequest Request = CameraRequest.Alive;
 
+        public string ImageSetName {  get; set; }
+        public string savePath { get; set; }
+
         private CameraSocket config;
         private INetwork connection;
-
-        public int picId {get; set;}
 
         public CameraThread(CameraSocket socket)
         {
             config = socket;
             connection = new SynchronousNet(socket.DataSocket);
+            savePath = Path.DirectorySeparatorChar + "scanimage";
         }
 
         public void Start()
@@ -38,7 +40,7 @@ namespace Hub.Threaded
                         Request = CameraRequest.Alive;
                     }
 
-                    Thread.Sleep(10);
+                    Thread.Sleep(5);
                 }
             }
             catch (ThreadAbortException)
@@ -83,7 +85,7 @@ namespace Hub.Threaded
                 return;
             }
 
-            using (FileStream fileStream = new FileStream(Path.DirectorySeparatorChar + "scanimage" + imageName, FileMode.CreateNew))
+            using (FileStream fileStream = new FileStream(savePath + imageName, FileMode.CreateNew))
             {
                 for (int i = 0; i < imageData.Length; i++)
                 {
@@ -99,7 +101,7 @@ namespace Hub.Threaded
             if(request == CameraRequest.Alive || request == CameraRequest.SendTestImage)
                 return builder.Build();
 
-            builder.AddParam("id", picId.ToString());
+            builder.AddParam("id", ImageSetName);
 
             return builder.Build();
         }
@@ -112,7 +114,6 @@ namespace Hub.Threaded
             CommandBuilder builder = new CommandBuilder().Request(CameraRequest.SetProporties);
             builder.AddParam("name", config.Config.CamFileIdentity);
             builder.AddParam("id", "0");
-            builder.AddParam("port", config.Config.Port.ToString());
 
             connection.MakeRequest(builder.Build());
         }

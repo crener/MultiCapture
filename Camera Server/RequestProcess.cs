@@ -13,8 +13,8 @@ namespace Camera_Server
 {
     class RequestProcess
     {
-        //private ICamera camera = new ShellCamera("0");
-        private ICamera camera = new PythonShellCamera();
+        private ICamera camera = new ShellCamera("0");
+        //private ICamera camera = new PythonShellCamera();
         private Socket client;
         private static Dictionary<string, CameraRequest> requestLookup = new Dictionary<string, CameraRequest>();
         private string imageName = "0";
@@ -39,15 +39,22 @@ namespace Camera_Server
         public void ProcessRequest(byte[] message)
         {
             CommandReader requestMessage = new CommandReader(message);
+            if(requestMessage.Request == CameraRequest.Alive)
+            {
+                InternalProcess(requestMessage.Request);
+                return;
+            }
             imageName = requestMessage.Parameters["id"];
+            Console.WriteLine("ImageName: " + imageName);
 
             if (requestMessage.Request == CameraRequest.SetProporties)
             {
                 CameraSettings.AddSetting("name", requestMessage.Parameters["name"]);
                 camera.SetCameraName(requestMessage.Parameters["name"]);
+                InternalProcess(CameraRequest.Alive);
             }
 
-            internalProcess(requestMessage.Request);
+            InternalProcess(requestMessage.Request);
         }
 
         public void ProcessRequest(string message)
@@ -65,10 +72,10 @@ namespace Camera_Server
                 return;
             }
 
-            internalProcess(request);
+            InternalProcess(request);
         }
 
-        private void internalProcess(CameraRequest request)
+        private void InternalProcess(CameraRequest request)
         {
             Console.WriteLine("Executing request: " + request);
             byte[] messageData;

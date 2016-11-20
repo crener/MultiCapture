@@ -20,7 +20,7 @@ namespace Camera_Server
             // Dns.GetHostName returns the name of the host running the application.
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = NetworkHelpers.GrabIpv4(ipHostInfo);
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, Int32.Parse(CameraSettings.GetSetting("port")));
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, int.Parse(CameraSettings.GetSetting("port")));
 
             Console.WriteLine("IP address = " + ipAddress);
 #pragma warning disable CS0618 // Type or member is obsolete

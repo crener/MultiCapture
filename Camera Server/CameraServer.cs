@@ -4,7 +4,7 @@ namespace Camera_Server
 {
     public static class SynchronousSocketListener
     {
-        public static int Main(String[] args)
+        public static int Main(string[] args)
         {
             Console.WriteLine("Starting");
             try

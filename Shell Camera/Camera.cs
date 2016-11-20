@@ -74,7 +74,6 @@ namespace Shell_Camera
 
                     //figure out if more data is being written to the file
                     FileInfo info = new FileInfo(loc);
-                    Console.WriteLine( i + " image size: " + info.Length);
                     if (info.Length <= 0) b = true;
                     else
                     {

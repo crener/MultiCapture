@@ -129,9 +129,11 @@ namespace Hub.Helpers
                 //Pi3
                 Cameras[0] = new CameraConfiguration
                 {
-                    Address = 3666454720,
+                    //Address = 25798848,
+                    Address = 3330910400,
+
                     //Address = 3190423209,
-                    CamFileIdentity = "0",
+                    CamFileIdentity = "hub",
                     Port = 11003,
                     Id = 0
                 };
@@ -140,7 +142,7 @@ namespace Hub.Helpers
                 /*Cameras[1] = new CameraConfiguration()
                 {
                     Address = 2668101289,
-                    CamFileIdentity = "0",
+                    CamFileIdentity = "1Zero",
                     Port = 110004,
                     Id = 1
                 };

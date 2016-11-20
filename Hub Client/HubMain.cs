@@ -30,6 +30,12 @@ namespace Hub
             while ((command = Console.ReadLine()) != "e")
             {
                 if(command == "t") manager.CaptureImageSet(CameraRequest.SendTestImage);
+                else if(command == "s")
+                {
+                    Console.WriteLine(manager.SavePath);
+                    Console.Write("new save path: ");
+                    manager.SavePath = Console.ReadLine();
+                }
                 else manager.CaptureImageSet();
             }
             Console.WriteLine("Quitting");

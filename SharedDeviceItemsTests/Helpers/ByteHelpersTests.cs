@@ -1,7 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
 using System.IO;
-using System.Text.RegularExpressions;
 using Hub.Helpers;
 
 namespace SharedDeviceItems.Helpers.Tests
@@ -64,6 +63,8 @@ namespace SharedDeviceItems.Helpers.Tests
             Array.Copy(two, 0, three, 20, two.Length);
         }
 
+
+        //Has permission issues under standard visual studio tests
         [Test]
         public void ReadFile()
         {

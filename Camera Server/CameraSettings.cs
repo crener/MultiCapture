@@ -13,7 +13,7 @@ namespace Camera_Server
         private static Dictionary<string, string> settings = new Dictionary<string, string>();
         static CameraSettings()
         {
-            if(settings.Count > 0) return;
+            if (settings.Count > 0) return;
 
             if (!Load())
             {
@@ -61,14 +61,20 @@ namespace Camera_Server
                 foreach (KeyValuePair<string, string> setting in settings)
                 {
                     file.Write(Encoding.ASCII.GetBytes(setting.Key + "=" + setting.Value),
-                        0, Int32.MaxValue);
+                        0, int.MaxValue);
                 }
             }
         }
 
         public static void AddSetting(string key, string value)
         {
-            settings.Add(key, value);
+            if (settings.ContainsKey(key))
+            {
+                settings.Remove(key);
+                settings.Add(key, value);
+            }
+            else settings.Add(key, value);
+
             try
             {
                 Save();
