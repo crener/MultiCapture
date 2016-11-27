@@ -37,6 +37,8 @@ namespace Hub.Threaded
 
         public void CaptureImageSet(CameraRequest wanted)
         {
+            if(!checkDone()) return;
+
             UpdateCameraParams(wanted);
 
             for (int i = 0; i < cameraThreads.Length; i++)
@@ -131,6 +133,16 @@ namespace Hub.Threaded
 
             foreach (Thread thread in cameraThreads)
                 if (thread.IsAlive) thread.Abort();
+        }
+
+        bool checkDone()
+        {
+            foreach(CameraThread thread in threadConfiguration)
+            {
+                if(thread.Request != CameraRequest.Alive)
+                    return false;
+            }
+            return true;
         }
     }
 }

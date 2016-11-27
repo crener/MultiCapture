@@ -73,7 +73,7 @@ namespace SharedDeviceItems.Helpers.Tests
             byte[] fakeData = new byte[size];
             rand.NextBytes(fakeData);
 
-            string path = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "test.txt";
+            string path = "C:\\scanimage" + Path.DirectorySeparatorChar + "test.txt";
 
             if (File.Exists(path)) File.Delete(path);
 

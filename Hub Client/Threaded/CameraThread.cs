@@ -18,7 +18,6 @@ namespace Hub.Threaded
 
         private CameraSocket config;
         private INetwork connection;
-
         public CameraThread(CameraSocket socket)
         {
             config = socket;
