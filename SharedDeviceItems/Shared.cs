@@ -1,4 +1,6 @@
-﻿namespace SharedDeviceItems
+﻿using System.IO;
+
+namespace SharedDeviceItems
 {
     public enum CameraRequest
     {
@@ -18,5 +20,10 @@
 
         public const string ParamSeperator = "&&";
         public const string ParamKeyValueSeperator = "=";
+
+        public static string DefualtHubSaveLocation()
+        {
+            return Path.DirectorySeparatorChar + "scanimage";
+        }
     }
 }

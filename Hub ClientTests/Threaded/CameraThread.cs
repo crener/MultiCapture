@@ -37,7 +37,7 @@ namespace Hub.Threaded.Tests
 
             //start initialising the camera thread
             Assert.IsTrue(testSocket.Setup());
-            CameraThread threadTask = new CameraThread(testSocket, () => { });
+            CameraThread threadTask = new CameraThread(testSocket);
             Thread camThread = new Thread(threadTask.Start);
             camThread.Name = "CameraThread";
             camThread.Start();

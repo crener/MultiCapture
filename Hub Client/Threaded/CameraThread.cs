@@ -12,17 +12,25 @@ namespace Hub.Threaded
     {
         public volatile bool Finish = false;
         public volatile CameraRequest Request = CameraRequest.Alive;
+        public volatile string SavePath;
 
         public string ImageSetName {  get; set; }
-        public string savePath { get; set; }
 
         private CameraSocket config;
         private INetwork connection;
+
         public CameraThread(CameraSocket socket)
         {
             config = socket;
             connection = new SynchronousNet(socket.DataSocket);
-            savePath = Path.DirectorySeparatorChar + "scanimage";
+            SavePath = Constants.DefualtHubSaveLocation();
+        }
+
+        public CameraThread(CameraSocket socket, string saveLocation)
+        {
+            config = socket;
+            connection = new SynchronousNet(socket.DataSocket);
+            SavePath = saveLocation;
         }
 
         public void Start()
@@ -84,7 +92,7 @@ namespace Hub.Threaded
                 return;
             }
 
-            using (FileStream fileStream = new FileStream(savePath + imageName, FileMode.CreateNew))
+            using (FileStream fileStream = new FileStream(SavePath + imageName, FileMode.CreateNew))
             {
                 for (int i = 0; i < imageData.Length; i++)
                 {

@@ -17,12 +17,34 @@ namespace Hub.Threaded
 
         //proporties
         private int imagesetId = -1;
-        private string savePath = Path.DirectorySeparatorChar + "scanimage";
+        private string savePath;
 
         public ThreadManager(SaveContainer.Data config)
         {
             this.config = config;
             ConfigureThreads();
+
+            Random rand = new Random();
+            int projectId = rand.Next(int.MaxValue, 0);
+            savePath = Constants.DefualtHubSaveLocation() + Path.DirectorySeparatorChar + "tempProject" + projectId +
+                           Path.DirectorySeparatorChar;
+            bool done = false;
+
+            //check that this new path has an existing path with no files in it
+            do
+            {
+                if (!Directory.Exists(savePath)) Directory.CreateDirectory(savePath);
+                else if (Directory.GetFiles(savePath).Length > 0)
+                {
+                    Console.WriteLine(
+                        "Randomly generated project directory (id: " + projectId + ") contains files, trying another!");
+
+                    projectId = rand.Next(int.MaxValue, 0);
+                    savePath = Constants.DefualtHubSaveLocation() + Path.DirectorySeparatorChar + "tempProject" + projectId +
+                           Path.DirectorySeparatorChar;
+                }
+                else done = true;
+            } while (!done);
         }
 
         ~ThreadManager()
@@ -37,7 +59,7 @@ namespace Hub.Threaded
 
         public void CaptureImageSet(CameraRequest wanted)
         {
-            if(!checkDone()) return;
+            if (!checkDone()) return;
 
             UpdateCameraParams(wanted);
 
@@ -86,7 +108,7 @@ namespace Hub.Threaded
                 if (cameraSockets[i].Setup())
                 {
                     Console.WriteLine("Connected to camera " + config.Cameras[i].Id + " assigning a thread");
-                    CameraThread threadTask = new CameraThread(cameraSockets[i]);
+                    CameraThread threadTask = new CameraThread(cameraSockets[i], savePath);
                     threadConfiguration[i] = threadTask;
                     cameraThreads[i] = new Thread(threadTask.Start);
                     cameraThreads[i].Name = "CameraThread " + cameraSockets[i].Config.Id;
@@ -110,7 +132,7 @@ namespace Hub.Threaded
                     Directory.CreateDirectory(savePath);
 
                 foreach (CameraThread thread in threadConfiguration)
-                    thread.savePath = value;
+                    thread.SavePath = value;
             }
             get
             {
@@ -137,9 +159,9 @@ namespace Hub.Threaded
 
         bool checkDone()
         {
-            foreach(CameraThread thread in threadConfiguration)
+            foreach (CameraThread thread in threadConfiguration)
             {
-                if(thread.Request != CameraRequest.Alive)
+                if (thread.Request != CameraRequest.Alive)
                     return false;
             }
             return true;
