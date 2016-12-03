@@ -45,6 +45,8 @@ namespace Hub.Threaded
                 }
                 else done = true;
             } while (!done);
+
+            Console.WriteLine("Project directory generated, id: " + projectId);
         }
 
         ~ThreadManager()
