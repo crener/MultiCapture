@@ -59,7 +59,7 @@ namespace Hub.Threaded
 
         public void CaptureImageSet(CameraRequest wanted)
         {
-            if (!checkDone()) return;
+            if (!CheckDone()) return;
 
             UpdateCameraParams(wanted);
 
@@ -73,7 +73,7 @@ namespace Hub.Threaded
             }
         }
 
-        public void UpdateCameraParams(CameraRequest image)
+        private void UpdateCameraParams(CameraRequest image)
         {
             if (image == CameraRequest.Alive ||
                image == CameraRequest.SendTestImage ||
@@ -84,6 +84,11 @@ namespace Hub.Threaded
             if (image == CameraRequest.SendFullResImage)
             {
                 ++imagesetId;
+
+                Directory.CreateDirectory(savePath + Path.DirectorySeparatorChar + "set" + imagesetId);
+
+                foreach (CameraThread thread in threadConfiguration)
+                    thread.SavePath = savePath + Path.DirectorySeparatorChar + "imageset-" + imagesetId;
             }
         }
 
@@ -131,8 +136,11 @@ namespace Hub.Threaded
                 if (!Directory.Exists(savePath))
                     Directory.CreateDirectory(savePath);
 
+                //since the directory has changed the image set should change too
+                imagesetId = 0;
+
                 foreach (CameraThread thread in threadConfiguration)
-                    thread.SavePath = value;
+                    thread.SavePath = value + Path.DirectorySeparatorChar + "imageset-" + imagesetId;
             }
             get
             {
@@ -157,7 +165,7 @@ namespace Hub.Threaded
                 if (thread.IsAlive) thread.Abort();
         }
 
-        bool checkDone()
+        private bool CheckDone()
         {
             foreach (CameraThread thread in threadConfiguration)
             {
