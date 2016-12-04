@@ -208,8 +208,8 @@ namespace Hub.Helpers.Tests
             testObject = new SaveContainer.Data().Default();
 
             //size test
-            Assert.IsTrue(testObject.Cameras.Length == 1);
-            Assert.IsTrue(testObject.Cameras.Length == testObject.CameraCount);
+            //Assert.IsTrue(testObject.Cameras.Length == 1);
+            Assert.AreEqual(testObject.Cameras.Length, testObject.CameraCount);
         }
 
         /// <summary>

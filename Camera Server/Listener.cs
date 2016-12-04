@@ -15,12 +15,10 @@ namespace Camera_Server
         {
             // Data buffer for incoming data.
             byte[] bytes = new byte[Constants.CameraBufferSize];
-
-            // Establish the local endpoint for the socket.
-            // Dns.GetHostName returns the name of the host running the application.
+            
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = NetworkHelpers.GrabIpv4(ipHostInfo);
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, int.Parse(CameraSettings.GetSetting("port")));
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, int.Parse(CameraSettings.GetSetting("port", "11003")));
 
             Console.WriteLine("IP address = " + ipAddress);
 #pragma warning disable CS0618 // Type or member is obsolete

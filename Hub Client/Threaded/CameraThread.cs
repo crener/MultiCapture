@@ -89,6 +89,9 @@ namespace Hub.Threaded
             if (imageName == "" || imageData.Length <= 0)
             {
                 Console.WriteLine("No Image data recieved!!");
+                Console.WriteLine("Debug data:");
+                Console.WriteLine("\tThread Camera: " + config.Config.Id);
+                Console.WriteLine("\tImage set id: " + ImageSetName);
                 return;
             }
 

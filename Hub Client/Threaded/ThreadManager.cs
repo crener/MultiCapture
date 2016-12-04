@@ -25,7 +25,7 @@ namespace Hub.Threaded
             ConfigureThreads();
 
             Random rand = new Random();
-            int projectId = rand.Next(int.MaxValue, 0);
+            int projectId = rand.Next(0, int.MaxValue-1);
             savePath = Constants.DefualtHubSaveLocation() + Path.DirectorySeparatorChar + "tempProject" + projectId +
                            Path.DirectorySeparatorChar;
             bool done = false;
@@ -87,10 +87,10 @@ namespace Hub.Threaded
             {
                 ++imagesetId;
 
-                Directory.CreateDirectory(savePath + Path.DirectorySeparatorChar + "set" + imagesetId);
+                Directory.CreateDirectory(savePath + Path.DirectorySeparatorChar + "set-" + imagesetId);
 
                 foreach (CameraThread thread in threadConfiguration)
-                    thread.SavePath = savePath + Path.DirectorySeparatorChar + "imageset-" + imagesetId;
+                    thread.SavePath = savePath + Path.DirectorySeparatorChar + "set-" + imagesetId;
             }
         }
 
@@ -142,7 +142,7 @@ namespace Hub.Threaded
                 imagesetId = 0;
 
                 foreach (CameraThread thread in threadConfiguration)
-                    thread.SavePath = value + Path.DirectorySeparatorChar + "imageset-" + imagesetId;
+                    thread.SavePath = value + Path.DirectorySeparatorChar + "set-" + imagesetId;
             }
             get
             {

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
-using Python_Shell_Camera;
 using SharedDeviceItems;
 using SharedDeviceItems.Helpers;
 using SharedDeviceItems.Interface;
@@ -82,6 +81,9 @@ namespace Camera_Server
 
             switch (request)
             {
+                case CameraRequest.Alive:
+                    messageData = Encoding.ASCII.GetBytes(Constants.SucessString + Constants.EndOfMessage);
+                    break;
                 case CameraRequest.SendFullResImage:
                     string imageLocation = camera.CaptureImage(imageName);
 

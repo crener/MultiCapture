@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Camera_Server
@@ -9,9 +8,10 @@ namespace Camera_Server
     public static class CameraSettings
     {
         private static string saveLocation = Path.GetPathRoot(Directory.GetCurrentDirectory()) +
-                                                     "scanimage" + Path.DirectorySeparatorChar + "configuration.conf";
+                                                     "scanimage" + Path.DirectorySeparatorChar + "camera.conf";
         private static Dictionary<string, string> settings = new Dictionary<string, string>();
-        static CameraSettings()
+
+        public static void Init()
         {
             if (settings.Count > 0) return;
 
@@ -21,10 +21,17 @@ namespace Camera_Server
             }
         }
 
+        public static void Reload()
+        {
+            settings.Clear();
+            Init();
+        }
+
         private static void Defaults()
         {
             settings.Add("name", "PiCam");
-            settings.Add("port", 11003.ToString());
+            settings.Add("port", "11003");
+            Save();
         }
 
         private static bool Load()
@@ -33,11 +40,12 @@ namespace Camera_Server
             {
                 if (!File.Exists(saveLocation)) return false;
 
-                string[] fileContents = { "" };
-                File.ReadAllLines(saveLocation);
+                string[] fileContents = File.ReadAllLines(saveLocation);
 
                 foreach (string pair in fileContents)
                 {
+                    if(pair.Length <= 0) continue;
+
                     string[] seperated = Regex.Split(pair, "=");
                     settings.Add(seperated[0], seperated[1]);
                 }
@@ -56,18 +64,20 @@ namespace Camera_Server
 
         private static void Save()
         {
-            using (FileStream file = new FileStream(saveLocation, FileMode.Truncate))
+            using (StreamWriter file = new StreamWriter(saveLocation))
             {
                 foreach (KeyValuePair<string, string> setting in settings)
                 {
-                    file.Write(Encoding.ASCII.GetBytes(setting.Key + "=" + setting.Value),
-                        0, int.MaxValue);
+                    string data = setting.Key + "=" + setting.Value + "\n";
+                    file.Write(data);
                 }
             }
         }
 
-        public static void AddSetting(string key, string value)
+        public static bool AddSetting(string key, string value)
         {
+            if(key.Contains("=") || value.Contains("=")) return false;
+
             if (settings.ContainsKey(key))
             {
                 settings.Remove(key);
@@ -81,8 +91,10 @@ namespace Camera_Server
             }
             catch (Exception e)
             {
-                Console.WriteLine("Could not save Message: " + e.Message);
+                Console.WriteLine("Could not save, Message: " + e.Message);
             }
+
+            return true;
         }
 
         /// <summary>
@@ -92,7 +104,7 @@ namespace Camera_Server
         /// <returns></returns>
         public static string GetSetting(string key)
         {
-            return settings[key];
+            return settings.ContainsKey(key) ? settings[key] : null;
         }
 
         /// <summary>

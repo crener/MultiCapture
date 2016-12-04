@@ -9,6 +9,7 @@ namespace Camera_Server
             Console.WriteLine("Starting");
             try
             {
+                CameraSettings.Init();
                 Listener listen = new Listener();
                 listen.StartListening();
             }

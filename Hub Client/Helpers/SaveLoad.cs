@@ -124,13 +124,13 @@ namespace Hub.Helpers
             public int CameraCount => Cameras == null ? 0 : Cameras.Length;
             public Data Default()
             {
-                Cameras = new CameraConfiguration[1];
+                Cameras = new CameraConfiguration[2];
 
                 //Pi3
                 Cameras[0] = new CameraConfiguration
                 {
                     //Address = 25798848,
-                    Address = 4270434496,
+                    Address = 663333056,
 
                     //Address = 3190423209,
                     CamFileIdentity = "hub",
@@ -139,21 +139,21 @@ namespace Hub.Helpers
                 };
 
                 //Zero1
-                /*Cameras[1] = new CameraConfiguration()
+                Cameras[1] = new CameraConfiguration()
                 {
-                    Address = 2668101289,
+                    Address = 3936288425,
                     CamFileIdentity = "1Zero",
-                    Port = 110004,
+                    Port = 11004,
                     Id = 1
                 };
 
-
+                /*
                 //Zero2
                 Cameras[2] = new CameraConfiguration()
                 {
                     Address = 2668101289,
                     CamFileIdentity = "0",
-                    Port = 110005,
+                    Port = 11005,
                     Id = 2
                 };
 
@@ -162,7 +162,7 @@ namespace Hub.Helpers
                 {
                     Address = 2668101289,
                     CamFileIdentity = "0",
-                    Port = 110006,
+                    Port = 11006,
                     Id = 3
                 };*/
 
