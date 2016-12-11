@@ -142,7 +142,7 @@ namespace Hub.Threaded
                 imagesetId = 0;
 
                 foreach (CameraThread thread in threadConfiguration)
-                    thread.SavePath = value + Path.DirectorySeparatorChar + "set-" + imagesetId;
+                    thread.SavePath = value + "set-" + imagesetId;
             }
             get
             {

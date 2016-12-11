@@ -189,5 +189,14 @@ namespace Hub.Helpers.Tests
             Assert.False(ByteManipulation.SearchEndOfMessage(testData, testData.Length));
             Assert.True(ByteManipulation.SearchEndOfMessageIndex(testData, testData.Length) == -1);
         }
+
+        [Test]
+        public void SearchEndOfMessageNoData()
+        {
+            byte[] testData = new byte[0];
+
+            Assert.False(ByteManipulation.SearchEndOfMessage(testData, testData.Length));
+            Assert.True(ByteManipulation.SearchEndOfMessageIndex(testData, testData.Length) == -1);
+        }
     }
 }

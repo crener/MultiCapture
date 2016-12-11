@@ -82,7 +82,7 @@ namespace Camera_Server
             switch (request)
             {
                 case CameraRequest.Alive:
-                    messageData = Encoding.ASCII.GetBytes(Constants.SucessString + Constants.EndOfMessage);
+                    messageData = Encoding.ASCII.GetBytes(Constants.SuccessString + Constants.EndOfMessage);
                     break;
                 case CameraRequest.SendFullResImage:
                     string imageLocation = camera.CaptureImage(imageName);

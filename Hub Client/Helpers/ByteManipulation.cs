@@ -59,8 +59,8 @@ namespace Hub.Helpers
         /// <summary>
         /// Check if the end of message string is inside the data 
         /// </summary>
-        /// <param before="data">the data array to parse</param>
-        /// <param before="size">amount of data populated with valid data (starting from 0)</param>
+        /// <param name="data">the data array to parse</param>
+        /// <param name="size">amount of data populated with valid data (starting from 0)</param>
         /// <returns>true of the data contains the endof message string</returns>
         public static bool SearchEndOfMessage(byte[] data, int size)
         {

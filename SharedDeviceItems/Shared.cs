@@ -15,7 +15,7 @@ namespace SharedDeviceItems
         public const string EndOfMessage = "xtx";
         public const string MessageSeperator = "<,,,>";
         public const string FailString = "FAIL";
-        public const string SucessString = "FAIL";
+        public const string SuccessString = "SUCCESS";
 
         public const int ByteArraySize = 10485760;
         public const int CameraBufferSize = 1048576;
