@@ -11,7 +11,7 @@ namespace Camera_Server.Tests
         private string defaultPath;
 
         [OneTimeSetUp]
-        public void setup()
+        public void Setup()
         {
             defaultPath = Path.GetPathRoot(Directory.GetCurrentDirectory()) +
                           "scanimage" + Path.DirectorySeparatorChar + "camera.conf";

@@ -5,7 +5,7 @@ using SharedDeviceItems;
 
 namespace Hub.Networking
 {
-    class SynchronousNet : INetwork
+    public class SynchronousNet : INetwork
     {
         private const int bufferSize = 400000;
         private ISocket socket;
