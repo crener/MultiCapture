@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Net.Sockets;
 using System.Text;
+using Hub.Helpers;
 using NUnit.Framework;
 using Hub.Networking;
 using SharedDeviceItems;
@@ -34,8 +35,8 @@ namespace Hub_ClientTests.Networking
             Array.Copy(raw, socketData, raw.Length);
             Array.Copy(EOM, 0, socketData, raw.Length, EOM.Length);
             socket.ReturnData = socketData;
-            
-            byte[] netData = net.MakeRequest(new byte[] {22, 88, 45});
+
+            byte[] netData = net.MakeRequest(new byte[] { 22, 88, 45 });
             Assert.AreEqual(socket.ReturnData, netData);
 
             socket.FailCount = 13;
@@ -53,12 +54,17 @@ namespace Hub_ClientTests.Networking
             socket.byteCount = 0;
             socket.maxSend = 0;
 
-            byte[] raw = new byte[qty];
-            new Random().NextBytes(raw);
-            byte[] EOM = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
-            byte[] socketData = new byte[raw.Length + EOM.Length];
-            Array.Copy(raw, socketData, raw.Length);
-            Array.Copy(EOM, 0, socketData, raw.Length, EOM.Length);
+            byte[] raw, socketData;
+            do
+            {
+                raw = new byte[qty];
+                new Random().NextBytes(raw);
+                byte[] EOM = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
+                socketData = new byte[raw.Length + EOM.Length];
+                Array.Copy(raw, socketData, raw.Length);
+                Array.Copy(EOM, 0, socketData, raw.Length, EOM.Length);
+            } while (ByteManipulation.SearchEndOfMessageIndex(socketData, socketData.Length) != raw.Length - 1);
+
             socket.ReturnData = socketData;
 
             byte[] netData = net.MakeRequest(new byte[] { 22, 88, 45 });
