@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using NUnit.Framework;
 using System.IO;
 using Hub.Helpers;
@@ -14,13 +15,26 @@ namespace SharedDeviceItems.Helpers.Tests
             string filePath = Path.GetPathRoot(Directory.GetCurrentDirectory()) + "scanimage" +
                 Path.DirectorySeparatorChar + "test.jpg";
 
+            if (!File.Exists(filePath))
+            {
+                byte[] data = new byte[100];
+                new Random().NextBytes(data);
+                byte[] eom = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
+
+                Array.Copy(eom, 0, data, data.Length - eom.Length, eom.Length);
+
+                File.WriteAllBytes(filePath, data);
+             }
+
             Assert.IsTrue(File.Exists(filePath));
 
             byte[] bytes = ByteHelpers.FileToBytes(filePath);
 
-            Assert.IsTrue(Hub.Helpers.ByteManipulation.SearchEndOfMessage(bytes, bytes.Length));
-            Assert.IsTrue(Hub.Helpers.ByteManipulation.SearchEndOfMessageIndex(bytes, bytes.Length) ==
+            Assert.IsTrue(ByteManipulation.SearchEndOfMessage(bytes, bytes.Length));
+            Assert.IsTrue(ByteManipulation.SearchEndOfMessageIndex(bytes, bytes.Length) ==
                 bytes.Length - Constants.EndOfMessage.Length - 1);
+
+            File.Delete(filePath);
         }
 
         [Test]
