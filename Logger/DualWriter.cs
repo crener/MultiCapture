@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Logger
 {
-    class DualWriter : TextWriter, IDisposable
+    class DualWriter : TextWriter
     {
         TextWriter primary, secondary;
 
@@ -232,7 +232,7 @@ namespace Logger
             secondary.Close();
         }
 
-        public void Dispose()
+        ~DualWriter()
         {
             primary.Dispose();
             secondary.Dispose();

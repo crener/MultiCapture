@@ -8,7 +8,7 @@ namespace Logger
     /// <summary>
     /// Responsible for making console write write to file as well as writing to file
     /// </summary>
-    public class Logger
+    public class Logger : IDisposable
     {
         TextWriter standard;
         StreamWriter file;
@@ -49,11 +49,6 @@ namespace Logger
             Console.SetOut(new DualWriter(primary, Console.Out));
         }
 
-        ~Logger()
-        {
-            if (file != null) file.Close();
-        }
-
         public void Restore()
         {
             if (Console.IsOutputRedirected)
@@ -83,6 +78,11 @@ namespace Logger
                     File.Delete(file);
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            if (file != null) file.Close();
         }
     }
 }
