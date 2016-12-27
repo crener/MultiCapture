@@ -68,103 +68,103 @@ namespace Logger
         public override void Write(bool value)
         {
             primary.Write(value);
-            foreach (TextWriter writer in collection) writer.Write(value);
+            foreach (TextWriter writer in collection) writer.Write(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override void Write(char value)
         {
             primary.Write(value);
-            foreach (TextWriter writer in collection) writer.Write(value);
+            foreach (TextWriter writer in collection) writer.Write(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override void Write(char[] buffer)
         {
             primary.Write(buffer);
-            foreach (TextWriter writer in collection) writer.Write(buffer);
+            foreach (TextWriter writer in collection) writer.Write(DateTime.Now.ToString("hh:mm:ss") + " - " + buffer);
         }
 
         public override void Write(char[] buffer, int index, int count)
         {
             primary.Write(buffer, index, count);
-            foreach (TextWriter writer in collection) writer.Write(buffer, index, count);
+            foreach (TextWriter writer in collection) writer.Write(DateTime.Now.ToString("hh:mm:ss") + " - " + buffer, index, count);
         }
 
         public override void Write(decimal value)
         {
             primary.Write(value);
-            foreach (TextWriter writer in collection) writer.Write(value);
+            foreach (TextWriter writer in collection) writer.Write(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override void Write(double value)
         {
             primary.Write(value);
-            foreach (TextWriter writer in collection) writer.Write(value);
+            foreach (TextWriter writer in collection) writer.Write(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override void Write(float value)
         {
             primary.Write(value);
-            foreach (TextWriter writer in collection) writer.Write(value);
+            foreach (TextWriter writer in collection) writer.Write(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override void Write(object value)
         {
             primary.Write(value);
-            foreach (TextWriter writer in collection) writer.Write(value);
+            foreach (TextWriter writer in collection) writer.Write(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override void Write(long value)
         {
             primary.Write(value);
-            foreach (TextWriter writer in collection) writer.Write(value);
+            foreach (TextWriter writer in collection) writer.Write(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override void Write(string format, object arg0, object arg1, object arg2)
         {
             primary.Write(format, arg0, arg1, arg2);
-            foreach (TextWriter writer in collection) writer.Write(format, arg0, arg1, arg2);
+            foreach (TextWriter writer in collection) writer.Write(DateTime.Now.ToString("hh:mm:ss") + " - " + format, arg0, arg1, arg2);
         }
 
         public override void Write(int value)
         {
             primary.Write(value);
-            foreach (TextWriter writer in collection) writer.Write(value);
+            foreach (TextWriter writer in collection) writer.Write(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override void Write(string format, object arg0)
         {
             primary.Write(format, arg0);
-            foreach (TextWriter writer in collection) writer.Write(format, arg0);
+            foreach (TextWriter writer in collection) writer.Write(DateTime.Now.ToString("hh:mm:ss") + " - " + format, arg0);
         }
 
         public override void Write(string value)
         {
             primary.Write(value);
-            foreach (TextWriter writer in collection) writer.Write(value);
+            foreach (TextWriter writer in collection) writer.Write(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override void Write(string format, object arg0, object arg1)
         {
             primary.Write(format, arg0, arg1);
-            foreach (TextWriter writer in collection) writer.Write(format, arg0, arg1);
+            foreach (TextWriter writer in collection) writer.Write(DateTime.Now.ToString("hh:mm:ss") + " - " + format, arg0, arg1);
         }
 
         public override void Write(string format, params object[] arg)
         {
             primary.Write(format, arg);
-            foreach (TextWriter writer in collection) writer.Write(format, arg);
+            foreach (TextWriter writer in collection) writer.Write(DateTime.Now.ToString("hh:mm:ss") + " - " + format, arg);
         }
 
         public override void Write(uint value)
         {
             primary.Write(value);
-            foreach (TextWriter writer in collection) writer.Write(value);
+            foreach (TextWriter writer in collection) writer.Write(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override void Write(ulong value)
         {
             primary.Write(value);
-            foreach (TextWriter writer in collection) writer.Write(value);
+            foreach (TextWriter writer in collection) writer.Write(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override Task WriteAsync(char value)
@@ -191,103 +191,103 @@ namespace Logger
         public override void WriteLine(bool value)
         {
             primary.WriteLine(value);
-            foreach (TextWriter writer in collection) writer.WriteLine(value);
+            foreach (TextWriter writer in collection) writer.WriteLine(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override void WriteLine(char value)
         {
             primary.WriteLine(value);
-            foreach (TextWriter writer in collection) writer.WriteLine(value);
+            foreach (TextWriter writer in collection) writer.WriteLine(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override void WriteLine(char[] buffer)
         {
             primary.WriteLine(buffer);
-            foreach (TextWriter writer in collection) writer.WriteLine(buffer);
+            foreach (TextWriter writer in collection) writer.WriteLine(DateTime.Now.ToString("hh:mm:ss") + " - " + buffer);
         }
 
         public override void WriteLine(decimal value)
         {
             primary.WriteLine(value);
-            foreach (TextWriter writer in collection) writer.WriteLine(value);
+            foreach (TextWriter writer in collection) writer.WriteLine(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override void WriteLine(double value)
         {
             primary.WriteLine(value);
-            foreach (TextWriter writer in collection) writer.WriteLine(value);
+            foreach (TextWriter writer in collection) writer.WriteLine(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override void WriteLine(float value)
         {
             primary.WriteLine(value);
-            foreach (TextWriter writer in collection) writer.WriteLine(value);
+            foreach (TextWriter writer in collection) writer.WriteLine(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override void WriteLine(char[] buffer, int index, int count)
         {
             primary.WriteLine(buffer, index, count);
-            foreach (TextWriter writer in collection) writer.WriteLine(buffer, index, count);
+            foreach (TextWriter writer in collection) writer.WriteLine(DateTime.Now.ToString("hh:mm:ss") + " - " + buffer, index, count);
         }
 
         public override void WriteLine(int value)
         {
             primary.WriteLine(value);
-            foreach (TextWriter writer in collection) writer.WriteLine(value);
+            foreach (TextWriter writer in collection) writer.WriteLine(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override void WriteLine(long value)
         {
             primary.WriteLine(value);
-            foreach (TextWriter writer in collection) writer.WriteLine(value);
+            foreach (TextWriter writer in collection) writer.WriteLine(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override void WriteLine(object value)
         {
             primary.WriteLine(value);
-            foreach (TextWriter writer in collection) writer.WriteLine(value);
+            foreach (TextWriter writer in collection) writer.WriteLine(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override void WriteLine(string format, object arg0)
         {
             primary.WriteLine(format, arg0);
-            foreach (TextWriter writer in collection) writer.WriteLine(format, arg0);
+            foreach (TextWriter writer in collection) writer.WriteLine(DateTime.Now.ToString("hh:mm:ss") + " - " + format, arg0);
         }
 
         public override void WriteLine(string format, object arg0, object arg1)
         {
             primary.WriteLine(format, arg0, arg1);
-            foreach (TextWriter writer in collection) writer.WriteLine(format, arg0, arg1);
+            foreach (TextWriter writer in collection) writer.WriteLine(DateTime.Now.ToString("hh:mm:ss") + " - " + format, arg0, arg1);
         }
 
         public override void WriteLine(string format, object arg0, object arg1, object arg2)
         {
             primary.WriteLine(format, arg0, arg1, arg2);
-            foreach (TextWriter writer in collection) writer.WriteLine(format, arg0, arg1, arg2);
+            foreach (TextWriter writer in collection) writer.WriteLine(DateTime.Now.ToString("hh:mm:ss") + " - " + format, arg0, arg1, arg2);
         }
 
         public override void WriteLine(string value)
         {
             primary.WriteLine(value);
-            foreach (TextWriter writer in collection) writer.WriteLine(value);
+            foreach (TextWriter writer in collection) writer.WriteLine(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override void WriteLine(string format, params object[] arg)
         {
             primary.WriteLine(format, arg);
-            foreach (TextWriter writer in collection) writer.WriteLine(format, arg);
+            foreach (TextWriter writer in collection) writer.WriteLine(DateTime.Now.ToString("hh:mm:ss") + " - " + format, arg);
         }
 
         public override void WriteLine(ulong value)
         {
             primary.WriteLine(value);
-            foreach (TextWriter writer in collection) writer.WriteLine(value);
+            foreach (TextWriter writer in collection) writer.WriteLine(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override void WriteLine(uint value)
         {
             primary.WriteLine(value);
-            foreach (TextWriter writer in collection) writer.WriteLine(value);
+            foreach (TextWriter writer in collection) writer.WriteLine(DateTime.Now.ToString("hh:mm:ss") + " - " + value);
         }
 
         public override Task WriteLineAsync(char value)
