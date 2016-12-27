@@ -4,17 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{93CAA98A-A566-4849-8D8C-26E91B6B85B3}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{1B0D1EBF-233C-4D02-A441-C5F023E3FCF2}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Camera_Server</RootNamespace>
-    <AssemblyName>Camera Server</AssemblyName>
+    <RootNamespace>Logger</RootNamespace>
+    <AssemblyName>Logger</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -35,34 +32,23 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CameraServer.cs" />
-    <Compile Include="CameraSettings.cs" />
-    <Compile Include="CommandReader.cs" />
-    <Compile Include="Listener.cs" />
+    <Compile Include="DualWriter.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="MultiWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RequestProcess.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Logger\Logger.csproj">
-      <Project>{1b0d1ebf-233c-4d02-a441-c5f023e3fcf2}</Project>
-      <Name>Logger</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Python Shell Camera\Python Shell Camera.csproj">
-      <Project>{a7148438-cbd9-447e-99c9-d187c5422d9f}</Project>
-      <Name>Python Shell Camera</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SharedDeviceItems\SharedDeviceItems.csproj">
       <Project>{d9c3e348-042c-4eb8-941f-c1891f2dad46}</Project>
       <Name>SharedDeviceItems</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Shell Camera\Shell Camera.csproj">
-      <Project>{AEA40463-A20F-4C36-89B1-73E5E18AB17D}</Project>
-      <Name>Shell Camera</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

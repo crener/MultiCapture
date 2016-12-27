@@ -6,6 +6,9 @@ namespace Camera_Server
     {
         public static int Main(string[] args)
         {
+            Logger.Logger log = new Logger.Logger();
+            log.RemoveOldLogs(DateTime.Today.AddMonths(-1));
+
             Console.WriteLine("Starting");
             try
             {

@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedDeviceItemsTests", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Python Shell Camera", "Python Shell Camera\Python Shell Camera.csproj", "{A7148438-CBD9-447E-99C9-D187C5422D9F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "Logger\Logger.csproj", "{1B0D1EBF-233C-4D02-A441-C5F023E3FCF2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -143,6 +145,18 @@ Global
 		{A7148438-CBD9-447E-99C9-D187C5422D9F}.Release|x64.Build.0 = Release|Any CPU
 		{A7148438-CBD9-447E-99C9-D187C5422D9F}.Release|x86.ActiveCfg = Release|Any CPU
 		{A7148438-CBD9-447E-99C9-D187C5422D9F}.Release|x86.Build.0 = Release|Any CPU
+		{1B0D1EBF-233C-4D02-A441-C5F023E3FCF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B0D1EBF-233C-4D02-A441-C5F023E3FCF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B0D1EBF-233C-4D02-A441-C5F023E3FCF2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1B0D1EBF-233C-4D02-A441-C5F023E3FCF2}.Debug|x64.Build.0 = Debug|Any CPU
+		{1B0D1EBF-233C-4D02-A441-C5F023E3FCF2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1B0D1EBF-233C-4D02-A441-C5F023E3FCF2}.Debug|x86.Build.0 = Debug|Any CPU
+		{1B0D1EBF-233C-4D02-A441-C5F023E3FCF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B0D1EBF-233C-4D02-A441-C5F023E3FCF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B0D1EBF-233C-4D02-A441-C5F023E3FCF2}.Release|x64.ActiveCfg = Release|Any CPU
+		{1B0D1EBF-233C-4D02-A441-C5F023E3FCF2}.Release|x64.Build.0 = Release|Any CPU
+		{1B0D1EBF-233C-4D02-A441-C5F023E3FCF2}.Release|x86.ActiveCfg = Release|Any CPU
+		{1B0D1EBF-233C-4D02-A441-C5F023E3FCF2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
