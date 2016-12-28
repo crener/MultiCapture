@@ -58,6 +58,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Logger\Logger.csproj">
+      <Project>{1b0d1ebf-233c-4d02-a441-c5f023e3fcf2}</Project>
+      <Name>Logger</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharedDeviceItems\SharedDeviceItems.csproj">
       <Project>{d9c3e348-042c-4eb8-941f-c1891f2dad46}</Project>
       <Name>SharedDeviceItems</Name>

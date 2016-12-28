@@ -41,6 +41,7 @@ namespace Hub.Networking
             }
             catch (Exception e)
             {
+                Console.WriteLine(e);
                 throw e;
             }
         }
@@ -70,6 +71,7 @@ namespace Hub.Networking
             }
             catch (Exception e)
             {
+                Console.WriteLine(e);
                 throw e;
             }
         }
