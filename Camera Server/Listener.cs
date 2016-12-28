@@ -45,8 +45,7 @@ namespace Camera_Server
                     data = null;
                     Console.WriteLine("Connected!!");
 
-                    // An incoming connection needs to be processed.
-                    while (true)
+                    while (Connected(handler))
                     {
                         RequestProcess process = new RequestProcess(handler);
                         bytes = new byte[Constants.CameraBufferSize];
@@ -62,8 +61,6 @@ namespace Camera_Server
                             data = "";
                         }
                         Console.WriteLine("Waiting for next request...");
-
-                        if (!Connected(handler)) break;
                     }
                 }
 

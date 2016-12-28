@@ -56,7 +56,8 @@ namespace Camera_Server
             }
             catch (Exception e)
             {
-                throw e;
+                Console.WriteLine(e);
+                return false;
             }
 
             return true;

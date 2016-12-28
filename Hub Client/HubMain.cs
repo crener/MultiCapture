@@ -25,6 +25,8 @@ namespace Hub
         private void Start()
         {
             ThreadManager manager = new ThreadManager(SaveContainer.Load());
+            Logger.Logger logs = new Logger.Logger();
+            logs.RemoveOldLogs(DateTime.Today.AddMonths(-1));
 
             string command = "";
             while ((command = Console.ReadLine()) != "e")
