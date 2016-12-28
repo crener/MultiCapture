@@ -22,6 +22,7 @@ namespace Camera_Server
         {
             this.client = client;
             camera.SetCameraName(CameraSettings.GetSetting("name"));
+            camera.SetResolution(3280, 2464);
 
             if (requestLookup.Count <= 0)
             {
