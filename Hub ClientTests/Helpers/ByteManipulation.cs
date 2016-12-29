@@ -198,5 +198,14 @@ namespace Hub.Helpers.Tests
             Assert.False(ByteManipulation.SearchEndOfMessage(testData, testData.Length));
             Assert.True(ByteManipulation.SearchEndOfMessageIndex(testData, testData.Length) == -1);
         }
+
+        [Test]
+        public void LengthGreaterThanData()
+        {
+            byte[] data = Encoding.ASCII.GetBytes( "random words and stuff" + Constants.EndOfMessage);
+
+            Assert.IsTrue(ByteManipulation.SearchEndOfMessage(data, data.Length + 3));
+            Assert.AreEqual(21, ByteManipulation.SearchEndOfMessageIndex(data, data.Length + 3));
+        }
     }
 }

@@ -17,33 +17,7 @@ namespace Hub.Networking
 
         public byte[] MakeRequest(CameraRequest request)
         {
-            byte[] bytes = new byte[Constants.ByteArraySize],
-                buffer = new byte[bufferSize];
-
-            if (!socket.Connected) throw new Exception("Socket needs to be connnected");
-            try
-            {
-                // Encode the data string into a byte array.
-                byte[] msg = Encoding.ASCII.GetBytes((int)request + Constants.EndOfMessage);
-                socket.Send(msg);
-
-                //grab the bytes
-                bytes = new byte[Constants.ByteArraySize];
-                int totalData = 0;
-                do
-                {
-                    int bytesRec = socket.Receive(buffer);
-                    Array.Copy(buffer, 0, bytes, totalData, bytesRec);
-                    totalData += bytesRec;
-                } while (!ByteManipulation.SearchEndOfMessage(bytes, totalData));
-
-                return Helpers.Networking.TrimExcessByteData(bytes, totalData - 1);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw e;
-            }
+            return MakeRequest(Encoding.ASCII.GetBytes(((int)request).ToString()));
         }
 
         public byte[] MakeRequest(byte[] requestData)
@@ -57,7 +31,20 @@ namespace Hub.Networking
                 // Encode the data string into a byte array.
                 socket.Send(requestData);
 
-                //grab the bytes
+                //get data size info
+                int dataSize = -1;
+                if (requestData != Encoding.ASCII.GetBytes(((int)CameraRequest.Alive).ToString()) &&
+                    requestData != Encoding.ASCII.GetBytes(((int)CameraRequest.SetProporties).ToString()))
+                {
+                    int recSize = socket.Receive(buffer);
+                    if (recSize > 0)
+                    {
+                        byte[] raw = new byte[recSize - Constants.EndOfMessage.Length];
+                        Array.Copy(buffer, 0, raw, 0, raw.Length);
+                        int.TryParse(Encoding.ASCII.GetString(raw), out dataSize);
+                    }
+                }
+
                 bytes = new byte[Constants.ByteArraySize];
                 int totalData = 0;
                 do
@@ -65,7 +52,7 @@ namespace Hub.Networking
                     int bytesRec = socket.Receive(buffer);
                     Array.Copy(buffer, 0, bytes, totalData, bytesRec);
                     totalData += bytesRec;
-                } while (!ByteManipulation.SearchEndOfMessage(bytes, totalData));
+                } while (totalData <= dataSize && !ByteManipulation.SearchEndOfMessage(bytes, totalData));
 
                 return Helpers.Networking.TrimExcessByteData(bytes, totalData - 1);
             }

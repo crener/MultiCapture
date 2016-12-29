@@ -64,6 +64,7 @@ namespace Hub.Helpers
         /// <returns>true of the data contains the endof message string</returns>
         public static bool SearchEndOfMessage(byte[] data, int size)
         {
+            if (size > data.Length) size = data.Length;
             byte[] mesg = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
 
             for (int i = size - 1; i >= 0; i--)
@@ -97,6 +98,7 @@ namespace Hub.Helpers
         /// <returns>first byte location of the end of message</returns>
         public static int SearchEndOfMessageIndex(byte[] data, int size)
         {
+            if (size > data.Length) size = data.Length;
             byte[] mesg = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
 
             for (int i = size - 1; i >= 0; i--)

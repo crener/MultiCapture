@@ -136,9 +136,10 @@ namespace Camera_Server
         /// </summary>
         /// <param name="client">Socket that data will be sent too</param>
         /// <param name="reponse">The data that will be sent</param>
-        private static void SendResponse(Socket client, Byte[] reponse)
+        private static void SendResponse(Socket client, Byte[] response)
         {
-            client.Send(reponse);
+            client.Send(EndOfMessage(Encoding.ASCII.GetBytes(response.Length.ToString())));
+            client.Send(response);
         }
 
         /// <summary>

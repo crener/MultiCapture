@@ -2,6 +2,9 @@
 using System.Net;
 using System.Net.Sockets;
 using Hub.Networking;
+using SharedDeviceItems;
+using System.Text;
+using System.Collections.Generic;
 
 namespace Hub_ClientTests.Networking
 {
@@ -11,6 +14,8 @@ namespace Hub_ClientTests.Networking
         public int FailCount { get; set; }
         public int maxSend { get; set; }
         public int byteCount { get; set; }
+
+        public int recieveCount { get; set; }
 
 
         public void Connect(IPEndPoint endPoint)
@@ -25,6 +30,14 @@ namespace Hub_ClientTests.Networking
 
         public int Receive(byte[] buffer)
         {
+            if(recieveCount < 1)
+            {
+                ++recieveCount;
+                byte[] data = Encoding.ASCII.GetBytes(ReturnData.Length.ToString() + Constants.EndOfMessage);
+                Array.Copy(data, 0, buffer, 0, data.Length);
+                return data.Length;
+            }
+
             if(buffer.Length < ReturnData.Length) maxSend = buffer.Length;
 
             if (FailCount > 0)

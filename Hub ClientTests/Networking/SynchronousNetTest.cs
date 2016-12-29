@@ -16,12 +16,17 @@ namespace Hub_ClientTests.Networking
         private SynchronousNet net;
 
         [OneTimeSetUp]
-        public void Setup()
+        public void SetupOnce()
         {
             socket = new MockSocket();
             net = new SynchronousNet(socket);
         }
 
+        [SetUp]
+        public void Setup()
+        {
+            socket.recieveCount = 0;
+        }
 
         [Test]
         public void DelayedDataReturn()
@@ -40,6 +45,7 @@ namespace Hub_ClientTests.Networking
             Assert.AreEqual(socket.ReturnData, netData);
 
             socket.FailCount = 13;
+            socket.recieveCount = 0;
             netData = net.MakeRequest(new byte[] { 22, 88, 45 });
             Assert.AreEqual(socket.ReturnData, netData);
         }
