@@ -12,6 +12,7 @@ namespace SharedDeviceItems
 
     public static class Constants
     {
+        #region data transfer settings
         public const string EndOfMessage = "xtx";
         public const string MessageSeperator = "<,,,>";
         public const string FailString = "FAIL";
@@ -22,6 +23,11 @@ namespace SharedDeviceItems
 
         public const string ParamSeperator = "&&";
         public const string ParamKeyValueSeperator = "=";
+        #endregion
+
+        #region Project file settings
+        public const string ProjectFileExtention = "XML";
+        #endregion
 
         public static string DefualtHubSaveLocation()
         {

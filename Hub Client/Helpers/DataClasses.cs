@@ -7,6 +7,10 @@ using SharedDeviceItems;
 
 namespace Hub.Helpers
 {
+    /// <summary>
+    /// Helps to setup a camera and makes sure that it is able to connect and recive data back from the camera before
+    /// passing it on to mission critical systems.
+    /// </summary>
     public class CameraSocket
     {
         public ISocket DataSocket { get; set; }
