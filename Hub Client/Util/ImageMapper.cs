@@ -48,18 +48,20 @@ namespace Hub.Util
         public int ProjectID { get; private set; }
         public string ProjectName { get; set; }
 
-        private int Version = 1;
+        private const int Version = 1;
+        private int loadVersion = -1;
         private bool Done = false;
 
         List<ImageSet> sets = new List<ImageSet>();
         Dictionary<int, int> setLookUp = new Dictionary<int, int>();
 
+        public int ImageSetCount => sets.Count;
         string FileLocation { get; set; }
 
         #region XML naming
         const string prodId = "projectID";
         const string prodName = "projectName";
-        const string version = "versin";
+        const string version = "version";
         const string done = "done";
 
         const string cameraGroup = "cameras";
@@ -106,6 +108,7 @@ namespace Hub.Util
         public void AddImageSet(int setID, string path)
         {
             if (ImageSetExists(setID)) throw new KeyNotFoundException("Image Set already exists");
+            if (path == null) throw new NullReferenceException("Path cannot be null");
 
             setLookUp.Add(setID, sets.Count);
             sets.Add(new ImageSet() { ImageSetId = setID, Path = path });
@@ -118,6 +121,15 @@ namespace Hub.Util
 
             look.Sent = true;
             look.SendDate = DateTime.Now.ToFileTimeUtc();
+        }
+
+        private void Sent(int setID, string imageName, long sendDate)
+        {
+            Image look;
+            if (!ImageExists(setID, imageName, out look)) throw new Exception("Image doesn't exist");
+
+            look.Sent = true;
+            look.SendDate = sendDate;
         }
 
         public string ImageAbsolutePath(int setID, string imageName)
@@ -133,6 +145,12 @@ namespace Hub.Util
             Image look;
             if (!ImageExists(setID, imageName, out look)) throw new Exception("Image doesn't exist");
             return look.Sent;
+        }
+
+        public bool hasSent(int setID)
+        {
+            if(!ImageSetExists(setID)) throw new Exception("Image Set doesn't exist");
+            return sets[setID].AllSent;
         }
 
         public long SendTime(int setID, string imageName)
@@ -152,8 +170,8 @@ namespace Hub.Util
             if (!ImageSetExists(setID)) throw new KeyNotFoundException("Image Set not found");
             if (sets[setLookUp[setID]].images.Count <= 0) throw new NullReferenceException("No Images in set");
 
-            foreach(Image img in sets[setLookUp[setID]].images) if (img.Sent == false) return false;
-            return true; 
+            foreach (Image img in sets[setLookUp[setID]].images) if (img.Sent == false) return false;
+            return true;
         }
 
         private bool ImageSetExists(int setID)
@@ -174,7 +192,7 @@ namespace Hub.Util
             return false;
         }
 
-        private bool ImageExists(int setID, string imageName,  out Image result)
+        private bool ImageExists(int setID, string imageName, out Image result)
         {
             if (!ImageSetExists(setID)) throw new KeyNotFoundException("Image Set not found");
 
@@ -198,14 +216,6 @@ namespace Hub.Util
             return sets[setLookUp[setID]].images.Count;
         }
 
-        public int ImageSetCount
-        {
-            get
-            {
-                return sets.Count;
-            }
-        }
-
         public void Save()
         {
             using (XmlWriter writer = XmlWriter.Create(FileLocation))
@@ -213,9 +223,9 @@ namespace Hub.Util
                 writer.WriteStartDocument();
 
                 writer.WriteStartElement("Project");
+                writer.WriteElementString(version, Version.ToString());
                 writer.WriteElementString(prodId, ProjectID.ToString());
                 writer.WriteElementString(prodName, ProjectName);
-                writer.WriteElementString(version, Version.ToString());
                 writer.WriteElementString(done, Done.ToString());
 
                 writer.WriteStartElement(imageSetGroup);
@@ -260,21 +270,99 @@ namespace Hub.Util
                         switch (reader.Name)
                         {
                             case prodId:
-                                ProjectID = int.Parse(reader.Value);
+                                int projID = -1;
+                                if (reader.Read())
+                                {
+                                    if (int.TryParse(reader.Value, out projID)) ProjectID = projID;
+                                    else Console.WriteLine("Project reader - Project ID could not be extracted");
+                                }
                                 break;
                             case prodName:
                                 ProjectName = reader.Value;
                                 break;
                             case version:
-                                int ver = int.Parse(reader.Value);
-                                if (ver != Version)
+                                if (reader.Read()) int.TryParse(reader.Value, out loadVersion);
+
+                                if (loadVersion != Version)
                                 {
-                                    Console.WriteLine("Project Version doesn't match the current Version");
-                                    Console.WriteLine("Current Version:" + Version + ", Project Version: " + ver);
+                                    Console.WriteLine("Project reader - Project Version doesn't match the current Version");
+                                    Console.WriteLine("Project reader - Current Version:" + Version + ", Project Version: " + loadVersion);
                                 }
                                 break;
                             case done:
-                                Done = bool.Parse(reader.Value);
+                                bool doneVal = false;
+                                if (reader.Read() && bool.TryParse(reader.Value, out doneVal)) Done = doneVal;
+                                break;
+                            case imageSetGroup:
+                                while (reader.Read() && reader.Name == imageSetLabel)
+                                    do
+                                    {
+                                        int setId = -1;
+                                        if (reader.Read() && reader.Name == imageSetId)
+                                        {
+                                            while (reader.NodeType != XmlNodeType.Text) reader.Read();
+                                            int.TryParse(reader.Value, out setId);
+                                        }
+                                        while (reader.NodeType != XmlNodeType.EndElement) reader.Read();
+
+                                        string setPath = null;
+                                        if (reader.Read() && reader.Name == imageSetGroupFile)
+                                        {
+                                            while (reader.NodeType != XmlNodeType.Text) reader.Read();
+                                            setPath = reader.Value;
+                                        }
+                                        while (reader.NodeType != XmlNodeType.EndElement) reader.Read();
+                                        AddImageSet(setId, setPath);
+
+                                        //skip done
+                                        reader.Read();
+                                        while (reader.NodeType != XmlNodeType.EndElement) reader.Read();
+
+                                        #region extract image data
+
+                                        if (reader.Read() && reader.Name == imageData)
+                                        {
+                                            while (reader.Read() && reader.NodeType != XmlNodeType.EndElement &&
+                                                  reader.Name != imageData)
+                                            {
+                                                if (reader.AttributeCount != 3)
+                                                {
+                                                    Console.WriteLine(
+                                                        "Project reader - incorrect amount of information about image");
+                                                    Console.WriteLine("Project reader - image attribute count: " +
+                                                                      reader.AttributeCount + ", should be 3");
+                                                }
+
+                                                //image file name
+                                                string file = reader.GetAttribute(imagePath);
+                                                AddImage(setId, file);
+
+                                                //image sent?
+                                                bool sentImg = false;
+                                                bool.TryParse(reader.GetAttribute(imageSent), out sentImg);
+
+                                                //image send date
+                                                if (sentImg)
+                                                {
+                                                    long sendDate = -1;
+                                                    long.TryParse(reader.GetAttribute(imageSentDate), out sendDate);
+                                                    if (sendDate > 0) Sent(setId, file, sendDate);
+                                                }
+                                            }
+                                        }
+
+                                        #endregion
+
+                                        while (reader.NodeType != XmlNodeType.Element && reader.Name != imageSetLabel) reader.Read();
+                                    } while (reader.Read() && reader.NodeType != XmlNodeType.EndElement && reader.Name != imageSetGroup);
+
+                                break;
+                            default:
+                                if (reader.Name == "Project") break;
+                                Console.WriteLine("Project reader - unknown state");
+                                Console.WriteLine("Project reader - name: " + reader.Name);
+                                Console.WriteLine("Project reader - value: " + reader.Value);
+                                Console.WriteLine("Project reader - attributes: " + reader.AttributeCount);
                                 break;
                         }
                     }
@@ -287,7 +375,17 @@ namespace Hub.Util
         {
             public int ImageSetId { get; set; }
             public string Path { get; set; } //relative
-            public bool AllSent { get; set; }
+
+            public bool AllSent
+            {
+                get
+                {
+                    foreach (Image img in images)
+                        if (!img.Sent) return false;
+                    return true;
+                }
+            }
+
             public List<Image> images = new List<Image>();
         }
 

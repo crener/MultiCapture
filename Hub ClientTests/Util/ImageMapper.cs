@@ -163,10 +163,213 @@ namespace Hub.Util.Tests
 
             ImageMapper reader = new ImageMapper(saveLocation, project - 12);
 
-            Assert.AreNotEqual(project, reader.ProjectID);
+            Assert.AreEqual(project, reader.ProjectID);
             Assert.AreEqual(2, reader.ImageSetCount);
             Assert.AreEqual(2, reader.ImageCount(0));
             Assert.AreEqual(3, reader.ImageCount(1));
+        }
+
+        [Test]
+        public void ReadSendTest()
+        {
+            int project = new Random().Next();
+            ImageMapper mapper = new ImageMapper(saveLocation, project);
+            mapper.AddImageSet(1, "place");
+            mapper.AddImageSet(0, "other");
+
+            mapper.AddImage(0, "cryo");
+            mapper.AddImage(1, "london");
+            mapper.AddImage(1, "Tokio");
+            mapper.AddImage(0, "sleep");
+            mapper.AddImage(1, "Amsterdam");
+
+            mapper.Sent(0, "cryo");
+            mapper.Sent(1, "Amsterdam");
+
+            mapper.Save();
+
+            ImageMapper reader = new ImageMapper(saveLocation, project);
+
+            Assert.AreEqual(project, reader.ProjectID);
+            Assert.AreEqual(true, reader.hasSent(0, "cryo"));
+            Assert.AreEqual(true, reader.hasSent(1, "Amsterdam"));
+            Assert.AreEqual(false, reader.hasSent(1, "london"));
+        }
+
+        [Test]
+        public void ImageCountExceptionTest()
+        {
+            int project = new Random().Next();
+            ImageMapper mapper = new ImageMapper(saveLocation, project);
+            mapper.AddImageSet(1, "place");
+            mapper.AddImageSet(0, "other");
+
+            mapper.AddImage(0, "cryo");
+            mapper.AddImage(1, "london");
+            mapper.AddImage(1, "Tokio");
+            mapper.AddImage(0, "sleep");
+            mapper.AddImage(1, "Amsterdam");
+
+            try
+            {
+                mapper.ImageCount(2);
+                Assert.Fail("Image set 2 doesn't exist");
+            }
+            catch (Exception) { };
+
+            Assert.AreEqual(2, mapper.ImageCount(0));
+            Assert.AreEqual(3, mapper.ImageCount(1));
+        }
+
+        [Test]
+        public void AddImageExceptionTest()
+        {
+            int project = new Random().Next();
+            ImageMapper mapper = new ImageMapper(saveLocation, project);
+            mapper.AddImageSet(1, "place");
+            mapper.AddImageSet(0, "other");
+
+            mapper.AddImage(0, "cryo");
+            mapper.AddImage(1, "london");
+            mapper.AddImage(1, "Tokio");
+            mapper.AddImage(0, "sleep");
+            mapper.AddImage(1, "Amsterdam");
+
+            try
+            {
+                mapper.AddImage(2, "nope");
+                Assert.Fail("Image set 2 doesn't exist");
+            }
+            catch (Exception) { };
+
+            try
+            {
+                mapper.AddImageSet(2, null);
+                Assert.Fail("Image doesn't exist");
+            }
+            catch (Exception) { };
+        }
+
+        [Test]
+        public void SentExceptionTest()
+        {
+            int project = new Random().Next();
+            ImageMapper mapper = new ImageMapper(saveLocation, project);
+            mapper.AddImageSet(1, "place");
+            mapper.AddImageSet(0, "other");
+
+            mapper.AddImage(0, "cryo");
+            mapper.AddImage(1, "london");
+            mapper.AddImage(1, "Tokio");
+            mapper.AddImage(0, "sleep");
+            mapper.AddImage(1, "Amsterdam");
+
+            try
+            {
+                mapper.Sent(1, "nope");
+                Assert.Fail("Image doesn't exist");
+            }
+            catch (Exception) { };
+
+            try
+            {
+                mapper.hasSent(1, "nope");
+                Assert.Fail("Image doesn't exist");
+            }
+            catch (Exception) { };
+
+            try
+            {
+                mapper.SendTime(1, "nope");
+                Assert.Fail("Image doesn't exist");
+            }
+            catch (Exception) { };
+
+            try
+            {
+                mapper.hasSent(2);
+                Assert.Fail("Image Set doesn't exist");
+            }
+            catch (Exception) { };
+
+            Assert.IsFalse(mapper.hasSent(0, "cryo"));
+            Assert.IsTrue(mapper.SendTime(0, "cryo") == 0);
+            mapper.Sent(0, "cryo");
+            Assert.IsTrue(mapper.SendTime(0, "cryo") > DateTime.Now.AddSeconds(-1).ToFileTimeUtc());
+            Assert.IsTrue(mapper.hasSent(0, "cryo"));
+
+            mapper.Sent(0, "cryo");
+            mapper.Sent(1, "london");
+            mapper.Sent(1, "Tokio");
+            mapper.Sent(0, "sleep");
+            mapper.Sent(1, "Amsterdam");
+
+            Assert.IsTrue(mapper.hasSent(0));
+            Assert.IsTrue(mapper.hasSent(1));
+        }
+
+        [Test]
+        public void SetDoneTest()
+        {
+            int project = new Random().Next();
+            ImageMapper mapper = new ImageMapper(saveLocation, project);
+            mapper.AddImageSet(1, "place");
+            mapper.AddImageSet(0, "other");
+
+            mapper.AddImage(0, "cryo");
+            mapper.AddImage(0, "sleep");
+
+            try
+            {
+                mapper.ImageSetIsDone(2);
+                Assert.Fail("Image Set doesn't exist");
+            }
+            catch (Exception) { };
+
+            try
+            {
+                mapper.ImageSetIsDone(1);
+                Assert.Fail("Image Set should not have any images");
+            }
+            catch (Exception) { };
+
+            Assert.AreEqual(false, mapper.ImageSetIsDone(0));
+
+            mapper.Sent(0, "cryo");
+            mapper.Sent(0, "sleep");
+
+            Assert.AreEqual(true, mapper.ImageSetIsDone(0));
+        }
+
+        [Test]
+        public void ImageAbsolutePathTest()
+        {
+            int project = new Random().Next();
+            ImageMapper mapper = new ImageMapper(saveLocation, project);
+            mapper.AddImageSet(1, "place");
+            mapper.AddImageSet(0, "other");
+
+            mapper.AddImage(0, "cryo");
+            mapper.AddImage(1, "london");
+            mapper.AddImage(1, "Tokio");
+            mapper.AddImage(0, "sleep");
+            mapper.AddImage(1, "Amsterdam");
+
+            try
+            {
+                mapper.ImageAbsolutePath(2, "nope");
+                Assert.Fail("Image set 2 doesn't exist");
+            }
+            catch (Exception) { };
+
+            try
+            {
+                mapper.ImageAbsolutePath(1, "nope");
+                Assert.Fail("Image set 2 doesn't exist");
+            }
+            catch (Exception) { };
+
+            Assert.IsTrue(mapper.ImageAbsolutePath(0, "cryo").Length > 5);
         }
     }
 }
