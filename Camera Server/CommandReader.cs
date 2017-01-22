@@ -14,10 +14,25 @@ namespace Camera_Server
         public Dictionary<string, string> Parameters { get; private set; }
         public CameraRequest Request { get; private set; }
 
+        public CommandReader(string data)
+        {
+            Parameters = new Dictionary<string, string>();
+
+            ConvertData(data);
+        }
+
         public CommandReader(byte[] data)
         {
             Parameters = new Dictionary<string, string>();
-            string[] listed = Regex.Split(Encoding.ASCII.GetString(StripToBasicMessage(data)), Constants.ParamSeperator);
+            string formattedData = Encoding.ASCII.GetString(StripToBasicMessage(data));
+
+            ConvertData(formattedData);
+        }
+
+        private void ConvertData(string data)
+        {
+            Parameters = new Dictionary<string, string>();
+            string[] listed = Regex.Split(data, Constants.ParamSeperator);
 
             CameraRequest pre;
             CameraRequest.TryParse(listed[0], out pre);

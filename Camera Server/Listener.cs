@@ -15,7 +15,7 @@ namespace Camera_Server
         {
             // Data buffer for incoming data.
             byte[] bytes = new byte[Constants.CameraBufferSize];
-            
+
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = NetworkHelpers.GrabIpv4(ipHostInfo);
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, int.Parse(CameraSettings.GetSetting("port", "11003")));
@@ -39,28 +39,37 @@ namespace Camera_Server
                 // Start listening for connections.
                 while (true)
                 {
-                    Console.WriteLine("Waiting for a connection...");
-                    // Program is suspended while waiting for an incoming connection.
-                    handler = listener.Accept();
-                    data = null;
-                    Console.WriteLine("Connected!!");
-
-                    while (Connected(handler))
+                    try
                     {
-                        RequestProcess process = new RequestProcess(handler);
-                        bytes = new byte[Constants.CameraBufferSize];
-                        int bytesRec = handler.Receive(bytes);
-                        data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                        if (data.IndexOf(Constants.EndOfMessage) > -1)
-                        {
-                            //process data
-                            process.ProcessRequest(bytes);
+                        Console.WriteLine("Waiting for a connection...");
+                        // Program is suspended while waiting for an incoming connection.
+                        handler = listener.Accept();
+                        data = null;
+                        Console.WriteLine("Connected!!");
 
-                            // Show the data on the console.
-                            Console.WriteLine("Data received : {0}", data);
-                            data = "";
+                        while (Connected(handler))
+                        {
+                            RequestProcess process = new RequestProcess(handler);
+                            bytes = new byte[Constants.CameraBufferSize];
+                            int bytesRec = handler.Receive(bytes);
+                            data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                            if (data.IndexOf(Constants.EndOfMessage) > -1)
+                            {
+                                //process data
+                                process.ProcessRequest(bytes);
+
+                                // Show the data on the console.
+                                Console.WriteLine("Data received : {0}", data);
+                                data = "";
+                            }
+                            Console.WriteLine("Waiting for next request...");
                         }
-                        Console.WriteLine("Waiting for next request...");
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Exception thrown");
+                        Console.WriteLine("\tmessage: " + e.Message);
+                        Console.WriteLine("\tlast request data: " + data);
                     }
                 }
 

@@ -22,11 +22,10 @@ namespace Hub.Threaded
         public ThreadManager(SaveContainer.Data config)
         {
             this.config = config;
-            ConfigureThreads();
 
             Random rand = new Random();
             int projectId = rand.Next(0, int.MaxValue-1);
-            savePath = Constants.DefualtHubSaveLocation() + Path.DirectorySeparatorChar + "tempProject" + projectId +
+            savePath = Constants.DefualtHubSaveLocation() + Path.DirectorySeparatorChar + "Project" + projectId +
                            Path.DirectorySeparatorChar;
             bool done = false;
 
@@ -47,6 +46,7 @@ namespace Hub.Threaded
             } while (!done);
 
             Console.WriteLine("Project directory generated, id: " + projectId);
+            ConfigureThreads();
         }
 
         ~ThreadManager()
@@ -99,6 +99,7 @@ namespace Hub.Threaded
         /// </summary>
         private void ConfigureThreads()
         {
+
             cameraSockets = new CameraSocket[config.CameraCount];
             cameraThreads = new Thread[config.CameraCount];
             threadConfiguration = new CameraThread[config.CameraCount];
@@ -175,6 +176,17 @@ namespace Hub.Threaded
                     return false;
             }
             return true;
+        }
+
+        /// <summary>
+        /// use when debugging - clears every socket buffer of data
+        /// </summary>
+        public void ClearSockets()
+        {
+            foreach(CameraThread cam in threadConfiguration)
+                cam.ClearSockets();
+
+            Console.WriteLine("Cleared Sockets");
         }
     }
 }

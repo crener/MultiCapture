@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using SharedDeviceItems;
 using Hub.Helpers;
@@ -14,7 +15,7 @@ namespace Hub.Threaded
         public volatile CameraRequest Request = CameraRequest.Alive;
         public volatile string SavePath;
 
-        public string ImageSetName {  get; set; }
+        public string ImageSetName { get; set; }
 
         private CameraSocket config;
         private INetwork connection;
@@ -92,6 +93,7 @@ namespace Hub.Threaded
                 Console.WriteLine("Debug data:");
                 Console.WriteLine("\tThread Camera: " + config.Config.Id);
                 Console.WriteLine("\tImage set id: " + ImageSetName);
+                Console.WriteLine("\tImage return string: " + Encoding.ASCII.GetString(data));
                 return;
             }
 
@@ -102,13 +104,15 @@ namespace Hub.Threaded
                     fileStream.WriteByte(imageData[i]);
                 }
             }
+
+            Console.WriteLine("Camera " + config.Config.Id + " image saved");
         }
 
         private byte[] PropertyRequest(CameraRequest request)
         {
             CommandBuilder builder = new CommandBuilder().Request(request);
 
-            if(request == CameraRequest.Alive || request == CameraRequest.SendTestImage)
+            if (request == CameraRequest.Alive || request == CameraRequest.SendTestImage)
                 return builder.Build();
 
             builder.AddParam("id", ImageSetName);
@@ -126,6 +130,19 @@ namespace Hub.Threaded
             builder.AddParam("id", "0");
 
             connection.MakeRequest(builder.Build());
+        }
+
+        /// <summary>
+        /// use when debugging - clears socket buffer of data
+        /// </summary>
+        public void ClearSockets()
+        {
+            byte[] ignore = new byte[300];
+            while(config.DataSocket.Available > 0)
+            {
+                config.DataSocket.Receive(ignore);
+                Console.WriteLine("Cam " + config.Config.Id + " flush: " + Encoding.ASCII.GetString(ignore));
+            }
         }
     }
 }

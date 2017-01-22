@@ -32,7 +32,7 @@ namespace SharedDeviceItems.Helpers.Tests
 
             Assert.IsTrue(ByteManipulation.SearchEndOfMessage(bytes, bytes.Length));
             Assert.IsTrue(ByteManipulation.SearchEndOfMessageIndex(bytes, bytes.Length) ==
-                bytes.Length - Constants.EndOfMessage.Length - 1);
+                bytes.Length - Constants.EndOfMessage.Length);
 
             File.Delete(filePath);
         }

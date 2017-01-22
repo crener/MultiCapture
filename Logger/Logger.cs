@@ -19,13 +19,14 @@ namespace Logger
             standard = Console.Out;
             path = Constants.DefualtHubSaveLocation() + Path.DirectorySeparatorChar + "Log" +
                 Path.DirectorySeparatorChar;
-            string filePath = path + DateTime.Today.ToString("d") + ".txt";
+            string filePath = path + DateTime.Today.ToString("dd.MM.yyyy") + ".txt";
 
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
             file = new StreamWriter(filePath, true, Encoding.ASCII);
             file.AutoFlush = true;
             Console.SetOut(new DualWriter(file, Console.Out));
+            Console.WriteLine("Logger init done");
         }
 
         public Logger(string path)

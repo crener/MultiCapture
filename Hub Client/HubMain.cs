@@ -24,20 +24,21 @@ namespace Hub
         /// </summary>
         private void Start()
         {
-            ThreadManager manager = new ThreadManager(SaveContainer.Load());
             Logger.Logger logs = new Logger.Logger();
             logs.RemoveOldLogs(DateTime.Today.AddMonths(-1));
+            ThreadManager manager = new ThreadManager(SaveContainer.Load());
 
             string command = "";
             while ((command = Console.ReadLine()) != "e")
             {
-                if(command == "t") manager.CaptureImageSet(CameraRequest.SendTestImage);
+                if(command == "t" || command == "test") manager.CaptureImageSet(CameraRequest.SendTestImage);
                 else if(command == "s")
                 {
                     Console.WriteLine(manager.SavePath);
                     Console.Write("new save path: ");
                     manager.SavePath = Console.ReadLine();
                 }
+                else if(command == "clear") manager.ClearSockets();
                 else manager.CaptureImageSet();
             }
             Console.WriteLine("Quitting");

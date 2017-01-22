@@ -19,7 +19,7 @@ namespace SharedDeviceItems
         public const string SuccessString = "SUCCESS";
 
         public const int ByteArraySize = 10485760;
-        public const int CameraBufferSize = 1048576;
+        public const int CameraBufferSize = 128;
 
         public const string ParamSeperator = "&&";
         public const string ParamKeyValueSeperator = "=";
