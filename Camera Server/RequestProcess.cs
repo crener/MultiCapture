@@ -89,14 +89,14 @@ namespace Camera_Server
                     string imageLocation = camera.CaptureImage(imageName);
 
                     messageData = ByteHelpers.FileToBytes(imageLocation);
-                    SendResponse(client, EndOfMessage(messageData));
+                    SendResponse(client, messageData);
 
                     if (File.Exists(imageLocation)) File.Delete(imageLocation);
                     return;
                 case CameraRequest.SendTestImage:
                     //For testing, send a static image saved on the device
                     messageData = ByteHelpers.FileToBytes(Path.DirectorySeparatorChar + "scanimage" + Path.DirectorySeparatorChar + "test.jpg");
-                    SendResponse(client, EndOfMessage(messageData));
+                    SendResponse(client, messageData);
                     return;
                 case CameraRequest.SetProporties:
                     return;
@@ -105,7 +105,7 @@ namespace Camera_Server
                     break;
             }
 
-            SendResponse(client, EndOfMessage(messageData));
+            SendResponse(client, messageData);
         }
 
         /// <summary>
@@ -135,11 +135,12 @@ namespace Camera_Server
         /// wrapper for sending bytes to get cleaner code 
         /// </summary>
         /// <param name="client">Socket that data will be sent too</param>
-        /// <param name="reponse">The data that will be sent</param>
-        private static void SendResponse(Socket client, Byte[] response)
+        /// <param name="response">The data that will be sent</param>
+        private static void SendResponse(Socket client, byte[] response)
         {
+            Console.WriteLine("Data size: " + response.Length);
             client.Send(EndOfMessage(Encoding.ASCII.GetBytes(response.Length.ToString())));
-            client.Send(response);
+            client.Send(EndOfMessage(response));
         }
 
         /// <summary>

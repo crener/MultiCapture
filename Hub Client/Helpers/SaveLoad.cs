@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -124,22 +125,22 @@ namespace Hub.Helpers
             public int CameraCount => Cameras == null ? 0 : Cameras.Length;
             public Data Default()
             {
-                Cameras = new CameraConfiguration[2];
+                List<CameraConfiguration> cameras = new List<CameraConfiguration>();
 
                 //Pi3
-                Cameras[0] = new CameraConfiguration
+                cameras.Add( new CameraConfiguration
                 {
                     //Address = 25798848,
-                    Address = 663333056,
+                    Address = 763996352,
 
                     //Address = 3190423209,
                     CamFileIdentity = "hub",
                     Port = 11003,
                     Id = 0
-                };
-
+                });
+/*
                 //Zero1
-                Cameras[1] = new CameraConfiguration()
+                cameras.Add( new CameraConfiguration()
                 {
                     Address = 3936288425,
                     CamFileIdentity = "1Zero",
@@ -147,7 +148,7 @@ namespace Hub.Helpers
                     Id = 1
                 };
 
-                /*
+                
                 //Zero2
                 Cameras[2] = new CameraConfiguration()
                 {
@@ -166,6 +167,7 @@ namespace Hub.Helpers
                     Id = 3
                 };*/
 
+                Cameras = cameras.ToArray();
                 return this;
             }
 

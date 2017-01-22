@@ -33,7 +33,7 @@ namespace Hub.Helpers.Tests
         }
 
         /// <summary>
-        /// Test that TrimExcessData correctly trims extra data from the end of the dataincluding the end of string message
+        /// Test that TrimExcessData correctly trims extra data from the end of the data including the end of string message
         /// </summary>
         [Test]
         public void DataTrimTestAccurateData()
@@ -59,10 +59,10 @@ namespace Hub.Helpers.Tests
                 Assert.Fail("An exception should not be thrown. " + e);
             }
 
-            Assert.True(returnData.Length == data.Length);
+            Assert.AreEqual( data.Length, returnData.Length);
             for (int i = 0; i < returnData.Length; i++)
             {
-                if(returnData[i] != data[i]) Assert.Fail("Return value " + i + " didn;t match original data");
+                if(returnData[i] != data[i]) Assert.Fail("Return value " + i + " didn't match original data");
             }
         }
 

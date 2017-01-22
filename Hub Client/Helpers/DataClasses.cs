@@ -41,7 +41,7 @@ namespace Hub.Helpers
                 else
                 {
                     Console.WriteLine("Camera response = {0}",
-                    Encoding.ASCII.GetString(recieveData, 0, bytesRec - Constants.EndOfMessage.Length));
+                        Encoding.ASCII.GetString(recieveData, 0, bytesRec - Constants.EndOfMessage.Length));
                 }
             }
             catch (SocketException e)

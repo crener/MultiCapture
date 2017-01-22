@@ -26,6 +26,8 @@ namespace Hub_ClientTests.Networking
         public void Setup()
         {
             socket.recieveCount = 0;
+            socket.FailCount = 0;
+            socket.byteCount = 0;
         }
 
         [Test]
@@ -46,6 +48,7 @@ namespace Hub_ClientTests.Networking
 
             socket.FailCount = 13;
             socket.recieveCount = 0;
+            socket.byteCount = 0;
             netData = net.MakeRequest(new byte[] { 22, 88, 45 });
             Assert.AreEqual(socket.ReturnData, netData);
         }
@@ -69,7 +72,7 @@ namespace Hub_ClientTests.Networking
                 socketData = new byte[raw.Length + EOM.Length];
                 Array.Copy(raw, socketData, raw.Length);
                 Array.Copy(EOM, 0, socketData, raw.Length, EOM.Length);
-            } while (ByteManipulation.SearchEndOfMessageIndex(socketData, socketData.Length) != raw.Length - 1);
+            } while (ByteManipulation.SearchEndOfMessageIndex(socketData, socketData.Length) != raw.Length);
 
             socket.ReturnData = socketData;
 
