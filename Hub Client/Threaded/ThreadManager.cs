@@ -176,5 +176,16 @@ namespace Hub.Threaded
             }
             return true;
         }
+
+        /// <summary>
+        /// use when debugging - clears every socket buffer of data
+        /// </summary>
+        public void ClearSockets()
+        {
+            foreach(CameraThread cam in threadConfiguration)
+                cam.ClearSockets();
+
+            Console.WriteLine("Cleared Sockets");
+        }
     }
 }

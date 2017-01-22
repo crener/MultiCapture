@@ -17,9 +17,7 @@ namespace Hub.Helpers
             byte[] newData = new byte[dataUsed + 1];
 
             for (int i = 0; i <= dataUsed; i++)
-            {
                 newData[i] = data[i];
-            }
 
             return newData;
         }
@@ -32,7 +30,7 @@ namespace Hub.Helpers
         public static byte[] TrimExcessByteData(byte[] data)
         {
             //search for end of message string location
-            int removeFrom = ByteManipulation.SearchEndOfMessageIndex(data, data.Length);
+            int removeFrom = ByteManipulation.SearchEndOfMessageIndex(data, data.Length) - 1;
             if (removeFrom == -1) throw new Exception("There must be an end of string message in the data");
             return TrimExcessByteData(data, removeFrom);
         }

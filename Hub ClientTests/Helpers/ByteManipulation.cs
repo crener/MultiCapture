@@ -109,6 +109,7 @@ namespace Hub.Helpers.Tests
 
             Assert.True(ByteManipulation.SearchEndOfMessage(testData, testData.Length));
             Assert.False(ByteManipulation.SearchEndOfMessageIndex(testData, testData.Length) > 10);
+            Assert.False(ByteManipulation.SearchEndOfMessageStartIndex(testData, testData.Length) > 10);
         }
 
         /// <summary>
@@ -129,6 +130,7 @@ namespace Hub.Helpers.Tests
 
             Assert.True(ByteManipulation.SearchEndOfMessage(testData, testData.Length));
             Assert.False(ByteManipulation.SearchEndOfMessageIndex(testData, testData.Length) > 10);
+            Assert.False(ByteManipulation.SearchEndOfMessageStartIndex(testData, testData.Length) > 10);
         }
 
         /// <summary>
@@ -151,6 +153,7 @@ namespace Hub.Helpers.Tests
 
             Assert.True(ByteManipulation.SearchEndOfMessage(testData, testData.Length));
             Assert.False(ByteManipulation.SearchEndOfMessageIndex(testData, testData.Length) > 10 );
+            Assert.False(ByteManipulation.SearchEndOfMessageStartIndex(testData, testData.Length) > 10 );
         }
 
         /// <summary>
@@ -168,6 +171,7 @@ namespace Hub.Helpers.Tests
 
             Assert.False(ByteManipulation.SearchEndOfMessage(testData, testData.Length));
             Assert.True(ByteManipulation.SearchEndOfMessageIndex(testData, testData.Length) == -1);
+            Assert.True(ByteManipulation.SearchEndOfMessageStartIndex(testData, testData.Length) == -1);
         }
 
         /// <summary>
@@ -188,6 +192,7 @@ namespace Hub.Helpers.Tests
 
             Assert.False(ByteManipulation.SearchEndOfMessage(testData, testData.Length));
             Assert.True(ByteManipulation.SearchEndOfMessageIndex(testData, testData.Length) == -1);
+            Assert.True(ByteManipulation.SearchEndOfMessageStartIndex(testData, testData.Length) == -1);
         }
 
         [Test]
@@ -197,6 +202,7 @@ namespace Hub.Helpers.Tests
 
             Assert.False(ByteManipulation.SearchEndOfMessage(testData, testData.Length));
             Assert.True(ByteManipulation.SearchEndOfMessageIndex(testData, testData.Length) == -1);
+            Assert.True(ByteManipulation.SearchEndOfMessageStartIndex(testData, testData.Length) == -1);
         }
 
         [Test]
@@ -205,7 +211,8 @@ namespace Hub.Helpers.Tests
             byte[] data = Encoding.ASCII.GetBytes( "random words and stuff" + Constants.EndOfMessage);
 
             Assert.IsTrue(ByteManipulation.SearchEndOfMessage(data, data.Length + 3));
-            Assert.AreEqual(21, ByteManipulation.SearchEndOfMessageIndex(data, data.Length + 3));
+            Assert.AreEqual(22, ByteManipulation.SearchEndOfMessageIndex(data, data.Length + 3));
+            Assert.AreEqual(22, ByteManipulation.SearchEndOfMessageStartIndex(data, data.Length + 3));
         }
     }
 }
