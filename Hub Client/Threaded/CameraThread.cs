@@ -139,7 +139,10 @@ namespace Hub.Threaded
         {
             byte[] ignore = new byte[300];
             while(config.DataSocket.Available > 0)
+            {
                 config.DataSocket.Receive(ignore);
+                Console.WriteLine("Cam " + config.Config.Id + " flush: " + Encoding.ASCII.GetString(ignore));
+            }
         }
     }
 }

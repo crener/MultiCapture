@@ -131,7 +131,8 @@ namespace Hub.Helpers
                 cameras.Add( new CameraConfiguration
                 {
                     //Address = 25798848,
-                    Address = 763996352,
+                    //Address = 763996352,
+                    Address = 234989760,
 
                     //Address = 3190423209,
                     CamFileIdentity = "hub",

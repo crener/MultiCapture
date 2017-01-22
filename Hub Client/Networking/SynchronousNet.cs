@@ -70,7 +70,7 @@ namespace Hub.Networking
                 }
 
                 bool pass = dataSize > 0 && totalData < dataSize;
-                if (pass) pass = !ByteManipulation.SearchEndOfMessage(bytes, totalData);
+                if (!pass) pass = !ByteManipulation.SearchEndOfMessage(bytes, totalData);
                 while (pass)
                 {
                     int bytesRec = socket.Receive(buffer);
