@@ -39,11 +39,28 @@ namespace Camera_Server
         public void ProcessRequest(byte[] message)
         {
             CommandReader requestMessage = new CommandReader(message);
-            if(requestMessage.Request == CameraRequest.Alive)
+            ProcessRequest(requestMessage);
+        }
+
+        public void ProcessRequest(string message)
+        {
+            CommandReader requestMessage = new CommandReader(message);
+            ProcessRequest(requestMessage);
+        }
+
+        private void ProcessRequest(CommandReader requestMessage)
+        {
+            if (requestMessage.Request == CameraRequest.Alive)
             {
-                InternalProcess(requestMessage.Request);
+                AliveRequest(client);
                 return;
             }
+            else if (requestMessage.Request == CameraRequest.SendTestImage)
+            {
+                InternalProcess(CameraRequest.SendTestImage);
+                return;
+            }
+
             imageName = requestMessage.Parameters["id"];
             Console.WriteLine("ImageName: " + imageName);
 
@@ -51,28 +68,11 @@ namespace Camera_Server
             {
                 CameraSettings.AddSetting("name", requestMessage.Parameters["name"]);
                 camera.SetCameraName(requestMessage.Parameters["name"]);
-                InternalProcess(CameraRequest.Alive);
-            }
-
-            InternalProcess(requestMessage.Request);
-        }
-
-        public void ProcessRequest(string message)
-        {
-            CameraRequest request;
-            if (!requestLookup.TryGetValue(message, out request))
-            {
-                Console.WriteLine("404 - Request not found!!");
-                SendResponse(client, EndOfMessage(FailedRequest()));
-                return;
-            }
-            if (request == CameraRequest.Alive)
-            {
                 AliveRequest(client);
                 return;
             }
 
-            InternalProcess(request);
+            InternalProcess(requestMessage.Request);
         }
 
         private void InternalProcess(CameraRequest request)
@@ -83,8 +83,8 @@ namespace Camera_Server
             switch (request)
             {
                 case CameraRequest.Alive:
-                    messageData = Encoding.ASCII.GetBytes(Constants.SuccessString + Constants.EndOfMessage);
-                    break;
+                    AliveRequest(client);
+                    return;
                 case CameraRequest.SendFullResImage:
                     string imageLocation = camera.CaptureImage(imageName);
 
@@ -99,8 +99,11 @@ namespace Camera_Server
                     SendResponse(client, EndOfMessage(messageData));
                     return;
                 case CameraRequest.SetProporties:
+                    AliveRequest(client);
                     return;
                 default:
+                    Console.WriteLine("Request Processing failed");
+                    Console.WriteLine("\tRequest Name: " + request);
                     messageData = FailedRequest();
                     break;
             }
@@ -148,7 +151,13 @@ namespace Camera_Server
         /// <param name="client"></param>
         private static void AliveRequest(Socket client)
         {
-            byte[] msg = Encoding.ASCII.GetBytes("Camera Active" + Constants.EndOfMessage);
+            byte[] msg = Encoding.ASCII.GetBytes(Constants.SuccessString + Constants.EndOfMessage);
+            client.Send(msg);
+        }
+
+        private static void FailReply(Socket client)
+        {
+            byte[] msg = Encoding.ASCII.GetBytes(Constants.FailString + Constants.EndOfMessage);
             client.Send(msg);
         }
     }
