@@ -85,9 +85,9 @@ namespace Hub.Networking
                 byte[] preReturn = Helpers.Networking.TrimExcessByteData(bytes, totalData - 1);
                 string imageData = Encoding.ASCII.GetString(preReturn);
                 return preReturn;
-#endif
-
+#else
                 return Helpers.Networking.TrimExcessByteData(bytes, totalData -1);
+#endif
             }
             catch (Exception e)
             {

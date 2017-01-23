@@ -16,29 +16,31 @@ namespace Logger
 
         public Logger()
         {
-            standard = Console.Out;
             path = Constants.DefualtHubSaveLocation() + Path.DirectorySeparatorChar + "Log" +
                 Path.DirectorySeparatorChar;
-            string filePath = path + DateTime.Today.ToString("dd.MM.yyyy") + ".txt";
-
-            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-
-            file = new StreamWriter(filePath, true, Encoding.ASCII);
-            file.AutoFlush = true;
-            Console.SetOut(new DualWriter(file, Console.Out));
-            Console.WriteLine("Logger init done");
+            Init();
         }
 
         public Logger(string path)
         {
             this.path = path;
+            Init();
+        }
+
+        private void Init()
+        {
             standard = Console.Out;
 
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
             file = new StreamWriter(path + DateTime.Today.ToString("d") + ".txt", true, standard.Encoding);
             file.AutoFlush = true;
+#if DEBUG
             Console.SetOut(new DualWriter(file, Console.Out));
+#else
+            Console.SetOut(file);
+#endif
+
         }
 
         public Logger(TextWriter primary, string path)
@@ -47,7 +49,11 @@ namespace Logger
             standard = Console.Out;
 
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-            Console.SetOut(new DualWriter(primary, Console.Out));
+#if DEBUG
+            Console.SetOut(new DualWriter(file, Console.Out));
+#else
+            Console.SetOut(file);
+#endif
         }
 
         public void Restore()
