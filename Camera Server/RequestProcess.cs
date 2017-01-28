@@ -13,7 +13,6 @@ namespace Camera_Server
     class RequestProcess
     {
         private ICamera camera = new ShellCamera("0");
-        //private ICamera camera = new PythonShellCamera();
         private Socket client;
         private static Dictionary<string, CameraRequest> requestLookup = new Dictionary<string, CameraRequest>();
         private string imageName = "0";

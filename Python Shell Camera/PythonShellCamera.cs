@@ -40,8 +40,8 @@ namespace Python_Shell_Camera
                     FileName = "/bin/bash",
                     Arguments = "-c python camera.py",
                     UseShellExecute = false,
-                    RedirectStandardInput = false
-                    //RedirectStandardOutput = true
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true
                 };
 
                 pyThread = new Process { StartInfo = start };
@@ -51,13 +51,16 @@ namespace Python_Shell_Camera
             }
             catch (Exception e)
             {
+                Console.WriteLine("Exception");
                 throw new CameraInitialisationException(e.Message);
             }
 
             //Console.WriteLine(pyOutput.ReadLine());
+            pyInput.Write("cap\n");
+            pyInput.Write("hij\n");
 
             Console.WriteLine("Setting Name...");
-            pyInput.WriteLine("name");
+            pyInput.Write("name");
             string output = pyOutput.ReadToEnd();
             //Console.WriteLine(output);
             if (output == "Name: ")
@@ -77,11 +80,11 @@ namespace Python_Shell_Camera
 
         public void SetCameraName(string name)
         {
-            pyInput.WriteLine("name");
+            pyInput.Write("name\n");
             string output = pyOutput.ReadToEnd();
             if (output != "name: ")
                 throw new Exception("Name not set correctly, expected \"name: \" but text was: " + output);
-            pyInput.WriteLine(name);
+            pyInput.Write(name + "\n");
 
             output = pyOutput.ReadLine();
             if (output != "command: ")
@@ -90,8 +93,8 @@ namespace Python_Shell_Camera
 
         public string CaptureImage(string identifier)
         {
-            pyInput.WriteLine("cap");
-            pyInput.WriteLine(identifier);
+            pyInput.Write("cap\n");
+            pyInput.Write(identifier + "\n");
 
             string loc = currentDir + name + identifier + ".jpg";
             int i = 0;
@@ -154,9 +157,9 @@ namespace Python_Shell_Camera
 
         public void SetResolution(int x, int y)
         {
-            pyInput.WriteLine("res");
-            pyInput.WriteLine(x);
-            pyInput.WriteLine(y);
+            pyInput.Write("res\n");
+            pyInput.Write(x + "\n");
+            pyInput.Write(y + "\n");
 
             string output = pyOutput.ReadLine();
             if (output != "command: ")

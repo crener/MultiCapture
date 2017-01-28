@@ -32,15 +32,16 @@ namespace Logger
             standard = Console.Out;
 
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+            string filePath = path + DateTime.Today.ToString("dd.MM.yyyy") + ".txt";
 
-            file = new StreamWriter(path + DateTime.Today.ToString("d") + ".txt", true, standard.Encoding);
+            file = new StreamWriter(filePath, true, standard.Encoding);
             file.AutoFlush = true;
 #if DEBUG
             Console.SetOut(new DualWriter(file, Console.Out));
 #else
             Console.SetOut(file);
 #endif
-
+            Console.WriteLine("Logger init done");
         }
 
         public Logger(TextWriter primary, string path)

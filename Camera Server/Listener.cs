@@ -69,7 +69,11 @@ namespace Camera_Server
                     {
                         Console.WriteLine("Exception thrown");
                         Console.WriteLine("\tmessage: " + e.Message);
-                        Console.WriteLine("\tlast request data: " + data);
+#if DEBUG
+                        Console.WriteLine("\tstack trace:" + e.StackTrace);
+#endif
+                        if(data.Length > 0) Console.WriteLine("\tlast request data: " + data);
+                        else Console.WriteLine("\tlast request data: <Empty string>");
                     }
                 }
 
