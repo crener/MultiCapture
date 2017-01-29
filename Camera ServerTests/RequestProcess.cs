@@ -31,7 +31,7 @@ namespace Camera_ServerTests
             cam.imageX = 1920;
             cam.identifier = "test";
             cam.cameraData = new byte[] {100, 234, 20, 30};
-            if(!string.IsNullOrEmpty(cam.lastPath)) File.Delete(cam.lastPath);
+            if(!string.IsNullOrEmpty(cam.lastPath) && cam.lastPath != "\\scanimage\\test.jpg") File.Delete(cam.lastPath);
             cam.lastPath = "";
             cam.directory = Path.DirectorySeparatorChar + "scanimage" + Path.DirectorySeparatorChar;
         }
@@ -48,6 +48,9 @@ namespace Camera_ServerTests
                 string request = value + Constants.EndOfMessage;
                 processer.ProcessRequest(request);
             }
+
+            //prevent setup deleteing the test image
+            cam.lastPath = "";
         }
 
     }
