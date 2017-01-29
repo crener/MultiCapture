@@ -1,6 +1,7 @@
 ﻿using System;
 using Hub.Helpers;
 using Hub.Threaded;
+using Hub.Util;
 using SharedDeviceItems;
 
 namespace Hub
@@ -41,6 +42,7 @@ namespace Hub
                 else if(command == "clear") manager.ClearSockets();
                 else manager.CaptureImageSet();
             }
+            ProjectMapper.instance.Save();
             Console.WriteLine("Quitting");
         }
     }

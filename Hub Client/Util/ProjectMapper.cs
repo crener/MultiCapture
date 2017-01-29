@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Dynamic;
 using System.Xml;
 using System.IO;
 
@@ -12,7 +10,7 @@ namespace Hub.Util
     /// Responsible for maintaining the project file which keeps track of images and if they have been sent to a 
     /// computer for further processing.
     /// </summary>
-    public class ImageMapper
+    public class ProjectMapper
     {
         /*
          * Project File Structure
@@ -44,7 +42,7 @@ namespace Hub.Util
          * <path to the project file>/<image set, file>/<image name>
          * C://scanpath/project234312/imageSet2/Hub2.jpg
          */
-
+        public static ProjectMapper instance;
         public int ProjectID { get; private set; }
         public string ProjectName { get; set; }
 
@@ -81,11 +79,26 @@ namespace Hub.Util
         const string imageSentDate = "sentDate";
         #endregion
 
-        public ImageMapper(string project, int projectID)
+        public ProjectMapper(string project, int projectID)
         {
             FileLocation = project;
             if (File.Exists(project)) Load(project);
             else ProjectID = projectID;
+
+            if(instance == null) instance = this;
+        }
+
+        /// <summary>
+        /// returns a static project mapper.
+        /// Note the class using this is responsible for initialising this if it is null
+        /// </summary>
+        /// <returns>static project mapper</returns>
+        public static ProjectMapper Instance()
+        {
+            Get:
+            {
+                return instance;
+            }
         }
 
         /// <summary>
@@ -137,7 +150,7 @@ namespace Hub.Util
             Image look;
             if (!ImageExists(setID, imageName, out look)) throw new Exception("Image doesn't exist");
 
-            return FileLocation + Path.DirectorySeparatorChar + sets[setLookUp[setID]].Path + imageName;
+            return FileLocation + Path.DirectorySeparatorChar + sets[setLookUp[setID]].Path + Path.DirectorySeparatorChar + imageName;
         }
 
         public bool hasSent(int setID, string imageName)

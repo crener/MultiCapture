@@ -138,11 +138,14 @@ namespace Hub.Threaded
         public void ClearSockets()
         {
             byte[] ignore = new byte[300];
+            int total = 0;
             while(config.DataSocket.Available > 0)
             {
-                config.DataSocket.Receive(ignore);
-                Console.WriteLine("Cam " + config.Config.Id + " flush: " + Encoding.ASCII.GetString(ignore));
+                total += config.DataSocket.Receive(ignore);
             }
+#if DEBUG
+            Console.WriteLine("Total bytes flushed: " + total);
+#endif
         }
     }
 }

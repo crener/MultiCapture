@@ -47,7 +47,7 @@
     <Compile Include="Helpers\Wrapper\WSocket.cs" />
     <Compile Include="HubMain.cs" />
     <Compile Include="Helpers\Interface\INetwork.cs" />
-    <Compile Include="Util\ImageMapper.cs" />
+    <Compile Include="Util\ProjectMapper.cs" />
     <Compile Include="Networking\AsynchronousNet.cs" />
     <Compile Include="Networking\SynchronousNet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

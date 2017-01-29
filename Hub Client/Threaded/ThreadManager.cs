@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Threading;
 using Hub.Helpers;
 using Hub.Helpers.Wrapper;
+using Hub.Util;
 using SharedDeviceItems;
 
 namespace Hub.Threaded
@@ -14,6 +15,7 @@ namespace Hub.Threaded
         private Thread[] cameraThreads;
         private CameraThread[] threadConfiguration;
         private CameraSocket[] cameraSockets;
+        private ProjectMapper projectFile;
 
         //proporties
         private int imagesetId = -1;
@@ -46,6 +48,8 @@ namespace Hub.Threaded
             } while (!done);
 
             Console.WriteLine("Project directory generated, id: " + projectId);
+            projectFile = new ProjectMapper(savePath + "project.xml", projectId);
+            projectFile.Save();
             ConfigureThreads();
         }
 
@@ -73,6 +77,13 @@ namespace Hub.Threaded
                     threadConfiguration[i].Request = wanted;
                 }
             }
+
+            projectFile.AddImageSet(imagesetId, "set-" + imagesetId);
+            for(int i = 0; i < config.Cameras.Length; i++)
+            {
+                projectFile.AddImage(imagesetId, config.Cameras[i].CamFileIdentity + imagesetId + ".jpg");
+            }
+            projectFile.Save();
         }
 
         private void UpdateCameraParams(CameraRequest image)

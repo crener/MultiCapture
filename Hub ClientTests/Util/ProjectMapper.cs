@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using NUnit.Framework;
 using SharedDeviceItems;
-using Hub.Util;
 
 namespace Hub.Util.Tests
 {
 
     [TestFixture]
-    class ImageMapperTest
+    class ProjectMapperTest
     {
         string saveLocation = Path.DirectorySeparatorChar + "scanimage" +
             Path.DirectorySeparatorChar + "testProject." + Constants.ProjectFileExtention;
@@ -25,7 +21,7 @@ namespace Hub.Util.Tests
         [Test]
         public void ImageCount()
         {
-            ImageMapper mapper = new ImageMapper(saveLocation, new Random().Next());
+            ProjectMapper mapper = new ProjectMapper(saveLocation, new Random().Next());
             mapper.AddImageSet(0, "nope");
             mapper.AddImage(0, "hub0.jpg");
             mapper.AddImage(0, "zeroOne0.jpg");
@@ -64,7 +60,7 @@ namespace Hub.Util.Tests
         {
             try
             {
-                ImageMapper mapper = new ImageMapper(saveLocation, new Random().Next());
+                ProjectMapper mapper = new ProjectMapper(saveLocation, new Random().Next());
                 mapper.AddImageSet(0, "one");
                 mapper.AddImageSet(0, "two");
                 Assert.Fail();
@@ -80,7 +76,7 @@ namespace Hub.Util.Tests
         {
             try
             {
-                ImageMapper mapper = new ImageMapper(saveLocation, new Random().Next());
+                ProjectMapper mapper = new ProjectMapper(saveLocation, new Random().Next());
                 mapper.AddImage(0, "one");
                 Assert.Fail();
             }
@@ -95,7 +91,7 @@ namespace Hub.Util.Tests
         {
             try
             {
-                ImageMapper mapper = new ImageMapper(saveLocation, new Random().Next());
+                ProjectMapper mapper = new ProjectMapper(saveLocation, new Random().Next());
                 mapper.AddImageSet(0, "set");
                 mapper.AddImage(0, "one");
                 mapper.AddImage(0, "one");
@@ -110,7 +106,7 @@ namespace Hub.Util.Tests
         [Test]
         public void AddUnordered()
         {
-            ImageMapper mapper = new ImageMapper(saveLocation, new Random().Next());
+            ProjectMapper mapper = new ProjectMapper(saveLocation, new Random().Next());
             mapper.AddImageSet(2, "Zero");
             mapper.AddImageSet(3, "one");
             mapper.AddImageSet(1, "two");
@@ -129,7 +125,7 @@ namespace Hub.Util.Tests
         [Test]
         public void SaveNoExceptionTest()
         {
-            ImageMapper mapper = new ImageMapper(saveLocation, new Random().Next());
+            ProjectMapper mapper = new ProjectMapper(saveLocation, new Random().Next());
             mapper.AddImageSet(1, "place");
             mapper.AddImageSet(0, "other");
             mapper.AddImage(0, "cryo");
@@ -151,7 +147,7 @@ namespace Hub.Util.Tests
         public void ReadExceptionTest()
         {
             int project = new Random().Next();
-            ImageMapper mapper = new ImageMapper(saveLocation, project);
+            ProjectMapper mapper = new ProjectMapper(saveLocation, project);
             mapper.AddImageSet(1, "place");
             mapper.AddImageSet(0, "other");
             mapper.AddImage(0, "cryo");
@@ -161,7 +157,7 @@ namespace Hub.Util.Tests
             mapper.AddImage(1, "Amsterdam");
             mapper.Save();
 
-            ImageMapper reader = new ImageMapper(saveLocation, project - 12);
+            ProjectMapper reader = new ProjectMapper(saveLocation, project - 12);
 
             Assert.AreEqual(project, reader.ProjectID);
             Assert.AreEqual(2, reader.ImageSetCount);
@@ -173,7 +169,7 @@ namespace Hub.Util.Tests
         public void ReadSendTest()
         {
             int project = new Random().Next();
-            ImageMapper mapper = new ImageMapper(saveLocation, project);
+            ProjectMapper mapper = new ProjectMapper(saveLocation, project);
             mapper.AddImageSet(1, "place");
             mapper.AddImageSet(0, "other");
 
@@ -188,7 +184,7 @@ namespace Hub.Util.Tests
 
             mapper.Save();
 
-            ImageMapper reader = new ImageMapper(saveLocation, project);
+            ProjectMapper reader = new ProjectMapper(saveLocation, project);
 
             Assert.AreEqual(project, reader.ProjectID);
             Assert.AreEqual(true, reader.hasSent(0, "cryo"));
@@ -200,7 +196,7 @@ namespace Hub.Util.Tests
         public void ImageCountExceptionTest()
         {
             int project = new Random().Next();
-            ImageMapper mapper = new ImageMapper(saveLocation, project);
+            ProjectMapper mapper = new ProjectMapper(saveLocation, project);
             mapper.AddImageSet(1, "place");
             mapper.AddImageSet(0, "other");
 
@@ -225,7 +221,7 @@ namespace Hub.Util.Tests
         public void AddImageExceptionTest()
         {
             int project = new Random().Next();
-            ImageMapper mapper = new ImageMapper(saveLocation, project);
+            ProjectMapper mapper = new ProjectMapper(saveLocation, project);
             mapper.AddImageSet(1, "place");
             mapper.AddImageSet(0, "other");
 
@@ -254,7 +250,7 @@ namespace Hub.Util.Tests
         public void SentExceptionTest()
         {
             int project = new Random().Next();
-            ImageMapper mapper = new ImageMapper(saveLocation, project);
+            ProjectMapper mapper = new ProjectMapper(saveLocation, project);
             mapper.AddImageSet(1, "place");
             mapper.AddImageSet(0, "other");
 
@@ -312,7 +308,7 @@ namespace Hub.Util.Tests
         public void SetDoneTest()
         {
             int project = new Random().Next();
-            ImageMapper mapper = new ImageMapper(saveLocation, project);
+            ProjectMapper mapper = new ProjectMapper(saveLocation, project);
             mapper.AddImageSet(1, "place");
             mapper.AddImageSet(0, "other");
 
@@ -345,7 +341,7 @@ namespace Hub.Util.Tests
         public void ImageAbsolutePathTest()
         {
             int project = new Random().Next();
-            ImageMapper mapper = new ImageMapper(saveLocation, project);
+            ProjectMapper mapper = new ProjectMapper(saveLocation, project);
             mapper.AddImageSet(1, "place");
             mapper.AddImageSet(0, "other");
 
@@ -365,11 +361,43 @@ namespace Hub.Util.Tests
             try
             {
                 mapper.ImageAbsolutePath(1, "nope");
-                Assert.Fail("Image set 2 doesn't exist");
+                Assert.Fail("Image doesn't exist");
             }
             catch (Exception) { };
 
             Assert.IsTrue(mapper.ImageAbsolutePath(0, "cryo").Length > 5);
+        }
+
+        [Test]
+        public void JumbledOrder()
+        {
+            int project = new Random().Next();
+            ProjectMapper mapper = new ProjectMapper(saveLocation, project);
+
+            mapper.AddImageSet(2, "other");
+            mapper.AddImageSet(1, "next");
+            mapper.AddImageSet(0, "car");
+
+            mapper.AddImage(2, "waves");
+            mapper.AddImage(2, "octo");
+            mapper.AddImage(2, "bike");
+
+            mapper.AddImage(0, "feet");
+            mapper.AddImage(0, "hands");
+            mapper.AddImage(0, "heads");
+
+            mapper.AddImage(1, "maps");
+            mapper.AddImage(1, "charts");
+            mapper.AddImage(1, "graphs");
+
+            mapper.Save();
+            mapper = new ProjectMapper(saveLocation, 2333);
+
+            Assert.AreNotEqual(2333, mapper.ProjectID);
+
+            Assert.AreEqual(saveLocation + "\\next\\maps",mapper.ImageAbsolutePath(1, "maps"));
+            Assert.AreEqual(saveLocation + "\\other\\bike",mapper.ImageAbsolutePath(2, "bike"));
+            Assert.AreEqual(saveLocation + "\\car\\feet",mapper.ImageAbsolutePath(0, "feet"));
         }
     }
 }
