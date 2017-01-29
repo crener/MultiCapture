@@ -95,7 +95,6 @@ namespace Hub.Util
         /// <returns>static project mapper</returns>
         public static ProjectMapper Instance()
         {
-            Get:
             {
                 return instance;
             }

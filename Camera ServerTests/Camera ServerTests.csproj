@@ -52,12 +52,19 @@
   </Choose>
   <ItemGroup>
     <Compile Include="CameraSettingsTests.cs" />
+    <Compile Include="Mocks\MockCamera.cs" />
+    <Compile Include="Mocks\MockSocket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RequestProcess.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Camera Server\Camera Server.csproj">
       <Project>{93CAA98A-A566-4849-8D8C-26E91B6B85B3}</Project>
       <Name>Camera Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharedDeviceItems\SharedDeviceItems.csproj">
+      <Project>{d9c3e348-042c-4eb8-941f-c1891f2dad46}</Project>
+      <Name>SharedDeviceItems</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

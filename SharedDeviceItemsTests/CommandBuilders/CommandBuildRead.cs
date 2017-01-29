@@ -35,6 +35,17 @@ namespace SharedDeviceItemsTests.CommandBuilders
                 Assert.True(interp.Parameters.ContainsKey(pair.Key));
                 Assert.True(interp.Parameters[pair.Key] == pair.Value);
             }
+
+            interp = new CommandReader(Encoding.ASCII.GetString(data));
+
+            Assert.True(interp.Request == CameraRequest.SendFullResImage);
+            Assert.True(interp.Parameters.Count == param.Count);
+
+            foreach (KeyValuePair<string, string> pair in param)
+            {
+                Assert.True(interp.Parameters.ContainsKey(pair.Key));
+                Assert.True(interp.Parameters[pair.Key] == pair.Value);
+            }
         }
 
         [TestCase(Constants.ParamSeperator)]
@@ -81,6 +92,12 @@ namespace SharedDeviceItemsTests.CommandBuilders
             Assert.True(result.Request == CameraRequest.SendFullResImage);
             Assert.True(result.Parameters["id"] == "0");
             Assert.True(result.Parameters.Count == 1);
+
+            result = new CommandReader(Encoding.ASCII.GetString(rawRequest));
+
+            Assert.True(result.Request == CameraRequest.SendFullResImage);
+            Assert.True(result.Parameters["id"] == "0");
+            Assert.True(result.Parameters.Count == 1);
         }
 
         [Test]
@@ -91,6 +108,11 @@ namespace SharedDeviceItemsTests.CommandBuilders
             request.CopyTo(rawRequest, 0);
 
             CommandReader result = new CommandReader(rawRequest);
+
+            Assert.True(result.Request == CameraRequest.SendFullResImage);
+            Assert.True(result.Parameters.Count == 0);
+
+            result = new CommandReader(Encoding.ASCII.GetString(rawRequest));
 
             Assert.True(result.Request == CameraRequest.SendFullResImage);
             Assert.True(result.Parameters.Count == 0);
@@ -107,6 +129,11 @@ namespace SharedDeviceItemsTests.CommandBuilders
 
             Assert.True(result.Request == CameraRequest.SendFullResImage);
             Assert.True(result.Parameters.Count == 1);
+
+            result = new CommandReader(Encoding.ASCII.GetString(rawRequest));
+
+            Assert.True(result.Request == CameraRequest.SendFullResImage);
+            Assert.True(result.Parameters.Count == 1);
         }
 
         [Test]
@@ -120,6 +147,26 @@ namespace SharedDeviceItemsTests.CommandBuilders
 
             Assert.True(result.Request == CameraRequest.SendFullResImage);
             Assert.True(result.Parameters.Count == 1);
+
+            result = new CommandReader(Encoding.ASCII.GetString(rawRequest));
+
+            Assert.True(result.Request == CameraRequest.SendFullResImage);
+            Assert.True(result.Parameters.Count == 1);
+        }
+
+        [Test]
+        public void SimpleRequest()
+        {
+            byte[] request = new CommandBuilder().Request(CameraRequest.Alive).Build();
+            CommandReader reader = new CommandReader(request);
+
+            Assert.AreEqual(reader.Request, CameraRequest.Alive);
+            Assert.AreEqual(0, reader.Parameters.Count);
+
+            reader = new CommandReader(Encoding.ASCII.GetString(request));
+
+            Assert.AreEqual(CameraRequest.Alive, reader.Request);
+            Assert.AreEqual(0, reader.Parameters.Count);
         }
     }
 }

@@ -104,5 +104,20 @@ namespace Hub_ClientTests.Networking
         {
             throw new NotImplementedException();
         }
+
+        public void Bind(IPEndPoint localEndPoint)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Listen(int i)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ISocket Accept()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

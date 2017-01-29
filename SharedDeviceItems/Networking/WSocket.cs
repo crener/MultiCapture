@@ -70,5 +70,20 @@ namespace Hub.Helpers.Wrapper
         {
             return socket.BeginConnect(remoteEp, callback, state);
         }
+
+        public void Bind(IPEndPoint localEndPoint)
+        {
+            socket.Bind(localEndPoint);
+        }
+
+        public void Listen(int i)
+        {
+            socket.Listen(i);
+        }
+
+        public ISocket Accept()
+        {
+            return socket.Accept() as ISocket;
+        }
     }
 }

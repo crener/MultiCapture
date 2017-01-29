@@ -2,6 +2,8 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Hub.Helpers.Wrapper;
+using Hub.Networking;
 using SharedDeviceItems;
 using SharedDeviceItems.Helpers;
 
@@ -26,8 +28,8 @@ namespace Camera_Server
 #pragma warning restore CS0618 // Type or member is obsolete
 
             // Create a TCP/IP socket.
-            Socket listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            Socket handler = null;
+            ISocket listener = new WSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            ISocket handler = null;
 
             // Bind the socket to the local endpoint and 
             // listen for incoming connections.
@@ -100,7 +102,7 @@ namespace Camera_Server
         /// </summary>
         /// <param name="s">socket that needs to be tested</param>
         /// <returns>true if connected to a client</returns>
-        private bool Connected(Socket s)
+        private bool Connected(ISocket s)
         {
             if (s.Connected && s.Poll(1000, SelectMode.SelectRead) && s.Available == 0)
                 return false;

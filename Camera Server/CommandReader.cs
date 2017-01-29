@@ -18,7 +18,7 @@ namespace Camera_Server
         {
             Parameters = new Dictionary<string, string>();
 
-            ConvertData(data);
+            ConvertData(StripToBasicMessage(data));
         }
 
         public CommandReader(byte[] data)
@@ -73,6 +73,14 @@ namespace Camera_Server
             }
 
             return data;
+        }
+
+        private string StripToBasicMessage(string data)
+        {
+            int index = data.IndexOf(Constants.EndOfMessage);
+            if(index < 0) return data;
+
+            return data.Substring(0, index);
         }
     }
 }

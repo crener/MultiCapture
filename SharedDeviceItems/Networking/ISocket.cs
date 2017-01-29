@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Hub.Networking
 {
     /// <summary>
-    /// interfasce for the standard C# socket
+    /// interface for the standard C# socket
     /// </summary>
     public interface ISocket
     {
@@ -32,5 +32,8 @@ namespace Hub.Networking
             object state);
 
         IAsyncResult BeginConnect(EndPoint remoteEp, AsyncCallback callback, object state);
+        void Bind(IPEndPoint localEndPoint);
+        void Listen(int i);
+        ISocket Accept();
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using Hub.Networking;
 using SharedDeviceItems;
 using SharedDeviceItems.Helpers;
 using SharedDeviceItems.Interface;
@@ -10,14 +11,14 @@ using Shell_Camera;
 
 namespace Camera_Server
 {
-    class RequestProcess
+    public class RequestProcess
     {
-        private ICamera camera = new ShellCamera("0");
-        private Socket client;
+        protected ICamera camera = new ShellCamera("0");
+        private ISocket client;
         private static Dictionary<string, CameraRequest> requestLookup = new Dictionary<string, CameraRequest>();
         private string imageName = "0";
 
-        public RequestProcess(Socket client)
+        public RequestProcess(ISocket client)
         {
             this.client = client;
             camera.SetCameraName(CameraSettings.GetSetting("name"));
@@ -60,13 +61,19 @@ namespace Camera_Server
                 return;
             }
 
-            imageName = requestMessage.Parameters["id"];
-            Console.WriteLine("ImageName: " + imageName);
+            if (requestMessage.Parameters.ContainsKey("id"))
+            {
+                imageName = requestMessage.Parameters["id"];
+                Console.WriteLine("ImageName: " + imageName);
+            }
 
             if (requestMessage.Request == CameraRequest.SetProporties)
             {
-                CameraSettings.AddSetting("name", requestMessage.Parameters["name"]);
-                camera.SetCameraName(requestMessage.Parameters["name"]);
+                if(requestMessage.Parameters.ContainsKey("name"))
+                {
+                    CameraSettings.AddSetting("name", requestMessage.Parameters["name"]);
+                    camera.SetCameraName(requestMessage.Parameters["name"]);
+                }
                 AliveRequest(client);
                 return;
             }
@@ -138,7 +145,7 @@ namespace Camera_Server
         /// </summary>
         /// <param name="client">Socket that data will be sent too</param>
         /// <param name="response">The data that will be sent</param>
-        private static void SendResponse(Socket client, byte[] response)
+        private static void SendResponse(ISocket client, byte[] response)
         {
             Console.WriteLine("Data size: " + response.Length);
             client.Send(EndOfMessage(Encoding.ASCII.GetBytes(response.Length.ToString())));
@@ -149,13 +156,13 @@ namespace Camera_Server
         /// wrapper for the alive request to be handled
         /// </summary>
         /// <param name="client"></param>
-        private static void AliveRequest(Socket client)
+        private static void AliveRequest(ISocket client)
         {
             byte[] msg = Encoding.ASCII.GetBytes(Constants.SuccessString + Constants.EndOfMessage);
             client.Send(msg);
         }
 
-        private static void FailReply(Socket client)
+        private static void FailReply(ISocket client)
         {
             byte[] msg = Encoding.ASCII.GetBytes(Constants.FailString + Constants.EndOfMessage);
             client.Send(msg);

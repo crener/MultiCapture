@@ -54,8 +54,8 @@
     <Compile Include="Helpers\DataClasses.cs" />
     <Compile Include="Helpers\SaveContainerTests.cs" />
     <Compile Include="Helpers\Networking.cs" />
-    <Compile Include="Threaded\Networking\MockSocket.cs" />
-    <Compile Include="Threaded\Networking\SynchronousNetTest.cs" />
+    <Compile Include="Networking\MockSocket.cs" />
+    <Compile Include="Networking\SynchronousNetTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\ByteManipulation.cs" />
     <Compile Include="Threaded\CameraThread.cs" />
