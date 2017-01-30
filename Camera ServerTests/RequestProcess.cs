@@ -25,13 +25,16 @@ namespace Camera_ServerTests
         {
             socket.Available = 0;
             socket.Connected = true;
+            socket.receiveCount = 0;
+            socket.receiveData = new byte[0];
+            socket.sendData = new byte[0];
 
             cam.name = "test camera";
             cam.imageY = 1080;
             cam.imageX = 1920;
             cam.identifier = "test";
             cam.cameraData = new byte[] {100, 234, 20, 30};
-            if(!string.IsNullOrEmpty(cam.lastPath) && cam.lastPath != "\\scanimage\\test.jpg") File.Delete(cam.lastPath);
+            if(!string.IsNullOrEmpty(cam.lastPath) && !cam.lastPath.Contains("test.jpg")) File.Delete(cam.lastPath);
             cam.lastPath = "";
             cam.directory = Path.DirectorySeparatorChar + "scanimage" + Path.DirectorySeparatorChar;
         }
@@ -53,6 +56,28 @@ namespace Camera_ServerTests
             cam.lastPath = "";
         }
 
+        [Test]
+        public void UnrecognaisedRequest()
+        {
+            RequestProcess processer = new CustomCameraRequestProcess(socket, cam);
+            processer.ProcessRequest(Encoding.ASCII.GetBytes("333" + Constants.EndOfMessage));
+
+            byte[] returndata = socket.sendData;
+            string returnString = Encoding.ASCII.GetString(returndata);
+
+            Assert.IsTrue(returnString.Contains(Constants.FailString));
+
+            processer.ProcessRequest("333" + Constants.EndOfMessage);
+            returnString = Encoding.ASCII.GetString(socket.sendData);
+
+            Assert.IsTrue(returnString.Contains(Constants.FailString));
+        }
+
+        //todo Camera data return test, response test for each request type, settings test to see if the settings are being applied to the camera
+
+        //todo make a mixed test. Take the output from this and put it into the mock socket for the hub code so that it gets actual data in a test enviroment
+
+        //todo make tests for the linsener code in the camera
     }
 
     class CustomCameraRequestProcess : RequestProcess
