@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using SharedDeviceItems;
 using Camera_Server;
 using Camera_ServerTests.Mocks;
-using Hub.Helpers.Wrapper;
 using Hub.Networking;
-using NUnit.Framework.Internal.Execution;
 using SharedDeviceItems.Interface;
 using CommandBuilder = Hub.Helpers.CommandBuilder;
 
@@ -36,7 +31,7 @@ namespace Camera_ServerTests
             cam.imageX = 1920;
             cam.identifier = "test";
             cam.cameraData = new byte[] { 100, 234, 20, 30 };
-            if (!string.IsNullOrEmpty(cam.lastPath) && !cam.lastPath.Contains("test.jpg")) File.Delete(cam.lastPath);
+            if (!string.IsNullOrEmpty(cam.lastPath) && !cam.lastPath.Contains("test")) File.Delete(cam.lastPath);
             cam.lastPath = "";
             cam.directory = Path.DirectorySeparatorChar + "scanimage" + Path.DirectorySeparatorChar;
         }

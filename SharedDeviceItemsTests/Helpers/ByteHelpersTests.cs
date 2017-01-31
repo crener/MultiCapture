@@ -13,7 +13,7 @@ namespace SharedDeviceItems.Helpers.Tests
         public void BasicFileSerialisation()
         {
             string filePath = Path.GetPathRoot(Directory.GetCurrentDirectory()) + "scanimage" +
-                Path.DirectorySeparatorChar + "test.jpg";
+                Path.DirectorySeparatorChar + "test2.jpg";
 
             if (!File.Exists(filePath))
             {
