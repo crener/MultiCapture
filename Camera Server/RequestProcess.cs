@@ -94,14 +94,14 @@ namespace Camera_Server
                     string imageLocation = camera.CaptureImage(imageName);
 
                     messageData = ByteHelpers.FileToBytes(imageLocation);
-                    SendResponse(client, messageData);
+                    SendResponse(client, messageData, false);
 
                     if (File.Exists(imageLocation)) File.Delete(imageLocation);
                     return;
                 case CameraRequest.SendTestImage:
                     //For testing, send a static image saved on the device
-                    messageData = ByteHelpers.FileToBytes(Path.DirectorySeparatorChar + "scanimage" + Path.DirectorySeparatorChar + "test.jpg");
-                    SendResponse(client, messageData);
+                    messageData = ByteHelpers.FileToBytes(Constants.DefualtHubSaveLocation() + "test.jpg");
+                    SendResponse(client, messageData, false);
                     return;
                 case CameraRequest.SetProporties:
                     AliveRequest(client);
@@ -109,11 +109,10 @@ namespace Camera_Server
                 default:
                     Console.WriteLine("Request Processing failed");
                     Console.WriteLine("\tRequest Name: " + request);
-                    messageData = FailedRequest();
                     break;
             }
 
-            SendResponse(client, messageData);
+            FailReply(client);
         }
 
         /// <summary>
@@ -132,23 +131,16 @@ namespace Camera_Server
         }
 
         /// <summary>
-        /// wrapper for the standard failed response 
-        /// </summary>
-        private static byte[] FailedRequest()
-        {
-            return Encoding.ASCII.GetBytes(Constants.FailString + Constants.EndOfMessage);
-        }
-
-        /// <summary>
         /// wrapper for sending bytes to get cleaner code 
         /// </summary>
         /// <param name="client">Socket that data will be sent too</param>
         /// <param name="response">The data that will be sent</param>
-        private static void SendResponse(ISocket client, byte[] response)
+        /// <param name="needsEnd">true if end must be added to response</param>
+        private static void SendResponse(ISocket client, byte[] response, bool needsEnd = true)
         {
             Console.WriteLine("Data size: " + response.Length);
             client.Send(EndOfMessage(Encoding.ASCII.GetBytes(response.Length.ToString())));
-            client.Send(EndOfMessage(response));
+            client.Send(needsEnd ? EndOfMessage(response) : response);
         }
 
         /// <summary>

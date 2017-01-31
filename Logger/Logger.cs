@@ -16,8 +16,7 @@ namespace Logger
 
         public Logger()
         {
-            path = Constants.DefualtHubSaveLocation() + Path.DirectorySeparatorChar + "Log" +
-                Path.DirectorySeparatorChar;
+            path = Constants.DefualtHubSaveLocation() + "Log" + Path.DirectorySeparatorChar;
             Init();
         }
 

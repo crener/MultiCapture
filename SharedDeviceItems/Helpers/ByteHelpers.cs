@@ -12,12 +12,12 @@ namespace SharedDeviceItems.Helpers
         /// <returns>byte array that should be sent</returns>
         public static byte[] FileToBytes(string location)
         {
-            string fileName = location.Substring(location.LastIndexOf(Path.DirectorySeparatorChar));
+            string fileName = location.Substring(location.LastIndexOf(Path.DirectorySeparatorChar) + 1);
             byte[] name = Encoding.ASCII.GetBytes(fileName + Constants.MessageSeperator),
                         file = File.ReadAllBytes(location),
                         eom = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
 
-            var messageData = new byte[name.Length + file.Length + eom.Length];
+            byte[] messageData = new byte[name.Length + file.Length + eom.Length];
             name.CopyTo(messageData, 0);
             file.CopyTo(messageData, name.Length);
             eom.CopyTo(messageData, name.Length + file.Length);

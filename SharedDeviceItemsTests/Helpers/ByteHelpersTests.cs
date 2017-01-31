@@ -87,7 +87,7 @@ namespace SharedDeviceItems.Helpers.Tests
             byte[] fakeData = new byte[size];
             rand.NextBytes(fakeData);
 
-            string path = "C:\\scanimage" + Path.DirectorySeparatorChar + "test.txt";
+            string path = Constants.DefualtHubSaveLocation() + "readfile.txt";
 
             if (File.Exists(path)) File.Delete(path);
 
@@ -104,7 +104,7 @@ namespace SharedDeviceItems.Helpers.Tests
             Assert.True(ByteManipulation.SeperateData(out name, methodData, out methodData, Constants.MessageSeperator));
             Array.Copy(methodData, fileData, methodData.Length - Constants.EndOfMessage.Length);
 
-            Assert.True(name == Path.DirectorySeparatorChar + "test.txt");
+            Assert.AreEqual("readfile.txt", name);
             Assert.True(fileData.Length == fakeData.Length);
 
             for (int i = 0; i < fakeData.Length; i++)

@@ -31,7 +31,7 @@ namespace SharedDeviceItems
 
         public static string DefualtHubSaveLocation()
         {
-            return Path.DirectorySeparatorChar + "scanimage";
+            return Path.DirectorySeparatorChar + "scanimage" + Path.DirectorySeparatorChar;
         }
     }
 }
