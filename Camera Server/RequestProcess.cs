@@ -15,7 +15,7 @@ namespace Camera_Server
         protected ICamera camera = new ShellCamera("0");
         private ISocket client;
         private static Dictionary<string, CameraRequest> requestLookup = new Dictionary<string, CameraRequest>();
-        private string imageName = "0";
+        protected string imageName = "0";
 
         public RequestProcess(ISocket client)
         {

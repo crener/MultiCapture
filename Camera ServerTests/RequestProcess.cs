@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using NUnit.Framework;
 using SharedDeviceItems;
@@ -151,7 +152,53 @@ namespace Camera_ServerTests
             Assert.AreEqual(cam.name + nameData + ".jpg", converted.Substring(0, converted.IndexOf(Constants.MessageSeperator)));
         }
 
-        //todo settings test to see if the settings are being applied to the camera
+        [Test]
+        public void SettingName()
+        {
+            CustomCameraRequestProcess processer = new CustomCameraRequestProcess(socket, cam);
+            byte[] request = new CommandBuilder().Request(CameraRequest.SetProporties).AddParam("name", "yeast").Build();
+            processer.ProcessRequest(request);
+
+            Assert.AreEqual("yeast", cam.name);
+
+            processer.SetImageName("nope");
+            processer.ProcessRequest(Encoding.ASCII.GetString(request));
+
+            Assert.AreEqual("yeast", cam.name);
+        }
+
+        [Test]
+        public void SettingId()
+        {
+            CustomCameraRequestProcess processer = new CustomCameraRequestProcess(socket, cam);
+            byte[] request = new CommandBuilder().Request(CameraRequest.SetProporties).AddParam("id", "23").Build();
+            processer.ProcessRequest(request);
+
+            Assert.AreEqual("23", processer.GetImageName());
+
+            processer.SetImageName("nope");
+            processer.ProcessRequest(Encoding.ASCII.GetString(request));
+
+            Assert.AreEqual("23", processer.GetImageName());
+        }
+
+        [Test]
+        public void SettingNameAndId()
+        {
+            CustomCameraRequestProcess processer = new CustomCameraRequestProcess(socket, cam);
+            byte[] request = new CommandBuilder().Request(CameraRequest.SetProporties).AddParam("name", "yeast").AddParam("id", "23").Build();
+            processer.ProcessRequest(request);
+
+            Assert.AreEqual("yeast", cam.name);
+            Assert.AreEqual("23", processer.GetImageName());
+
+            cam.name = "nope";
+            processer.SetImageName("nope");
+            processer.ProcessRequest(Encoding.ASCII.GetString(request));
+
+            Assert.AreEqual("yeast", cam.name);
+            Assert.AreEqual("23", processer.GetImageName());
+        }
 
         //todo make a mixed test. Take the output from this and put it into the mock socket for the hub code so that it gets actual data in a test enviroment
 
@@ -166,5 +213,8 @@ namespace Camera_ServerTests
         {
             base.camera = camera;
         }
+
+        public string GetImageName() { return imageName; }
+        public void SetImageName(string name) { imageName = name; }
     }
 }
