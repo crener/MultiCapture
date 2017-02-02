@@ -35,7 +35,7 @@ namespace Camera_Server
             }
         }
 
-        public void ProcessRequest(byte[] message)
+        public virtual void ProcessRequest(byte[] message)
         {
             CommandReader requestMessage = new CommandReader(message);
             ProcessRequest(requestMessage);

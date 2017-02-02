@@ -12,11 +12,14 @@ namespace Camera_Server
     public class Listener
     {
         private static string data;
+        protected bool stop { get; set; }
+        protected ISocket listener;
 
         public void StartListening()
         {
             // Data buffer for incoming data.
             byte[] bytes = new byte[Constants.CameraBufferSize];
+            stop = false;
 
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = NetworkHelpers.GrabIpv4(ipHostInfo);
@@ -28,7 +31,8 @@ namespace Camera_Server
 #pragma warning restore CS0618 // Type or member is obsolete
 
             // Create a TCP/IP socket.
-            ISocket listener = new WSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            if(listener == null ) listener = 
+                    new WSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             ISocket handler = null;
 
             // Bind the socket to the local endpoint and 
@@ -39,19 +43,19 @@ namespace Camera_Server
                 listener.Listen(10);
 
                 // Start listening for connections.
-                while (true)
+                while (!stop)
                 {
                     try
                     {
                         Console.WriteLine("Waiting for a connection...");
-                        // Program is suspended while waiting for an incoming connection.
+                        // Thread is suspended while waiting for an incoming connection.
                         handler = listener.Accept();
                         data = null;
                         Console.WriteLine("Connected!!");
 
-                        while (Connected(handler))
+                        while (Connected(handler) && !stop)
                         {
-                            RequestProcess process = new RequestProcess(handler);
+                            RequestProcess process = NewProcessor(handler);
                             bytes = new byte[Constants.CameraBufferSize];
                             int bytesRec = handler.Receive(bytes);
                             data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
@@ -108,6 +112,17 @@ namespace Camera_Server
                 return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// Layer of abstarction for creating a request process so that tests can pass in
+        /// a slightly more open version of the handeler
+        /// </summary>
+        /// <param name="handler"></param>
+        /// <returns></returns>
+        protected virtual RequestProcess NewProcessor(ISocket handler)
+        {
+            return new RequestProcess(handler);
         }
     }
 }

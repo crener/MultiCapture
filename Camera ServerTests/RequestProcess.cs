@@ -1,13 +1,10 @@
 ﻿using System;
 using System.IO;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using NUnit.Framework;
 using SharedDeviceItems;
 using Camera_Server;
 using Camera_ServerTests.Mocks;
-using Hub.Networking;
-using SharedDeviceItems.Interface;
 using CommandBuilder = Hub.Helpers.CommandBuilder;
 
 namespace Camera_ServerTests
@@ -23,9 +20,10 @@ namespace Camera_ServerTests
         {
             socket.Available = 0;
             socket.Connected = true;
-            socket.receiveCount = 0;
-            socket.receiveData = new byte[0];
-            socket.sendData = new byte[0];
+            socket.ReceiveCount = 0;
+            socket.RecieveQueryCount = 0;
+            socket.ReceiveData = new byte[0];
+            socket.SendData = new byte[0];
 
             cam.name = "camera";
             cam.imageY = 1080;
@@ -40,7 +38,7 @@ namespace Camera_ServerTests
         [Test]
         public void AllRequestsNoException()
         {
-            RequestProcess processer = new CustomCameraRequestProcess(socket, cam);
+            RequestProcess processer = new MockRequestProcess(socket, cam);
 
             CameraRequest[] allRequests = (CameraRequest[])Enum.GetValues(typeof(CameraRequest));
             foreach (int value in allRequests)
@@ -58,38 +56,38 @@ namespace Camera_ServerTests
         public void UnrecognaisedRequest()
         {
             byte[] expectedResponse = Encoding.ASCII.GetBytes(Constants.FailString + Constants.EndOfMessage);
-            RequestProcess processer = new CustomCameraRequestProcess(socket, cam);
+            RequestProcess processer = new MockRequestProcess(socket, cam);
             processer.ProcessRequest(Encoding.ASCII.GetBytes("333" + Constants.EndOfMessage));
 
-            Assert.AreEqual(expectedResponse, socket.sendData);
+            Assert.AreEqual(expectedResponse, socket.SendData);
 
-            socket.sendData = new byte[] { };
+            socket.SendData = new byte[] { };
             processer.ProcessRequest("333" + Constants.EndOfMessage);
 
-            Assert.AreEqual(expectedResponse, socket.sendData);
+            Assert.AreEqual(expectedResponse, socket.SendData);
         }
 
         [Test]
         public void AliveRequest()
         {
             byte[] expectedResponse = Encoding.ASCII.GetBytes(Constants.SuccessString + Constants.EndOfMessage);
-            RequestProcess processer = new CustomCameraRequestProcess(socket, cam);
+            RequestProcess processer = new MockRequestProcess(socket, cam);
             byte[] request = new CommandBuilder().Request(CameraRequest.Alive).Build();
 
             processer.ProcessRequest(request);
 
-            Assert.AreEqual(expectedResponse, socket.sendData);
+            Assert.AreEqual(expectedResponse, socket.SendData);
 
-            socket.sendData = new byte[] { };
+            socket.SendData = new byte[] { };
             processer.ProcessRequest(Encoding.ASCII.GetString(request));
 
-            Assert.AreEqual(expectedResponse, socket.sendData);
+            Assert.AreEqual(expectedResponse, socket.SendData);
         }
 
         [Test]
         public void TestRequest()
         {
-            RequestProcess processer = new CustomCameraRequestProcess(socket, cam);
+            RequestProcess processer = new MockRequestProcess(socket, cam);
             byte[] request = new CommandBuilder().Request(CameraRequest.SendTestImage).Build();
 
             byte[] name = Encoding.ASCII.GetBytes("test.jpg" + Constants.MessageSeperator),
@@ -103,12 +101,12 @@ namespace Camera_ServerTests
 
             processer.ProcessRequest(request);
 
-            Assert.AreEqual(imageData, socket.sendData);
+            Assert.AreEqual(imageData, socket.SendData);
 
-            socket.sendData = new byte[] { };
+            socket.SendData = new byte[] { };
             processer.ProcessRequest(Encoding.ASCII.GetString(request));
 
-            Assert.AreEqual(imageData, socket.sendData);
+            Assert.AreEqual(imageData, socket.SendData);
         }
 
         [Test]
@@ -118,7 +116,7 @@ namespace Camera_ServerTests
             cam.name = "full";
             string nameData = "byte";
 
-            RequestProcess processer = new CustomCameraRequestProcess(socket, cam);
+            RequestProcess processer = new MockRequestProcess(socket, cam);
             byte[] request = new CommandBuilder().Request(CameraRequest.SendFullResImage).AddParam("id", nameData).Build();
 
             byte[] name = Encoding.ASCII.GetBytes(cam.name + nameData + ".jpg" + Constants.MessageSeperator),
@@ -130,12 +128,12 @@ namespace Camera_ServerTests
             end.CopyTo(imageData, name.Length + cam.cameraData.Length);
 
             processer.ProcessRequest(request);
-            string converted = Encoding.ASCII.GetString(socket.sendData);
+            string converted = Encoding.ASCII.GetString(socket.SendData);
 
-            Assert.AreEqual(imageData, socket.sendData);
+            Assert.AreEqual(imageData, socket.SendData);
             Assert.AreEqual(cam.name + nameData + ".jpg", converted.Substring(0, converted.IndexOf(Constants.MessageSeperator)));
 
-            socket.sendData = new byte[] { };
+            socket.SendData = new byte[] { };
             nameData = "string";
             name = Encoding.ASCII.GetBytes(cam.name + nameData + ".jpg" + Constants.MessageSeperator);
             imageData = new byte[name.Length + cam.cameraData.Length + end.Length];
@@ -146,16 +144,16 @@ namespace Camera_ServerTests
             end.CopyTo(imageData, name.Length + cam.cameraData.Length);
 
             processer.ProcessRequest(Encoding.ASCII.GetString(request));
-            converted = Encoding.ASCII.GetString(socket.sendData);
+            converted = Encoding.ASCII.GetString(socket.SendData);
 
-            Assert.AreEqual(imageData, socket.sendData);
+            Assert.AreEqual(imageData, socket.SendData);
             Assert.AreEqual(cam.name + nameData + ".jpg", converted.Substring(0, converted.IndexOf(Constants.MessageSeperator)));
         }
 
         [Test]
         public void SettingName()
         {
-            CustomCameraRequestProcess processer = new CustomCameraRequestProcess(socket, cam);
+            MockRequestProcess processer = new MockRequestProcess(socket, cam);
             byte[] request = new CommandBuilder().Request(CameraRequest.SetProporties).AddParam("name", "yeast").Build();
             processer.ProcessRequest(request);
 
@@ -170,7 +168,7 @@ namespace Camera_ServerTests
         [Test]
         public void SettingId()
         {
-            CustomCameraRequestProcess processer = new CustomCameraRequestProcess(socket, cam);
+            MockRequestProcess processer = new MockRequestProcess(socket, cam);
             byte[] request = new CommandBuilder().Request(CameraRequest.SetProporties).AddParam("id", "23").Build();
             processer.ProcessRequest(request);
 
@@ -185,7 +183,7 @@ namespace Camera_ServerTests
         [Test]
         public void SettingNameAndId()
         {
-            CustomCameraRequestProcess processer = new CustomCameraRequestProcess(socket, cam);
+            MockRequestProcess processer = new MockRequestProcess(socket, cam);
             byte[] request = new CommandBuilder().Request(CameraRequest.SetProporties).AddParam("name", "yeast").AddParam("id", "23").Build();
             processer.ProcessRequest(request);
 
@@ -203,18 +201,5 @@ namespace Camera_ServerTests
         //todo make a mixed test. Take the output from this and put it into the mock socket for the hub code so that it gets actual data in a test enviroment
 
         //todo make tests for the linsener code in the camera
-    }
-
-    class CustomCameraRequestProcess : RequestProcess
-    {
-        public CustomCameraRequestProcess(ISocket client) : base(client) { }
-
-        public CustomCameraRequestProcess(ISocket client, ICamera camera) : base(client)
-        {
-            base.camera = camera;
-        }
-
-        public string GetImageName() { return imageName; }
-        public void SetImageName(string name) { imageName = name; }
     }
 }

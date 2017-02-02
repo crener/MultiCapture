@@ -1,60 +1,76 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using Hub.Networking;
 
 namespace Camera_ServerTests.Mocks
 {
     class MockSocket : ISocket
     {
-        public byte[] sendData { get; set; }
-        public byte[] receiveData { get; set; }
-        public int receiveCount { get; set; }
+        public MockSocket()
+        {
+            ReceiveData = new byte[] {};
+            SendData = new byte[] {};
+            ReceiveCount = 0;
+            SlowDown = false;
+        }
+
+        public byte[] SendData { get; set; }
+        public byte[] ReceiveData { get; set; }
+        public int ReceiveCount { get; set; }
+        public int RecieveQueryCount { get; set; }
+        public bool SlowDown { get; set; }
 
         public void Connect(IPEndPoint endPoint)
         {
-            throw new NotImplementedException();
+            Active = true;
         }
 
         public void Send(byte[] data)
         {
-            sendData = data;
+            SendData = data;
         }
 
         public int Receive(byte[] buffer)
         {
-            if(receiveCount == receiveData.Length) return 0;
+            if(SlowDown) Thread.Sleep(20);
+            RecieveQueryCount++;
+            if (ReceiveCount == ReceiveData.Length) return 0;
 
-            //slplit into bits
-            if (buffer.Length > receiveData.Length - receiveCount)
+            //split into bits
+            if (buffer.Length > ReceiveData.Length - ReceiveCount)
             {
-                Array.Copy(receiveData, receiveCount, buffer, 0, buffer.Length);
-                receiveCount += buffer.Length;
+                Array.Copy(ReceiveData, ReceiveCount, buffer, 0, ReceiveData.Length);
+                ReceiveCount += ReceiveData.Length;
                 return buffer.Length;
             }
 
             //send the all the data or remaining data
-            int length = buffer.Length - receiveCount;
-            Array.Copy(receiveData, receiveCount, buffer, 0, length);
-            receiveCount = receiveData.Length;
+            int length = buffer.Length - ReceiveCount;
+            Array.Copy(ReceiveData, ReceiveCount, buffer, 0, length);
+            ReceiveCount = ReceiveData.Length;
             return length;
         }
 
+        public bool Active { get; private set; }
+
         public void Shutdown(SocketShutdown shutdown)
         {
-            throw new NotImplementedException();
+            Active = false;
         }
 
         public void Close()
         {
-            throw new NotImplementedException();
+            Active = false;
         }
 
         public bool Connected { get; set; }
         public int Available { get; set; }
+        public bool PollResult { get; set; }
         public bool Poll(int timout, SelectMode mode)
         {
-            throw new NotImplementedException();
+            return PollResult;
         }
 
         public IAsyncResult BeginSend(byte[] buffer, int offset, int size, SocketFlags socketFlags, AsyncCallback callback,
@@ -81,17 +97,18 @@ namespace Camera_ServerTests.Mocks
 
         public void Bind(IPEndPoint localEndPoint)
         {
-            throw new NotImplementedException();
+            
         }
 
         public void Listen(int i)
         {
-            throw new NotImplementedException();
+            
         }
 
         public ISocket Accept()
         {
-            throw new NotImplementedException();
+            Active = true;
+            return this;
         }
     }
 }
