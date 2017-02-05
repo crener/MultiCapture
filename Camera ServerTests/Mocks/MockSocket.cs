@@ -34,7 +34,7 @@ namespace Camera_ServerTests.Mocks
 
         public int Receive(byte[] buffer)
         {
-            if(SlowDown) Thread.Sleep(20);
+            if(SlowDown && RecieveQueryCount > 0) Thread.Sleep(1000);
             RecieveQueryCount++;
             if (ReceiveCount == ReceiveData.Length) return 0;
 

@@ -22,6 +22,7 @@ namespace Camera_ServerTests
         {
             //make sure the thread is dead
             listen.Stop = true;
+            thread.Interrupt();
             socket.Available = 0;
             thread.Join();
         }
@@ -33,7 +34,7 @@ namespace Camera_ServerTests
         }
 
         //causes test explorer to lock up so leaving it for now
-        //[Test]
+        [Test]
         public void RecieveDataTest()
         {
             byte[] data = new byte[Constants.CameraBufferSize];

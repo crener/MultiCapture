@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using Hub.Helpers.Wrapper;
 using Hub.Networking;
 using SharedDeviceItems;
@@ -31,7 +32,7 @@ namespace Camera_Server
 #pragma warning restore CS0618 // Type or member is obsolete
 
             // Create a TCP/IP socket.
-            if(listener == null ) listener = 
+            if (listener == null) listener =
                     new WSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             ISocket handler = null;
 
@@ -43,7 +44,7 @@ namespace Camera_Server
                 listener.Listen(10);
 
                 // Start listening for connections.
-                while (!stop)
+                while(!stop)
                 {
                     try
                     {
@@ -53,13 +54,17 @@ namespace Camera_Server
                         data = null;
                         Console.WriteLine("Connected!!");
 
-                        while (Connected(handler) && !stop)
+#if DEBUG
+                        while(Connected(handler) && !stop)
+#else
+                        while (Connected(handler))
+#endif
                         {
                             RequestProcess process = NewProcessor(handler);
                             bytes = new byte[Constants.CameraBufferSize];
                             int bytesRec = handler.Receive(bytes);
                             data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                            if (data.IndexOf(Constants.EndOfMessage) > -1)
+                            if(data.IndexOf(Constants.EndOfMessage) > -1)
                             {
                                 //process data
                                 process.ProcessRequest(bytes);
@@ -71,7 +76,7 @@ namespace Camera_Server
                             Console.WriteLine("Waiting for next request...");
                         }
                     }
-                    catch (Exception e)
+                    catch(Exception e)
                     {
                         Console.WriteLine("Exception thrown");
                         Console.WriteLine("\tmessage: " + e.Message);
@@ -84,6 +89,12 @@ namespace Camera_Server
                 }
 
             }
+#if DEBUG
+            catch (ThreadInterruptedException)
+            {
+                //ignore this as it only happens in tests
+            }
+#endif
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
@@ -97,8 +108,10 @@ namespace Camera_Server
                 }
             }
 
+#if DEBUG
             Console.WriteLine("\nPress ENTER to continue...");
             Console.Read();
+#endif
         }
 
         /// <summary>
