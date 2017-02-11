@@ -46,12 +46,13 @@ namespace Hub.Util
         public int ProjectID { get; private set; }
         public string ProjectName { get; set; }
 
-        private const int Version = 1;
+        private const int Version = 2;
         private int loadVersion = -1;
         private bool Done = false;
 
-        List<ImageSet> sets = new List<ImageSet>();
-        Dictionary<int, int> setLookUp = new Dictionary<int, int>();
+        private List<ImageSet> sets = new List<ImageSet>();
+        protected List<Camera> cameras = new List<Camera>();
+        private Dictionary<int, int> setLookUp = new Dictionary<int, int>();
 
         public int ImageSetCount => sets.Count;
         string FileLocation { get; set; }
@@ -63,8 +64,9 @@ namespace Hub.Util
         const string done = "done";
 
         const string cameraGroup = "cameras";
-        const string cameraIp = "ip";
-        const string cameraPort = "port";
+        const string cameraSetLabel = "camera";
+        const string cameraId = "id";
+        const string cameraName = "name";
 
         const string imageSetGroup = "imageSets";
         const string imageSetLabel = "set";
@@ -75,6 +77,7 @@ namespace Hub.Util
         const string imageData = "images";
         const string image = "image";
         const string imagePath = "path";
+        const string imageCamera = "cam";
         const string imageSent = "sent";
         const string imageSentDate = "sentDate";
         #endregion
@@ -85,7 +88,7 @@ namespace Hub.Util
             if (File.Exists(project)) Load(project);
             else ProjectID = projectID;
 
-            if(instance == null) instance = this;
+            if (instance == null) instance = this;
         }
 
         /// <summary>
@@ -105,11 +108,12 @@ namespace Hub.Util
         /// </summary>
         /// <param name="setID">Image set that the image gets added too</param>
         /// <param name="name">Name of the image</param>
-        public void AddImage(int setID, string name)
+        /// <param name="camId">the Id of the camera that took the image</param>
+        public void AddImage(int setID, string name, int camId)
         {
-            if (ImageExists(setID, name)) throw new Exception("Image doesn't exist");
+            if (ImageExists(setID, name)) throw new Exception("Image already exists");
 
-            sets[setLookUp[setID]].images.Add(new Image() { File = name });
+            sets[setLookUp[setID]].images.Add(new Image() { File = name, CameraId = camId });
         }
 
         /// <summary>
@@ -123,7 +127,23 @@ namespace Hub.Util
             if (path == null) throw new NullReferenceException("Path cannot be null");
 
             setLookUp.Add(setID, sets.Count);
-            sets.Add(new ImageSet() { ImageSetId = setID, Path = path });
+            sets.Add(new ImageSet() { ImageSetId = setID, Path = path});
+        }
+
+        /// <summary>
+        /// Add a new camera to the project file
+        /// </summary>
+        /// <param name="id">id of the camera</param>
+        /// <param name="name">nickname of the camera</param>
+        public void AddCamera(int id, string name)
+        {
+            Camera newCam = new Camera();
+            newCam.CameraId = id;
+            newCam.CameraName = name;
+
+            if (cameras.Contains(newCam)) throw new Exception("Camera already exists");
+
+            cameras.Add(newCam);
         }
 
         public void Sent(int setID, string imageName)
@@ -161,7 +181,7 @@ namespace Hub.Util
 
         public bool hasSent(int setID)
         {
-            if(!ImageSetExists(setID)) throw new Exception("Image Set doesn't exist");
+            if (!ImageSetExists(setID)) throw new Exception("Image Set doesn't exist");
             return sets[setID].AllSent;
         }
 
@@ -240,6 +260,18 @@ namespace Hub.Util
                 writer.WriteElementString(prodName, ProjectName);
                 writer.WriteElementString(done, Done.ToString());
 
+                writer.WriteStartElement(cameraGroup);
+                foreach (Camera cam in cameras)
+                {
+                    writer.WriteStartElement(cameraSetLabel);
+
+                    writer.WriteAttributeString(cameraId, cam.CameraId.ToString());
+                    writer.WriteAttributeString(cameraName, XmlConvert.EncodeName(cam.CameraName));
+
+                    writer.WriteEndElement();
+                }
+                writer.WriteEndElement();
+
                 writer.WriteStartElement(imageSetGroup);
                 for (int i = 0; i < sets.Count; ++i)
                 {
@@ -258,6 +290,7 @@ namespace Hub.Util
                         writer.WriteStartElement(image);
 
                         writer.WriteAttributeString(imagePath, img.File);
+                        writer.WriteAttributeString(imageCamera, img.CameraId.ToString());
                         writer.WriteAttributeString(imageSent, img.Sent.ToString());
                         writer.WriteAttributeString(imageSentDate, img.SendDate.ToString());
 
@@ -306,7 +339,7 @@ namespace Hub.Util
                                 if (reader.Read() && bool.TryParse(reader.Value, out doneVal)) Done = doneVal;
                                 break;
                             case imageSetGroup:
-                                while (reader.Read() && reader.Name == imageSetLabel)
+                                while (reader.Read() && reader.Name == XmlConvert.DecodeName(imageSetLabel))
                                     do
                                     {
                                         int setId = -1;
@@ -324,6 +357,7 @@ namespace Hub.Util
                                             setPath = reader.Value;
                                         }
                                         while (reader.NodeType != XmlNodeType.EndElement) reader.Read();
+
                                         AddImageSet(setId, setPath);
 
                                         //skip done
@@ -347,7 +381,8 @@ namespace Hub.Util
 
                                                 //image file name
                                                 string file = reader.GetAttribute(imagePath);
-                                                AddImage(setId, file);
+                                                int cam = int.Parse(reader.GetAttribute(imageCamera));
+                                                AddImage(setId, file, cam);
 
                                                 //image sent?
                                                 bool sentImg = false;
@@ -365,9 +400,20 @@ namespace Hub.Util
 
                                         #endregion
 
-                                        while (reader.NodeType != XmlNodeType.Element && reader.Name != imageSetLabel) reader.Read();
+                                        while (reader.NodeType != XmlNodeType.Element && reader.Name != XmlConvert.DecodeName(imageSetLabel)) reader.Read();
                                     } while (reader.Read() && reader.NodeType != XmlNodeType.EndElement && reader.Name != imageSetGroup);
+                                break;
+                            case cameraGroup:
+                                while (reader.Read() && reader.Name != XmlConvert.DecodeName(cameraSetLabel)) ;
+                                    do
+                                    {
+                                        Camera newCam = new Camera();
 
+                                        newCam.CameraId = int.Parse(reader.GetAttribute(cameraId));
+                                        newCam.CameraName = XmlConvert.DecodeName(reader.GetAttribute(cameraName));
+
+                                        cameras.Add(newCam);
+                                    } while (reader.Read() && reader.Name != cameraGroup);
                                 break;
                             default:
                                 if (reader.Name == "Project") break;
@@ -404,8 +450,15 @@ namespace Hub.Util
         private class Image
         {
             public string File { get; set; }
+            public int CameraId { get; set; }
             public bool Sent { get; set; }
             public long SendDate { get; set; }
+        }
+
+        public class Camera
+        {
+            public string CameraName { get; set; }
+            public int CameraId { get; set; }
         }
         #endregion
     }

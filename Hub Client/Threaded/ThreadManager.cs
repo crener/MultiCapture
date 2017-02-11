@@ -80,7 +80,7 @@ namespace Hub.Threaded
             projectFile.AddImageSet(imagesetId, "set-" + imagesetId);
             for(int i = 0; i < config.Cameras.Length; i++)
             {
-                projectFile.AddImage(imagesetId, config.Cameras[i].CamFileIdentity + imagesetId + ".jpg");
+                projectFile.AddImage(imagesetId, config.Cameras[i].CamFileIdentity + imagesetId + ".jpg", i);
             }
             projectFile.Save();
         }
@@ -137,6 +137,8 @@ namespace Hub.Threaded
                     Console.WriteLine("Failed to connect to camera " + config.Cameras[i].Id + "!!");
                     cameraSockets[i] = null;
                 }
+
+                projectFile.AddCamera(i, cameraThreads[i].Name);
             }
         }
 
