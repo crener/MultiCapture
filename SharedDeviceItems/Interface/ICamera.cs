@@ -27,5 +27,12 @@
         /// <param name="x">X-axis reulution</param>
         /// <param name="y">Y-axis reulution</param>
         void SetResolution(int x, int y);
+
+        /// <summary>
+        /// capture picture using xy parameters and save with identifier added to image name in directory
+        /// </summary>
+        /// <param name="identifier">name added to the end of the standard image name</param>
+        /// <returns>byte array of the captured image</returns>
+        byte[] CaptureImageByte(string identifier);
     }
 }

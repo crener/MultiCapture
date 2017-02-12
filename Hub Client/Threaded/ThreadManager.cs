@@ -87,10 +87,7 @@ namespace Hub.Threaded
 
         private void UpdateCameraParams(CameraRequest image)
         {
-            if (image == CameraRequest.Alive ||
-               image == CameraRequest.SendTestImage ||
-               image == CameraRequest.SetProporties)
-                return;
+            if (image != CameraRequest.SetProporties) return;
 
             //iterate the image identifier name
             if (image == CameraRequest.SendFullResImage)

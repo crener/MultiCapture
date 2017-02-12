@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using SharedDeviceItems.Exceptions;
 using SharedDeviceItems.Interface;
+using SharedDeviceItems.Helpers;
 
 namespace Python_Shell_Camera
 {
@@ -164,6 +160,14 @@ namespace Python_Shell_Camera
             string output = pyOutput.ReadLine();
             if (output != "command: ")
                 throw new Exception("Resolution not set correctly, expected \"command: \" but text was: " + output);
+        }
+
+        public byte[] CaptureImageByte(string identifier)
+        {
+            string imageLocation = CaptureImage(identifier);
+            byte[] data = ByteHelpers.FileToBytes(imageLocation);
+            if (File.Exists(imageLocation)) File.Delete(imageLocation);
+            return data;
         }
     }
 }

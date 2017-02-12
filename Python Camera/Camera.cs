@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.IO;
 using IronPython.Hosting;
 using IronPython.Runtime.Exceptions;
 using Microsoft.Scripting.Hosting;
 using SharedDeviceItems.Interface;
+using SharedDeviceItems.Helpers;
 
 namespace PythonCamera
 {
@@ -145,6 +147,14 @@ namespace PythonCamera
                 }
                 else pyCam.sleepCamera(0.05);
             }
+        }
+
+        public byte[] CaptureImageByte(string identifier)
+        {
+            string imageLocation = CaptureImage(identifier);
+            byte[] data = ByteHelpers.FileToBytes(imageLocation);
+            if (File.Exists(imageLocation)) File.Delete(imageLocation);
+            return data;
         }
     }
 }
