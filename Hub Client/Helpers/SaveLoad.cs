@@ -132,7 +132,7 @@ namespace Hub.Helpers
                 {
                     //Address = 25798848,
                     //Address = 763996352,
-                    Address = 1200203968,
+                    Address = 2668101289,
 
                     //Address = 3190423209,
                     CamFileIdentity = "hub",
@@ -143,21 +143,21 @@ namespace Hub.Helpers
                 //Zero1
                 cameras.Add( new CameraConfiguration()
                 {
-                    Address = 3936288425,
+                    Address = 108736,
                     CamFileIdentity = "1Zero",
                     Port = 11004,
                     Id = 1
-                };
+                });
 
-                
+
                 //Zero2
-                Cameras[2] = new CameraConfiguration()
+                cameras.Add( new CameraConfiguration()
                 {
-                    Address = 2668101289,
-                    CamFileIdentity = "0",
+                    Address = 16885952,
+                    CamFileIdentity = "2Zero",
                     Port = 11005,
                     Id = 2
-                };
+                });
 
                 //Zero3
                 Cameras[3] = new CameraConfiguration()

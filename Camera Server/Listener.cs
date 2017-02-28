@@ -7,6 +7,7 @@ using Hub.Helpers.Wrapper;
 using Hub.Networking;
 using SharedDeviceItems;
 using SharedDeviceItems.Helpers;
+#pragma warning disable 618
 
 namespace Camera_Server
 {
@@ -24,12 +25,12 @@ namespace Camera_Server
 
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = NetworkHelpers.GrabIpv4(ipHostInfo);
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, int.Parse(CameraSettings.GetSetting("port", "11003")));
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, int.Parse(CameraSettings.GetSetting("port")));
 
-            Console.WriteLine("IP address = " + ipAddress);
-#pragma warning disable CS0618 // Type or member is obsolete
-            Console.WriteLine("IP long address = " + ipAddress.Address);
-#pragma warning restore CS0618 // Type or member is obsolete
+            Console.WriteLine("Camera Name\t= " + CameraSettings.GetSetting("name"));
+            Console.WriteLine("IP address\t= " + ipAddress);
+            Console.WriteLine("IP long address\t= " + ipAddress.Address);
+            Console.WriteLine("Port\t\t= " + CameraSettings.GetSetting("port"));
 
             // Create a TCP/IP socket.
             if (listener == null) listener =
@@ -44,7 +45,7 @@ namespace Camera_Server
                 listener.Listen(10);
 
                 // Start listening for connections.
-                while(!stop)
+                while (!stop)
                 {
                     try
                     {
@@ -55,7 +56,7 @@ namespace Camera_Server
                         Console.WriteLine("Connected!!");
 
 #if DEBUG
-                        while(Connected(handler) && !stop)
+                        while (Connected(handler) && !stop)
 #else
                         while (Connected(handler))
 #endif
@@ -64,7 +65,7 @@ namespace Camera_Server
                             bytes = new byte[Constants.CameraBufferSize];
                             int bytesRec = handler.Receive(bytes);
                             data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                            if(data.IndexOf(Constants.EndOfMessage) > -1)
+                            if (data.IndexOf(Constants.EndOfMessage) > -1)
                             {
                                 //process data
                                 process.ProcessRequest(bytes);
@@ -76,14 +77,14 @@ namespace Camera_Server
                             Console.WriteLine("Waiting for next request...");
                         }
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         Console.WriteLine("Exception thrown");
                         Console.WriteLine("\tmessage: " + e.Message);
 #if DEBUG
                         Console.WriteLine("\tstack trace:" + e.StackTrace);
 #endif
-                        if(data.Length > 0) Console.WriteLine("\tlast request data: " + data);
+                        if (data.Length > 0) Console.WriteLine("\tlast request data: " + data);
                         else Console.WriteLine("\tlast request data: <Empty string>");
                     }
                 }
