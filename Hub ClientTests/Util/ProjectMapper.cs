@@ -174,7 +174,7 @@ namespace Hub.Util.Tests
 
             ProjectMapper reader = new ProjectMapper(saveLocation, project - 12);
 
-            Assert.AreEqual(project, reader.ProjectID);
+            Assert.AreEqual(project, reader.ProjectId);
             Assert.AreEqual(2, reader.ImageSetCount);
             Assert.AreEqual(2, reader.ImageCount(0));
             Assert.AreEqual(3, reader.ImageCount(1));
@@ -202,7 +202,7 @@ namespace Hub.Util.Tests
 
             ProjectMapper reader = new ProjectMapper(saveLocation, project);
 
-            Assert.AreEqual(project, reader.ProjectID);
+            Assert.AreEqual(project, reader.ProjectId);
             Assert.AreEqual(true, reader.hasSent(0, "cryo"));
             Assert.AreEqual(true, reader.hasSent(1, "Amsterdam"));
             Assert.AreEqual(false, reader.hasSent(1, "london"));
@@ -414,7 +414,7 @@ namespace Hub.Util.Tests
             mapper.Save();
             mapper = new ProjectMapper(saveLocation, 2333);
 
-            Assert.AreNotEqual(2333, mapper.ProjectID);
+            Assert.AreNotEqual(2333, mapper.ProjectId);
 
             Assert.AreEqual(saveLocation + "\\next\\maps", mapper.ImageAbsolutePath(1, "maps"));
             Assert.AreEqual(saveLocation + "\\other\\bike", mapper.ImageAbsolutePath(2, "bike"));

@@ -25,7 +25,7 @@ namespace Camera_Server
 
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = NetworkHelpers.GrabIpv4(ipHostInfo);
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, int.Parse(CameraSettings.GetSetting("port")));
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, int.Parse(CameraSettings.GetSetting("port", "11003")));
 
             Console.WriteLine("Camera Name\t= " + CameraSettings.GetSetting("name"));
             Console.WriteLine("IP address\t= " + ipAddress);
@@ -97,6 +97,7 @@ namespace Camera_Server
             }
 #endif
             catch (Exception e)
+
             {
                 Console.WriteLine(e.ToString());
             }

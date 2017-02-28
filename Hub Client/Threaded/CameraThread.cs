@@ -97,15 +97,20 @@ namespace Hub.Threaded
                 return;
             }
 
-            using (FileStream fileStream = new FileStream(SavePath + imageName, FileMode.CreateNew))
-            {
-                for (int i = 0; i < imageData.Length; i++)
-                {
-                    fileStream.WriteByte(imageData[i]);
-                }
-            }
+            SaveData(imageData, SavePath + Path.DirectorySeparatorChar + imageName);
 
             Console.WriteLine("Camera " + config.Config.Id + " image saved");
+        }
+
+        private void SaveData(byte[] data, string location)
+        {
+            using (FileStream fileStream = new FileStream(location, FileMode.CreateNew))
+            {
+                foreach (byte img in data)
+                {
+                    fileStream.WriteByte(img);
+                }
+            }
         }
 
         private byte[] PropertyRequest(CameraRequest request)
@@ -139,7 +144,7 @@ namespace Hub.Threaded
         {
             byte[] ignore = new byte[300];
             int total = 0;
-            while(config.DataSocket.Available > 0)
+            while (config.DataSocket.Available > 0)
             {
                 total += config.DataSocket.Receive(ignore);
             }

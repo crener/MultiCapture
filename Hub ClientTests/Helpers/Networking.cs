@@ -72,8 +72,6 @@ namespace Hub.Helpers.Tests
             WSocket socket = new WSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             Assert.IsFalse(socket.Connected);
-
-            //todo find a way to test if a socket is connected without having to connect to an external device
         }
     }
 }

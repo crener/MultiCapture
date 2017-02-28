@@ -139,7 +139,7 @@ namespace Hub.Helpers
                     Port = 11003,
                     Id = 0
                 });
-/*
+
                 //Zero1
                 cameras.Add( new CameraConfiguration()
                 {
@@ -158,7 +158,7 @@ namespace Hub.Helpers
                     Port = 11005,
                     Id = 2
                 });
-
+/*
                 //Zero3
                 Cameras[3] = new CameraConfiguration()
                 {

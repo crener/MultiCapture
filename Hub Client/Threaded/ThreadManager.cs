@@ -87,8 +87,6 @@ namespace Hub.Threaded
 
         private void UpdateCameraParams(CameraRequest image)
         {
-            if (image != CameraRequest.SetProporties) return;
-
             //iterate the image identifier name
             if (image == CameraRequest.SendFullResImage)
             {
@@ -97,7 +95,7 @@ namespace Hub.Threaded
                 Directory.CreateDirectory(savePath + Path.DirectorySeparatorChar + "set-" + imagesetId);
 
                 foreach (CameraThread thread in threadConfiguration)
-                    thread.SavePath = savePath + Path.DirectorySeparatorChar + "set-" + imagesetId;
+                    thread.SavePath = savePath + "set-" + imagesetId;
             }
         }
 
@@ -126,7 +124,7 @@ namespace Hub.Threaded
                     CameraThread threadTask = new CameraThread(cameraSockets[i], savePath);
                     threadConfiguration[i] = threadTask;
                     cameraThreads[i] = new Thread(threadTask.Start);
-                    cameraThreads[i].Name = "CameraThread " + cameraSockets[i].Config.Id;
+                    cameraThreads[i].Name = config.Cameras[i].CamFileIdentity;
                     cameraThreads[i].Start();
                 }
                 else

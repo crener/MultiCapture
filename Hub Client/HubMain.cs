@@ -42,7 +42,7 @@ namespace Hub
                 else if(command == "clear") manager.ClearSockets();
                 else manager.CaptureImageSet();
             }
-            ProjectMapper.instance.Save();
+            ProjectMapper.Instance.Save();
             Console.WriteLine("Quitting");
         }
     }
