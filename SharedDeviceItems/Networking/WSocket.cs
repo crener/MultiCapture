@@ -16,6 +16,12 @@ namespace Hub.Helpers.Wrapper
         {
             socket = new Socket(family, type, protocal);
         }
+
+        private WSocket(Socket socket)
+        {
+            this.socket = socket;
+        }
+
         public void Connect(IPEndPoint endPoint)
         {
             socket.Connect(endPoint);
@@ -83,7 +89,7 @@ namespace Hub.Helpers.Wrapper
 
         public ISocket Accept()
         {
-            return socket.Accept() as ISocket;
+            return new WSocket(socket.Accept());
         }
     }
 }
