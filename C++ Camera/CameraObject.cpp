@@ -4,7 +4,7 @@
 CameraObject::CameraObject()
 {
 	name = "ZeroCam";
-	loc = "\pic";
+	loc = "/scanImage/";
 
 	imgX = 1920;
 	imgY = 1080;

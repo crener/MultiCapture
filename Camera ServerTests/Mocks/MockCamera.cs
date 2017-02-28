@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using SharedDeviceItems.Interface;
+using SharedDeviceItems.Helpers;
 
 namespace Camera_ServerTests.Mocks
 {
@@ -46,6 +42,14 @@ namespace Camera_ServerTests.Mocks
         {
             imageX = x;
             imageY = y;
+        }
+
+        public byte[] CaptureImageByte(string identifier)
+        {
+            string imageLocation = CaptureImage(identifier);
+            byte[] data = ByteHelpers.FileToBytes(imageLocation);
+            if (File.Exists(imageLocation)) File.Delete(imageLocation);
+            return data;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.IO;
 using NUnit.Framework;
 using SharedDeviceItems;
+using System.Collections.Generic;
 
 namespace Hub.Util.Tests
 {
@@ -22,23 +23,25 @@ namespace Hub.Util.Tests
         public void ImageCount()
         {
             ProjectMapper mapper = new ProjectMapper(saveLocation, new Random().Next());
+            mapper.AddCamera(0, "test");
+
             mapper.AddImageSet(0, "nope");
-            mapper.AddImage(0, "hub0.jpg");
-            mapper.AddImage(0, "zeroOne0.jpg");
-            mapper.AddImage(0, "zeroTwo0.jpg");
+            mapper.AddImage(0, "hub0.jpg", 0);
+            mapper.AddImage(0, "zeroOne0.jpg", 0);
+            mapper.AddImage(0, "zeroTwo0.jpg", 0);
 
             Assert.AreEqual(1, mapper.ImageSetCount);
             Assert.AreEqual(3, mapper.ImageCount(0));
 
             mapper.AddImageSet(1, "yes");
-            mapper.AddImage(1, "hub1.jpg");
-            mapper.AddImage(1, "zeroOne1.jpg");
+            mapper.AddImage(1, "hub1.jpg", 0);
+            mapper.AddImage(1, "zeroOne1.jpg", 0);
 
             Assert.AreEqual(2, mapper.ImageSetCount);
             Assert.AreEqual(2, mapper.ImageCount(1));
 
             mapper.AddImageSet(2, "more");
-            mapper.AddImage(2, "hub2.jpg");
+            mapper.AddImage(2, "hub2.jpg", 0);
 
             Assert.AreEqual(3, mapper.ImageSetCount);
             Assert.AreEqual(1, mapper.ImageCount(2));
@@ -49,18 +52,20 @@ namespace Hub.Util.Tests
             Assert.AreEqual(0, mapper.ImageCount(3));
 
             mapper.AddImageSet(4, "other");
-            mapper.AddImage(4, "hub2.jpg");
+            mapper.AddImage(4, "hub2.jpg", 0);
 
             Assert.AreEqual(5, mapper.ImageSetCount);
             Assert.AreEqual(1, mapper.ImageCount(4));
         }
 
         [Test]
-        public void ImageSetException()
+        public void SetException()
         {
             try
             {
                 ProjectMapper mapper = new ProjectMapper(saveLocation, new Random().Next());
+                mapper.AddCamera(0, "test");
+
                 mapper.AddImageSet(0, "one");
                 mapper.AddImageSet(0, "two");
                 Assert.Fail();
@@ -72,12 +77,14 @@ namespace Hub.Util.Tests
         }
 
         [Test]
-        public void ImageSetNonExistTestException()
+        public void SetDoesntExistTestException()
         {
             try
             {
                 ProjectMapper mapper = new ProjectMapper(saveLocation, new Random().Next());
-                mapper.AddImage(0, "one");
+                mapper.AddCamera(0, "test");
+
+                mapper.AddImage(0, "one", 0);
                 Assert.Fail();
             }
             catch (Exception)
@@ -87,14 +94,16 @@ namespace Hub.Util.Tests
         }
 
         [Test]
-        public void ImageException()
+        public void ExceptionTest()
         {
             try
             {
                 ProjectMapper mapper = new ProjectMapper(saveLocation, new Random().Next());
+                mapper.AddCamera(0, "test");
+
                 mapper.AddImageSet(0, "set");
-                mapper.AddImage(0, "one");
-                mapper.AddImage(0, "one");
+                mapper.AddImage(0, "one", 0);
+                mapper.AddImage(0, "one", 0);
                 Assert.Fail();
             }
             catch (Exception)
@@ -107,6 +116,8 @@ namespace Hub.Util.Tests
         public void AddUnordered()
         {
             ProjectMapper mapper = new ProjectMapper(saveLocation, new Random().Next());
+            mapper.AddCamera(0, "test");
+
             mapper.AddImageSet(2, "Zero");
             mapper.AddImageSet(3, "one");
             mapper.AddImageSet(1, "two");
@@ -115,7 +126,7 @@ namespace Hub.Util.Tests
 
             Assert.AreEqual(5, mapper.ImageSetCount);
 
-            mapper.AddImage(0, "expected");
+            mapper.AddImage(0, "expected", 0);
             mapper.Sent(0, "expected");
 
             Assert.AreEqual(true, mapper.hasSent(0, "expected"));
@@ -126,13 +137,15 @@ namespace Hub.Util.Tests
         public void SaveNoExceptionTest()
         {
             ProjectMapper mapper = new ProjectMapper(saveLocation, new Random().Next());
+            mapper.AddCamera(0, "test");
             mapper.AddImageSet(1, "place");
             mapper.AddImageSet(0, "other");
-            mapper.AddImage(0, "cryo");
-            mapper.AddImage(1, "london");
-            mapper.AddImage(1, "Tokio");
-            mapper.AddImage(0, "sleep");
-            mapper.AddImage(1, "Amsterdam");
+
+            mapper.AddImage(0, "cryo", 0);
+            mapper.AddImage(1, "london", 0);
+            mapper.AddImage(1, "Tokio", 0);
+            mapper.AddImage(0, "sleep", 0);
+            mapper.AddImage(1, "Amsterdam", 0);
 
             Assert.AreEqual(2, mapper.ImageSetCount);
             Assert.AreEqual(2, mapper.ImageCount(0));
@@ -148,13 +161,15 @@ namespace Hub.Util.Tests
         {
             int project = new Random().Next();
             ProjectMapper mapper = new ProjectMapper(saveLocation, project);
+            mapper.AddCamera(0, "test");
             mapper.AddImageSet(1, "place");
             mapper.AddImageSet(0, "other");
-            mapper.AddImage(0, "cryo");
-            mapper.AddImage(1, "london");
-            mapper.AddImage(1, "Tokio");
-            mapper.AddImage(0, "sleep");
-            mapper.AddImage(1, "Amsterdam");
+
+            mapper.AddImage(0, "cryo", 0);
+            mapper.AddImage(1, "london", 0);
+            mapper.AddImage(1, "Tokio", 0);
+            mapper.AddImage(0, "sleep", 0);
+            mapper.AddImage(1, "Amsterdam", 0);
             mapper.Save();
 
             ProjectMapper reader = new ProjectMapper(saveLocation, project - 12);
@@ -170,14 +185,15 @@ namespace Hub.Util.Tests
         {
             int project = new Random().Next();
             ProjectMapper mapper = new ProjectMapper(saveLocation, project);
+            mapper.AddCamera(0, "test");
             mapper.AddImageSet(1, "place");
             mapper.AddImageSet(0, "other");
 
-            mapper.AddImage(0, "cryo");
-            mapper.AddImage(1, "london");
-            mapper.AddImage(1, "Tokio");
-            mapper.AddImage(0, "sleep");
-            mapper.AddImage(1, "Amsterdam");
+            mapper.AddImage(0, "cryo", 0);
+            mapper.AddImage(1, "london", 0);
+            mapper.AddImage(1, "Tokio", 0);
+            mapper.AddImage(0, "sleep", 0);
+            mapper.AddImage(1, "Amsterdam", 0);
 
             mapper.Sent(0, "cryo");
             mapper.Sent(1, "Amsterdam");
@@ -197,14 +213,15 @@ namespace Hub.Util.Tests
         {
             int project = new Random().Next();
             ProjectMapper mapper = new ProjectMapper(saveLocation, project);
+            mapper.AddCamera(0, "test");
             mapper.AddImageSet(1, "place");
             mapper.AddImageSet(0, "other");
 
-            mapper.AddImage(0, "cryo");
-            mapper.AddImage(1, "london");
-            mapper.AddImage(1, "Tokio");
-            mapper.AddImage(0, "sleep");
-            mapper.AddImage(1, "Amsterdam");
+            mapper.AddImage(0, "cryo", 0);
+            mapper.AddImage(1, "london", 0);
+            mapper.AddImage(1, "Tokio", 0);
+            mapper.AddImage(0, "sleep", 0);
+            mapper.AddImage(1, "Amsterdam", 0);
 
             try
             {
@@ -222,18 +239,19 @@ namespace Hub.Util.Tests
         {
             int project = new Random().Next();
             ProjectMapper mapper = new ProjectMapper(saveLocation, project);
+            mapper.AddCamera(0, "test");
             mapper.AddImageSet(1, "place");
             mapper.AddImageSet(0, "other");
 
-            mapper.AddImage(0, "cryo");
-            mapper.AddImage(1, "london");
-            mapper.AddImage(1, "Tokio");
-            mapper.AddImage(0, "sleep");
-            mapper.AddImage(1, "Amsterdam");
+            mapper.AddImage(0, "cryo", 0);
+            mapper.AddImage(1, "london", 0);
+            mapper.AddImage(1, "Tokio", 0);
+            mapper.AddImage(0, "sleep", 0);
+            mapper.AddImage(1, "Amsterdam", 0);
 
             try
             {
-                mapper.AddImage(2, "nope");
+                mapper.AddImage(2, "nope", 0);
                 Assert.Fail("Image set 2 doesn't exist");
             }
             catch (Exception) { };
@@ -251,14 +269,15 @@ namespace Hub.Util.Tests
         {
             int project = new Random().Next();
             ProjectMapper mapper = new ProjectMapper(saveLocation, project);
+            mapper.AddCamera(0, "test");
             mapper.AddImageSet(1, "place");
             mapper.AddImageSet(0, "other");
 
-            mapper.AddImage(0, "cryo");
-            mapper.AddImage(1, "london");
-            mapper.AddImage(1, "Tokio");
-            mapper.AddImage(0, "sleep");
-            mapper.AddImage(1, "Amsterdam");
+            mapper.AddImage(0, "cryo", 0);
+            mapper.AddImage(1, "london", 0);
+            mapper.AddImage(1, "Tokio", 0);
+            mapper.AddImage(0, "sleep", 0);
+            mapper.AddImage(1, "Amsterdam", 0);
 
             try
             {
@@ -309,11 +328,12 @@ namespace Hub.Util.Tests
         {
             int project = new Random().Next();
             ProjectMapper mapper = new ProjectMapper(saveLocation, project);
+            mapper.AddCamera(0, "test");
             mapper.AddImageSet(1, "place");
             mapper.AddImageSet(0, "other");
 
-            mapper.AddImage(0, "cryo");
-            mapper.AddImage(0, "sleep");
+            mapper.AddImage(0, "cryo", 0);
+            mapper.AddImage(0, "sleep", 0);
 
             try
             {
@@ -342,14 +362,15 @@ namespace Hub.Util.Tests
         {
             int project = new Random().Next();
             ProjectMapper mapper = new ProjectMapper(saveLocation, project);
+            mapper.AddCamera(0, "test");
             mapper.AddImageSet(1, "place");
             mapper.AddImageSet(0, "other");
 
-            mapper.AddImage(0, "cryo");
-            mapper.AddImage(1, "london");
-            mapper.AddImage(1, "Tokio");
-            mapper.AddImage(0, "sleep");
-            mapper.AddImage(1, "Amsterdam");
+            mapper.AddImage(0, "cryo", 0);
+            mapper.AddImage(1, "london", 0);
+            mapper.AddImage(1, "Tokio", 0);
+            mapper.AddImage(0, "sleep", 0);
+            mapper.AddImage(1, "Amsterdam", 0);
 
             try
             {
@@ -373,31 +394,94 @@ namespace Hub.Util.Tests
         {
             int project = new Random().Next();
             ProjectMapper mapper = new ProjectMapper(saveLocation, project);
-
+            mapper.AddCamera(0, "test");
             mapper.AddImageSet(2, "other");
             mapper.AddImageSet(1, "next");
             mapper.AddImageSet(0, "car");
 
-            mapper.AddImage(2, "waves");
-            mapper.AddImage(2, "octo");
-            mapper.AddImage(2, "bike");
+            mapper.AddImage(2, "waves", 0);
+            mapper.AddImage(2, "octo", 0);
+            mapper.AddImage(2, "bike", 0);
 
-            mapper.AddImage(0, "feet");
-            mapper.AddImage(0, "hands");
-            mapper.AddImage(0, "heads");
+            mapper.AddImage(0, "feet", 0);
+            mapper.AddImage(0, "hands", 0);
+            mapper.AddImage(0, "heads", 0);
 
-            mapper.AddImage(1, "maps");
-            mapper.AddImage(1, "charts");
-            mapper.AddImage(1, "graphs");
+            mapper.AddImage(1, "maps", 0);
+            mapper.AddImage(1, "charts", 0);
+            mapper.AddImage(1, "graphs", 0);
 
             mapper.Save();
             mapper = new ProjectMapper(saveLocation, 2333);
 
             Assert.AreNotEqual(2333, mapper.ProjectID);
 
-            Assert.AreEqual(saveLocation + "\\next\\maps",mapper.ImageAbsolutePath(1, "maps"));
-            Assert.AreEqual(saveLocation + "\\other\\bike",mapper.ImageAbsolutePath(2, "bike"));
-            Assert.AreEqual(saveLocation + "\\car\\feet",mapper.ImageAbsolutePath(0, "feet"));
+            Assert.AreEqual(saveLocation + "\\next\\maps", mapper.ImageAbsolutePath(1, "maps"));
+            Assert.AreEqual(saveLocation + "\\other\\bike", mapper.ImageAbsolutePath(2, "bike"));
+            Assert.AreEqual(saveLocation + "\\car\\feet", mapper.ImageAbsolutePath(0, "feet"));
+        }
+
+        [Test]
+        public void cameraIdSave()
+        {
+            int project = new Random().Next();
+            ProjectMapperExtra mapper = new ProjectMapperExtra(saveLocation, project);
+
+            mapper.AddImageSet(2, "twelve");
+            mapper.AddImageSet(1, "seven");
+
+            mapper.AddImage(1, "yes.jpg", 0);
+            mapper.AddImage(1, "no.png", 0);
+
+            mapper.AddCamera(0, "one");
+            mapper.AddCamera(1, "left");
+            mapper.AddCamera(2, "right");
+
+            mapper.Save();
+            mapper = new ProjectMapperExtra(saveLocation, 12);
+
+            List<ProjectMapper.Camera> cams = mapper.getCameraList();
+
+            Assert.AreEqual(3, cams.Count);
+
+            Assert.AreEqual(0, cams[0].CameraId);
+            Assert.AreEqual("one", cams[0].CameraName);
+
+            Assert.AreEqual(1, cams[1].CameraId);
+            Assert.AreEqual("left", cams[1].CameraName);
+
+            Assert.AreEqual(2, cams[2].CameraId);
+            Assert.AreEqual("right", cams[2].CameraName);
+        }
+
+        [Test]
+        public void cameraAlreadyExists()
+        {
+            int project = new Random().Next();
+            ProjectMapper mapper = new ProjectMapper(saveLocation, project);
+
+            try
+            {
+                mapper.AddCamera(0, "yes");
+                mapper.AddCamera(0, "yes");
+                Assert.Fail();
+            }
+            catch (Exception)
+            {
+                Assert.Pass();
+            }
+        }
+
+        private class ProjectMapperExtra : ProjectMapper
+        {
+            public ProjectMapperExtra(string project, int projectID) : base(project, projectID)
+            {
+            }
+
+            public List<Camera> getCameraList()
+            {
+                return cameras;
+            }
         }
     }
 }

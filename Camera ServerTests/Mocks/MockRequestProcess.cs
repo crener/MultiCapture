@@ -1,4 +1,4 @@
-﻿using System.Dynamic;
+﻿using System.Text;
 using Camera_Server;
 using Hub.Networking;
 using SharedDeviceItems.Interface;
@@ -50,6 +50,11 @@ namespace Camera_ServerTests.Mocks
             public void SetResolution(int x, int y)
             {
 
+            }
+
+            public byte[] CaptureImageByte(string identifier)
+            {
+                return Encoding.ASCII.GetBytes("");
             }
         }
     }

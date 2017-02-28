@@ -91,12 +91,8 @@ namespace Camera_Server
                     AliveRequest(client);
                     return;
                 case CameraRequest.SendFullResImage:
-                    string imageLocation = camera.CaptureImage(imageName);
-
-                    messageData = ByteHelpers.FileToBytes(imageLocation);
+                    messageData = camera.CaptureImageByte(imageName);
                     SendResponse(client, messageData, false);
-
-                    if (File.Exists(imageLocation)) File.Delete(imageLocation);
                     return;
                 case CameraRequest.SendTestImage:
                     //For testing, send a static image saved on the device

@@ -199,7 +199,5 @@ namespace Camera_ServerTests
         }
 
         //todo make a mixed test. Take the output from this and put it into the mock socket for the hub code so that it gets actual data in a test enviroment
-
-        //todo make tests for the linsener code in the camera
     }
 }

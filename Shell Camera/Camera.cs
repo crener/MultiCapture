@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using SharedDeviceItems.Exceptions;
 using SharedDeviceItems.Interface;
+using SharedDeviceItems.Helpers;
 
 // ReSharper disable ParameterHidesMember
 
@@ -119,6 +120,14 @@ namespace Shell_Camera
         {
             resX = x;
             resY = y;
+        }
+
+        public byte[] CaptureImageByte(string identifier)
+        {
+            string imageLocation = CaptureImage(identifier);
+            byte[] data = ByteHelpers.FileToBytes(imageLocation);
+            if (File.Exists(imageLocation)) File.Delete(imageLocation);
+            return data;
         }
     }
 }
