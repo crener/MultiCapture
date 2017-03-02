@@ -126,14 +126,14 @@ namespace Hub.Threaded
                     cameraThreads[i] = new Thread(threadTask.Start);
                     cameraThreads[i].Name = config.Cameras[i].CamFileIdentity;
                     cameraThreads[i].Start();
+
+                    projectFile.AddCamera(i, cameraThreads[i].Name);
                 }
                 else
                 {
                     Console.WriteLine("Failed to connect to camera " + config.Cameras[i].Id + "!!");
                     cameraSockets[i] = null;
                 }
-
-                projectFile.AddCamera(i, cameraThreads[i].Name);
             }
         }
 

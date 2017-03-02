@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using Newtonsoft.Json;
+using static SharedDeviceItems.Constants;
 
 namespace Hub.Helpers
 {
@@ -12,8 +14,7 @@ namespace Hub.Helpers
     {
         public static Data Conf { get; set; }
 
-        private static string defaultSaveDirectory = Path.GetPathRoot(Directory.GetCurrentDirectory()) +
-                                                     "scanimage" + Path.DirectorySeparatorChar + "configuration.conf";
+        private static string defaultSaveFile = "configuration.json";
 
         private static string customSaveDirectory = null;
 
@@ -26,11 +27,13 @@ namespace Hub.Helpers
         {
             try
             {
-                return Load(string.IsNullOrEmpty(CustomSaveDirectory) ? DefaultSaveDirectory : CustomSaveDirectory);
+                return Load(string.IsNullOrEmpty(CustomSaveDirectory) ? DefaultSavePath : CustomSaveDirectory);
             }
-            catch (InvalidDataException)
+            catch (FileNotFoundException)
             {
-                return new Data().Default();
+                Conf = new Data().Default();
+                Save();
+                return Conf;
             }
         }
 
@@ -41,31 +44,23 @@ namespace Hub.Helpers
         /// <returns>configuration data structure</returns>
         public static Data Load(string path)
         {
-            try
-            {
-                if (!File.Exists(path)) throw new InvalidDataException();
-            }
-            catch (Exception)
-            {
-                throw new InvalidDataException();
-            }
 
-            BinaryFormatter formatter = new BinaryFormatter();
-            FileStream stream = null;
+            if (!File.Exists(path)) throw new FileNotFoundException();
+
             try
             {
-                stream = File.OpenRead(path);
-                Conf = (Data)formatter.Deserialize(stream);
+                using (StreamReader file = new StreamReader(path))
+                {
+                    string data = file.ReadToEnd();
+                    Conf = JsonConvert.DeserializeObject<Data>(data);
+                }
             }
             catch (Exception e)
             {
                 Console.Write(e);
                 throw;
             }
-            finally
-            {
-                if (stream != null) stream.Close();
-            }
+
             return Conf;
         }
 
@@ -74,7 +69,7 @@ namespace Hub.Helpers
         /// </summary>
         public static void Save()
         {
-            Save(string.IsNullOrEmpty(CustomSaveDirectory) ? DefaultSaveDirectory : CustomSaveDirectory);
+            Save(string.IsNullOrEmpty(CustomSaveDirectory) ? DefaultSavePath : CustomSaveDirectory);
         }
 
         /// <summary>
@@ -86,27 +81,24 @@ namespace Hub.Helpers
             if (Conf.CameraCount == 0) throw new NullReferenceException();
             if (path == null) throw new NullReferenceException();
 
-            BinaryFormatter formatter = new BinaryFormatter();
-            FileStream stream = null;
             try
             {
-                stream = File.Create(path);
-                formatter.Serialize(stream, Conf);
+                using (StreamWriter file = new StreamWriter(path))
+                {
+                    string data = JsonConvert.SerializeObject(Conf);
+                    file.Write(data);
+                }
             }
             catch (Exception e)
             {
                 Console.Write(e);
                 throw;
             }
-            finally
-            {
-                if (stream != null) stream.Close();
-            }
         }
 
-        public static string DefaultSaveDirectory
+        public static string DefaultSavePath
         {
-            get { return defaultSaveDirectory; }
+            get { return DefualtHubSaveLocation() + defaultSaveFile; }
         }
 
         public static string CustomSaveDirectory
@@ -122,51 +114,19 @@ namespace Hub.Helpers
         public struct Data : IEquatable<Data>
         {
             public CameraConfiguration[] Cameras { get; set; }
+            [JsonIgnore]
             public int CameraCount => Cameras == null ? 0 : Cameras.Length;
             public Data Default()
             {
                 List<CameraConfiguration> cameras = new List<CameraConfiguration>();
 
-                //Pi3
-                cameras.Add( new CameraConfiguration
+                cameras.Add(new CameraConfiguration
                 {
-                    //Address = 25798848,
-                    //Address = 763996352,
                     Address = 2668101289,
-
-                    //Address = 3190423209,
                     CamFileIdentity = "hub",
                     Port = 11003,
                     Id = 0
                 });
-
-                //Zero1
-                cameras.Add( new CameraConfiguration()
-                {
-                    Address = 108736,
-                    CamFileIdentity = "1Zero",
-                    Port = 11004,
-                    Id = 1
-                });
-
-
-                //Zero2
-                cameras.Add( new CameraConfiguration()
-                {
-                    Address = 16885952,
-                    CamFileIdentity = "2Zero",
-                    Port = 11005,
-                    Id = 2
-                });
-/*
-                //Zero3
-                Cameras[3] = new CameraConfiguration()
-                {
-                    Address = 2668101289,
-                    CamFileIdentity = "0",
-                    Port = 11006,
-                    Id = 3
-                };*/
 
                 Cameras = cameras.ToArray();
                 return this;
@@ -190,7 +150,7 @@ namespace Hub.Helpers
     }
 
     /// <summary>
-    /// class whcih stores configuration for talking to camera servers
+    /// stores configuration for talking to camera servers
     /// </summary>
     [Serializable]
     public class CameraConfiguration

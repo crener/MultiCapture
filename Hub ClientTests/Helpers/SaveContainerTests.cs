@@ -51,10 +51,10 @@ namespace Hub.Helpers.Tests
             try
             {
                 SaveContainer.Save();
-                Assert.IsTrue(File.Exists(SaveContainer.DefaultSaveDirectory));
+                Assert.IsTrue(File.Exists(SaveContainer.DefaultSavePath));
 
                 SaveContainer.Load();
-                File.Delete(SaveContainer.DefaultSaveDirectory);
+                File.Delete(SaveContainer.DefaultSavePath);
             }
             catch (Exception e)
             {
@@ -62,7 +62,7 @@ namespace Hub.Helpers.Tests
             }
             finally
             {
-                if (File.Exists(SaveContainer.DefaultSaveDirectory)) File.Delete(SaveContainer.DefaultSaveDirectory);
+                if (File.Exists(SaveContainer.DefaultSavePath)) File.Delete(SaveContainer.DefaultSavePath);
             }
         }
 
@@ -70,7 +70,7 @@ namespace Hub.Helpers.Tests
         public void AlternateSave()
         {
             #region initialise
-            SaveContainer.CustomSaveDirectory = SaveContainer.DefaultSaveDirectory;
+            SaveContainer.CustomSaveDirectory = SaveContainer.DefaultSavePath;
             SaveContainer.Data testCase = new SaveContainer.Data
             {
                 Cameras = new[]
@@ -110,7 +110,7 @@ namespace Hub.Helpers.Tests
             }
             finally
             {
-                if (File.Exists(SaveContainer.DefaultSaveDirectory)) File.Delete(SaveContainer.DefaultSaveDirectory);
+                if (File.Exists(SaveContainer.DefaultSavePath)) File.Delete(SaveContainer.DefaultSavePath);
             }
         }
 
