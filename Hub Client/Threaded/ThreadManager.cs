@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
@@ -26,7 +27,7 @@ namespace Hub.Threaded
             this.config = config;
 
             Random rand = new Random();
-            int projectId = rand.Next(0, int.MaxValue-1);
+            int projectId = rand.Next(0, int.MaxValue - 1);
             savePath = Constants.DefualtHubSaveLocation() + "Project" + projectId +
                            Path.DirectorySeparatorChar;
             bool done = false;
@@ -78,7 +79,7 @@ namespace Hub.Threaded
             }
 
             projectFile.AddImageSet(imagesetId, "set-" + imagesetId);
-            for(int i = 0; i < config.Cameras.Length; i++)
+            for (int i = 0; i < config.Cameras.Length; i++)
             {
                 projectFile.AddImage(imagesetId, config.Cameras[i].CamFileIdentity + imagesetId + ".jpg", i);
             }
@@ -104,37 +105,41 @@ namespace Hub.Threaded
         /// </summary>
         private void ConfigureThreads()
         {
-
-            cameraSockets = new CameraSocket[config.CameraCount];
-            cameraThreads = new Thread[config.CameraCount];
-            threadConfiguration = new CameraThread[config.CameraCount];
+            List<CameraSocket> cameraSockets = new List<CameraSocket>();
+            List<Thread> cameraThreads = new List<Thread>();
+            List<CameraThread> threadConfiguration = new List<CameraThread>();
 
             for (int i = 0; i < config.CameraCount; i++)
             {
                 //check that the camera is avalible
-                cameraSockets[i] = new CameraSocket
+                CameraSocket tempCameraSockets = new CameraSocket
                 {
                     DataSocket = new WSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp),
                     Config = config.Cameras[i]
                 };
 
-                if (cameraSockets[i].Setup())
+                if (tempCameraSockets.Setup())
                 {
                     Console.WriteLine("Connected to camera " + config.Cameras[i].Id + " assigning a thread");
-                    CameraThread threadTask = new CameraThread(cameraSockets[i], savePath);
-                    threadConfiguration[i] = threadTask;
-                    cameraThreads[i] = new Thread(threadTask.Start);
-                    cameraThreads[i].Name = config.Cameras[i].CamFileIdentity;
-                    cameraThreads[i].Start();
+                    CameraThread threadTask = new CameraThread(tempCameraSockets, savePath);
+                    Thread tempThread = new Thread(threadTask.Start);
+                    tempThread.Name = config.Cameras[i].CamFileIdentity;
+                    tempThread.Start();
 
+                    threadConfiguration.Add(threadTask);
+                    cameraThreads.Add(tempThread);
+                    cameraSockets.Add(tempCameraSockets);
                     projectFile.AddCamera(i, cameraThreads[i].Name);
                 }
                 else
                 {
                     Console.WriteLine("Failed to connect to camera " + config.Cameras[i].Id + "!!");
-                    cameraSockets[i] = null;
                 }
             }
+
+            this.threadConfiguration = threadConfiguration.ToArray();
+            this.cameraThreads = cameraThreads.ToArray();
+            this.cameraSockets = cameraSockets.ToArray();
         }
 
         public string SavePath
@@ -190,7 +195,7 @@ namespace Hub.Threaded
         /// </summary>
         public void ClearSockets()
         {
-            foreach(CameraThread cam in threadConfiguration)
+            foreach (CameraThread cam in threadConfiguration)
                 cam.ClearSockets();
 
             Console.WriteLine("Cleared Sockets");
