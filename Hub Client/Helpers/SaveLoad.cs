@@ -27,7 +27,7 @@ namespace Hub.Helpers
         {
             try
             {
-                return Load(string.IsNullOrEmpty(CustomSaveDirectory) ? DefaultSavePath : CustomSaveDirectory);
+                return Load(string.IsNullOrEmpty(customSaveDirectory) ? DefaultSavePath : CustomSaveDirectory);
             }
             catch (FileNotFoundException)
             {
@@ -69,7 +69,7 @@ namespace Hub.Helpers
         /// </summary>
         public static void Save()
         {
-            Save(string.IsNullOrEmpty(CustomSaveDirectory) ? DefaultSavePath : CustomSaveDirectory);
+            Save(string.IsNullOrEmpty(customSaveDirectory) ? DefaultSavePath : CustomSaveDirectory);
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace Hub.Helpers
 
         public static string CustomSaveDirectory
         {
-            get { return customSaveDirectory; }
+            get { return DefualtHubSaveLocation() + customSaveDirectory; }
             set { customSaveDirectory = value; }
         }
 

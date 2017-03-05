@@ -23,7 +23,7 @@ namespace Hub.Helpers.Tests
             }
             catch (Exception e)
             {
-                Assert.IsTrue(e is InvalidDataException);
+                Assert.IsTrue(e is FileNotFoundException, "Exception was not a FileNotFoundException", new object[0] { });
                 ex = e;
             }
 
@@ -70,7 +70,7 @@ namespace Hub.Helpers.Tests
         public void AlternateSave()
         {
             #region initialise
-            SaveContainer.CustomSaveDirectory = SaveContainer.DefaultSavePath;
+            SaveContainer.CustomSaveDirectory = "Alt.conf";
             SaveContainer.Data testCase = new SaveContainer.Data
             {
                 Cameras = new[]
@@ -117,8 +117,8 @@ namespace Hub.Helpers.Tests
         [Test]
         public void InvalidLoad()
         {
-            string save = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "testSave";
-            SaveContainer.CustomSaveDirectory = save;
+            SaveContainer.CustomSaveDirectory = "testSave";
+            string save = SaveContainer.CustomSaveDirectory;
             try
             {
                 if (File.Exists(save)) File.Delete(save);
