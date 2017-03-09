@@ -44,12 +44,17 @@
   <ItemGroup>
     <Compile Include="Capture.cs" />
     <Compile Include="Helpers\ByteManipulation.cs" />
+    <Compile Include="Helpers\CameraHelper.cs" />
     <Compile Include="Helpers\CommandBuilder.cs" />
     <Compile Include="Helpers\DataClasses.cs" />
+    <Compile Include="Helpers\Interface\ICameraManager.cs" />
+    <Compile Include="Helpers\Interface\ICameraTask.cs" />
     <Compile Include="Helpers\Networking.cs" />
     <Compile Include="HubMain.cs" />
     <Compile Include="Helpers\Interface\INetwork.cs" />
     <Compile Include="Networking\SynchronousNet.cs" />
+    <Compile Include="Threaded\CameraTask.cs" />
+    <Compile Include="Threaded\TaskManager.cs" />
     <Compile Include="Util\ProjectMapper.cs" />
     <Compile Include="Networking\AsynchronousNet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

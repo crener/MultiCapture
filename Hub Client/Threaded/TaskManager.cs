@@ -2,28 +2,27 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
-using System.Threading;
+using System.Threading.Tasks;
 using Hub.Helpers;
 using Hub.Helpers.Interface;
 using Hub.Helpers.Wrapper;
 using Hub.Util;
 using SharedDeviceItems;
+using static Hub.Helpers.CameraHelper;
 
 namespace Hub.Threaded
 {
-    class ThreadManager : ICameraManager
+    class TaskManager : ICameraManager
     {
         private SaveContainer.Data config;
-        private Thread[] cameraThreads;
-        private CameraThread[] threadConfiguration;
-        private CameraSocket[] cameraSockets;
+        private ICameraTask[] cameras;
         private ProjectMapper projectFile;
 
         //proporties
         private int imagesetId = -1;
         private string savePath;
 
-        public ThreadManager(SaveContainer.Data config)
+        public TaskManager(SaveContainer.Data config)
         {
             this.config = config;
 
@@ -31,9 +30,9 @@ namespace Hub.Threaded
             int projectId = rand.Next(0, int.MaxValue - 1);
             savePath = Constants.DefualtHubSaveLocation() + "Project" + projectId +
                            Path.DirectorySeparatorChar;
-            bool done = false;
 
             //check that this new path has an existing path with no files in it
+            bool done = false;
             do
             {
                 if (!Directory.Exists(savePath)) Directory.CreateDirectory(savePath);
@@ -43,7 +42,7 @@ namespace Hub.Threaded
                         "Randomly generated project directory (id: " + projectId + ") contains files, trying another!");
 
                     projectId = rand.Next(int.MaxValue, 0);
-                    savePath = Constants.DefualtHubSaveLocation() + "tempProject" + projectId + Path.DirectorySeparatorChar;
+                    savePath = Constants.DefualtHubSaveLocation() + "Project" + projectId + Path.DirectorySeparatorChar;
                 }
                 else done = true;
             } while (!done);
@@ -51,12 +50,13 @@ namespace Hub.Threaded
             Console.WriteLine("Project directory generated, id: " + projectId);
             projectFile = new ProjectMapper(savePath + "project.xml", projectId);
             projectFile.Save();
-            ConfigureThreads();
+
+            Configure();
         }
 
-        ~ThreadManager()
+        ~TaskManager()
         {
-            CloseThreads();
+            ShutDownCameras();
         }
 
         public void CaptureImageSet()
@@ -66,18 +66,9 @@ namespace Hub.Threaded
 
         public void CaptureImageSet(CameraRequest wanted)
         {
-            if (!CheckDone()) return;
-
-            UpdateCameraParams(wanted);
-
-            for (int i = 0; i < cameraThreads.Length; i++)
-            {
-                if (cameraThreads[i] != null && cameraThreads[i].IsAlive)
-                {
-                    threadConfiguration[i].ImageSetName = imagesetId.ToString();
-                    threadConfiguration[i].Request = wanted;
-                }
-            }
+            Console.WriteLine("Start of image capture, request: " + wanted + ", imageSet: " + (imagesetId + 1));
+            Task[] camCommand = CollectImageCommands(wanted);
+            foreach(Task task in camCommand) task.Start();
 
             projectFile.AddImageSet(imagesetId, "set-" + imagesetId);
             for (int i = 0; i < config.Cameras.Length; i++)
@@ -85,30 +76,43 @@ namespace Hub.Threaded
                 projectFile.AddImage(imagesetId, config.Cameras[i].CamFileIdentity + imagesetId + ".jpg", i);
             }
             projectFile.Save();
+
+            Task.WaitAll(camCommand);
+            Console.WriteLine("Image Requests Complete");
         }
 
-        private void UpdateCameraParams(CameraRequest image)
+        private Task[] CollectImageCommands(CameraRequest request)
         {
-            //iterate the image identifier name
-            if (image == CameraRequest.SendFullResImage)
+            Task[] result = new Task[cameras.Length];
+            bool needsStoreLocation = SavesImage(request);
+
+            if (needsStoreLocation)
             {
+                //ensure each image has unique name and place to store image
                 ++imagesetId;
-
                 Directory.CreateDirectory(savePath + Path.DirectorySeparatorChar + "set-" + imagesetId);
-
-                foreach (CameraThread thread in threadConfiguration)
-                    thread.SavePath = savePath + "set-" + imagesetId;
             }
+
+            for (int i = 0; i < cameras.Length; i++)
+            {
+                if(needsStoreLocation)
+                {
+                    cameras[i].SavePath = savePath + "set-" + imagesetId;
+                    cameras[i].ImageSetName = imagesetId.ToString();
+                }
+
+                result[i] = cameras[i].ProcessRequest(request);
+            }
+
+            return result;
         }
 
         /// <summary>
-        /// Initialise the threads
+        /// Iniitialises resources for ThreadManager
         /// </summary>
-        private void ConfigureThreads()
+        private void Configure()
         {
-            List<CameraSocket> localCameraSockets = new List<CameraSocket>();
-            List<Thread> localCameraThreads = new List<Thread>();
-            List<CameraThread> localThreadConfiguration = new List<CameraThread>();
+            List<ICameraTask> threadConfiguration = new List<ICameraTask>();
 
             for (int i = 0; i < config.CameraCount; i++)
             {
@@ -121,16 +125,11 @@ namespace Hub.Threaded
 
                 if (tempCameraSockets.Setup())
                 {
-                    Console.WriteLine("Connected to camera " + config.Cameras[i].Id + " assigning a thread");
-                    CameraThread threadTask = new CameraThread(tempCameraSockets, savePath);
-                    Thread tempThread = new Thread(threadTask.Start);
-                    tempThread.Name = config.Cameras[i].CamFileIdentity;
-                    tempThread.Start();
+                    Console.WriteLine("Connected to camera " + config.Cameras[i].Id);
+                    ICameraTask threadTask = new CameraTask(tempCameraSockets, savePath);
 
-                    localThreadConfiguration.Add(threadTask);
-                    localCameraThreads.Add(tempThread);
-                    localCameraSockets.Add(tempCameraSockets);
-                    projectFile.AddCamera(i, localCameraThreads[i].Name);
+                    threadConfiguration.Add(threadTask);
+                    projectFile.AddCamera(i, config.Cameras[i].CamFileIdentity);
                 }
                 else
                 {
@@ -138,9 +137,8 @@ namespace Hub.Threaded
                 }
             }
 
-            threadConfiguration = localThreadConfiguration.ToArray();
-            cameraThreads = localCameraThreads.ToArray();
-            cameraSockets = localCameraSockets.ToArray();
+            cameras = threadConfiguration.ToArray();
+            projectFile.Save();
         }
 
         public string SavePath
@@ -155,7 +153,7 @@ namespace Hub.Threaded
                 //since the directory has changed the image set should change too
                 imagesetId = 0;
 
-                foreach (CameraThread thread in threadConfiguration)
+                foreach (ICameraTask thread in cameras)
                     thread.SavePath = value + "set-" + imagesetId;
             }
             get
@@ -167,28 +165,12 @@ namespace Hub.Threaded
         /// <summary>
         /// Close all the threads proporly making sure to "force quit" them if they are being strnage
         /// </summary>
-        protected void CloseThreads()
+        protected void ShutDownCameras()
         {
-            for (int i = 0; i < cameraThreads.Length; i++)
-                threadConfiguration[i].Finish = true;
-
-            Thread.Sleep(50);
-
-            for (int i = 0; i < cameraThreads.Length; i++)
-                cameraThreads[i].Join();
-
-            foreach (Thread thread in cameraThreads)
-                if (thread.IsAlive) thread.Abort();
-        }
-
-        private bool CheckDone()
-        {
-            foreach (CameraThread thread in threadConfiguration)
+            foreach (ICameraTask camera in cameras)
             {
-                if (thread.Request != CameraRequest.Alive)
-                    return false;
+                camera.ShutDown();
             }
-            return true;
         }
 
         /// <summary>
@@ -196,7 +178,7 @@ namespace Hub.Threaded
         /// </summary>
         public void ClearSockets()
         {
-            foreach (CameraThread cam in threadConfiguration)
+            foreach (ICameraTask cam in cameras)
                 cam.ClearSockets();
 
             Console.WriteLine("Cleared Sockets");

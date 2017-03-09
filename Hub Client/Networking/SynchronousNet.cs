@@ -10,6 +10,8 @@ namespace Hub.Networking
         private const int bufferSize = 400000;
         private ISocket socket;
 
+        byte[] bytes = new byte[Constants.ByteArraySize],
+            buffer = new byte[bufferSize];
         public SynchronousNet(ISocket socket)
         {
             this.socket = socket;
@@ -22,8 +24,7 @@ namespace Hub.Networking
 
         public byte[] MakeRequest(byte[] requestData)
         {
-            byte[] bytes = new byte[Constants.ByteArraySize],
-                buffer = new byte[bufferSize];
+            int recSize = 0;
 #if DEBUG
             string requestStr = Encoding.ASCII.GetString(requestData);
 #endif
@@ -42,7 +43,6 @@ namespace Hub.Networking
                 int dataSize = -1;
                 if (ExpectsSize(requestData))
                 {
-                    int recSize = 0;
                     while (recSize <= 0) recSize = socket.Receive(buffer);
 
                     byte[] raw = new byte[recSize - Constants.EndOfMessage.Length];
@@ -78,7 +78,7 @@ namespace Hub.Networking
                     totalData += bytesRec;
 
                     pass = dataSize > 0 && totalData < dataSize;
-                    if(pass) pass = !ByteManipulation.SearchEndOfMessage(bytes, totalData);
+                    if (pass) pass = !ByteManipulation.SearchEndOfMessage(bytes, totalData);
                 }
 
 #if DEBUG
@@ -88,6 +88,21 @@ namespace Hub.Networking
 #else
                 return Helpers.Networking.TrimExcessByteData(bytes, totalData -1);
 #endif
+            }
+            catch (ArithmeticException e)
+            {
+                Console.WriteLine(e);
+
+                int lastSpace = e.StackTrace.LastIndexOf(" ") + 1;
+                string errorLine = e.StackTrace.Substring(lastSpace, e.StackTrace.Length - lastSpace);
+                if (errorLine == "55")
+                {
+                    int indexData = ByteManipulation.SearchEndOfMessageStartIndex(buffer, recSize);
+                    Console.WriteLine("\tIndex Data Size: " + indexData);
+                    Console.WriteLine("\tRecieved Data Qty: " + recSize);
+                }
+
+                throw e;
             }
             catch (Exception e)
             {

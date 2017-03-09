@@ -1,5 +1,6 @@
 ﻿using System;
 using Hub.Helpers;
+using Hub.Helpers.Interface;
 using Hub.Threaded;
 using Hub.Util;
 using SharedDeviceItems;
@@ -27,19 +28,19 @@ namespace Hub
         {
             Logger.Logger logs = new Logger.Logger();
             logs.RemoveOldLogs(DateTime.Today.AddMonths(-1));
-            ThreadManager manager = new ThreadManager(SaveContainer.Load());
+            ICameraManager manager = new TaskManager(SaveContainer.Load());
 
             string command = "";
             while ((command = Console.ReadLine()) != "e")
             {
-                if(command == "t" || command == "test") manager.CaptureImageSet(CameraRequest.SendTestImage);
-                else if(command == "s")
+                if (command == "t" || command == "test") manager.CaptureImageSet(CameraRequest.SendTestImage);
+                else if (command == "s")
                 {
                     Console.WriteLine(manager.SavePath);
                     Console.Write("new save path: ");
                     manager.SavePath = Console.ReadLine();
                 }
-                else if(command == "clear") manager.ClearSockets();
+                else if (command == "clear") manager.ClearSockets();
                 else manager.CaptureImageSet();
             }
             ProjectMapper.Instance.Save();
