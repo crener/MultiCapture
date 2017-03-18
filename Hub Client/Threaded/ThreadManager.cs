@@ -16,7 +16,6 @@ namespace Hub.Threaded
         private SaveContainer.Data config;
         private Thread[] cameraThreads;
         private CameraThread[] threadConfiguration;
-        private CameraSocket[] cameraSockets;
         private ProjectMapper projectFile;
 
         //proporties
@@ -106,7 +105,6 @@ namespace Hub.Threaded
         /// </summary>
         private void ConfigureThreads()
         {
-            List<CameraSocket> localCameraSockets = new List<CameraSocket>();
             List<Thread> localCameraThreads = new List<Thread>();
             List<CameraThread> localThreadConfiguration = new List<CameraThread>();
 
@@ -123,13 +121,11 @@ namespace Hub.Threaded
                 {
                     Console.WriteLine("Connected to camera " + config.Cameras[i].Id + " assigning a thread");
                     CameraThread threadTask = new CameraThread(tempCameraSockets, savePath);
-                    Thread tempThread = new Thread(threadTask.Start);
-                    tempThread.Name = config.Cameras[i].CamFileIdentity;
+                    Thread tempThread = new Thread(threadTask.Start) { Name = config.Cameras[i].CamFileIdentity };
                     tempThread.Start();
 
                     localThreadConfiguration.Add(threadTask);
                     localCameraThreads.Add(tempThread);
-                    localCameraSockets.Add(tempCameraSockets);
                     projectFile.AddCamera(i, localCameraThreads[i].Name);
                 }
                 else
@@ -140,7 +136,6 @@ namespace Hub.Threaded
 
             threadConfiguration = localThreadConfiguration.ToArray();
             cameraThreads = localCameraThreads.ToArray();
-            cameraSockets = localCameraSockets.ToArray();
         }
 
         public string SavePath

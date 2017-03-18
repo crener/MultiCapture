@@ -11,8 +11,7 @@ namespace Hub
     {
         public static int Main(String[] args)
         {
-            HubMain program = new HubMain();
-            program.Start();
+            new HubMain();
             return 0;
         }
 
