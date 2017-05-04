@@ -3,6 +3,8 @@
 #include "ui_ScannerInspectionTool.h"
 #include <QtWidgets/QMainWindow>
 #include <QtNetwork>
+#include "ScannerDeviceInformation.h"
+#include "ScannerResponseListener.h"
 
 QT_BEGIN_NAMESPACE
 class QUdpSocket;
@@ -20,10 +22,15 @@ public:
 
 private slots:
 	void refresh();
+	void addNewScanner(ScannerDeviceInformation &);
 
 private:
+	void setupBroadcastListener();
 
 	const int brdPort = 8470; //broadcast port
+
+	ScannerResponseListener* listener;
+	QThread* listenerThread;
 
 	Ui::ScannerInspectionToolClass ui;
 	QByteArray datagram = "InspectionApp";
@@ -31,6 +38,7 @@ private:
 	QUdpSocket* broadcastSocket;
 	QUdpSocket* listenSocket;
 
+	//ui elements
 	QListView* deviceList;
 	QPushButton* deviceScanBtn;
 };

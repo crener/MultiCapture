@@ -55,6 +55,18 @@
     <ClCompile Include="GeneratedFiles\qrc_ScannerInspectionTool.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="ScannerResponseListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScannerDeviceInformation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ScannerResponseListener.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ScannerResponseListener.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ScannerInspectionTool.h">
@@ -66,10 +78,16 @@
     <CustomBuild Include="ScannerInspectionTool.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="ScannerResponseListener.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_ScannerInspectionTool.h">
       <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ScannerDeviceInformation.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

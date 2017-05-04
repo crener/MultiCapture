@@ -16,10 +16,8 @@
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QListView>
 #include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
-#include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -31,8 +29,6 @@ public:
     QListView *deviceList;
     QPushButton *deviceScanBtn;
     QPushButton *deviceConnectBtn;
-    QMenuBar *menuBar;
-    QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *ScannerInspectionToolClass)
@@ -44,22 +40,15 @@ public:
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         deviceList = new QListView(centralWidget);
         deviceList->setObjectName(QStringLiteral("deviceList"));
-        deviceList->setGeometry(QRect(10, 10, 256, 192));
+        deviceList->setGeometry(QRect(10, 10, 261, 192));
         deviceScanBtn = new QPushButton(centralWidget);
         deviceScanBtn->setObjectName(QStringLiteral("deviceScanBtn"));
-        deviceScanBtn->setGeometry(QRect(10, 210, 75, 23));
+        deviceScanBtn->setGeometry(QRect(10, 210, 71, 23));
         deviceConnectBtn = new QPushButton(centralWidget);
         deviceConnectBtn->setObjectName(QStringLiteral("deviceConnectBtn"));
         deviceConnectBtn->setEnabled(false);
-        deviceConnectBtn->setGeometry(QRect(90, 210, 171, 23));
+        deviceConnectBtn->setGeometry(QRect(90, 210, 181, 23));
         ScannerInspectionToolClass->setCentralWidget(centralWidget);
-        menuBar = new QMenuBar(ScannerInspectionToolClass);
-        menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 600, 21));
-        ScannerInspectionToolClass->setMenuBar(menuBar);
-        mainToolBar = new QToolBar(ScannerInspectionToolClass);
-        mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
-        ScannerInspectionToolClass->addToolBar(Qt::TopToolBarArea, mainToolBar);
         statusBar = new QStatusBar(ScannerInspectionToolClass);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         ScannerInspectionToolClass->setStatusBar(statusBar);
