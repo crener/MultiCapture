@@ -13,7 +13,6 @@ ScannerInspectionTool::ScannerInspectionTool(QWidget *parent)
 	broadcastSocket = new QUdpSocket(this);
 
 	scannerItems = new QStringList();
-	scannerItems->append("FUCK YOU");
 	deviceList->setModel(new QStringListModel(*scannerItems));
 
 	timer = new QTimer(this);
@@ -32,9 +31,10 @@ ScannerInspectionTool::~ScannerInspectionTool()
 	delete scannerItems;
 	delete timer;
 
-	std::list<ScannerDeviceInformation*>::iterator it;
-	for (it = scanners.begin(); it != scanners.end(); ++it) {
-		delete *it;
+	for (int i = scanners.size() - 1; i >= 0; --i) {
+		ScannerDeviceInformation* remove = scanners.back();
+		scanners.remove(remove);
+		delete remove;
 	}
 }
 
@@ -59,7 +59,7 @@ void ScannerInspectionTool::addNewScanner(ScannerDeviceInformation* scanner)
 	if (exists)
 	{
 		//scanner already exists
-		delete &scanner;
+		delete scanner;
 		return;
 	}
 
