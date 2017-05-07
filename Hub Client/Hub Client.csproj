@@ -42,7 +42,7 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Capture.cs" />
+    <Compile Include="Desktop Interconnect\DesktopThread.cs" />
     <Compile Include="Helpers\ByteManipulation.cs" />
     <Compile Include="Helpers\CameraHelper.cs" />
     <Compile Include="Helpers\CommandBuilder.cs" />
@@ -55,13 +55,13 @@
     <Compile Include="Networking\SynchronousNet.cs" />
     <Compile Include="Threaded\CameraTask.cs" />
     <Compile Include="Threaded\TaskManager.cs" />
+    <Compile Include="Util\Deployer.cs" />
     <Compile Include="Util\ProjectMapper.cs" />
     <Compile Include="Networking\AsynchronousNet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\SaveLoad.cs" />
     <Compile Include="Threaded\CameraThread.cs" />
     <Compile Include="Threaded\ThreadManager.cs" />
-    <Compile Include="Networking\WifiDirectNetworking.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

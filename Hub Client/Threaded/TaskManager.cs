@@ -14,15 +14,15 @@ namespace Hub.Threaded
 {
     class TaskManager : ICameraManager
     {
-        private SaveContainer.Data config;
+        private SaveLoad.Data config;
         private ICameraTask[] cameras;
         private ProjectMapper projectFile;
 
-        //proporties
+        //properties
         private int imagesetId = -1;
         private string savePath;
 
-        public TaskManager(SaveContainer.Data config)
+        public TaskManager(SaveLoad.Data config)
         {
             this.config = config;
 
@@ -108,7 +108,7 @@ namespace Hub.Threaded
         }
 
         /// <summary>
-        /// Iniitialises resources for ThreadManager
+        /// Initializes resources for ThreadManager
         /// </summary>
         private void Configure()
         {
@@ -116,7 +116,7 @@ namespace Hub.Threaded
 
             for (int i = 0; i < config.CameraCount; i++)
             {
-                //check that the camera is avalible
+                //check that the camera is available
                 CameraSocket tempCameraSockets = new CameraSocket
                 {
                     DataSocket = new WSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp),

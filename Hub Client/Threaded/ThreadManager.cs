@@ -13,16 +13,16 @@ namespace Hub.Threaded
 {
     class ThreadManager : ICameraManager
     {
-        private SaveContainer.Data config;
+        private SaveLoad.Data config;
         private Thread[] cameraThreads;
         private CameraThread[] threadConfiguration;
         private ProjectMapper projectFile;
 
-        //proporties
+        //properties
         private int imagesetId = -1;
         private string savePath;
 
-        public ThreadManager(SaveContainer.Data config)
+        public ThreadManager(SaveLoad.Data config)
         {
             this.config = config;
 

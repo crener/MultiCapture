@@ -18,10 +18,10 @@ public slots:
 	void startProcessing();
 
 signals:
-	void newScannerFound(ScannerDeviceInformation &);
+	void newScannerFound(ScannerDeviceInformation*);
 
 private:
-	void processData(QByteArray);
+	void processData(QNetworkDatagram);
 
 	bool keepRunning = true;
 	QUdpSocket* listenSocket;

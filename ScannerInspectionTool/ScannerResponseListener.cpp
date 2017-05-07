@@ -1,5 +1,7 @@
 #include "ScannerResponseListener.h"
 #include <qnetworkdatagram.h>
+#include "ScannerDeviceInformation.h"
+#include "ScannerInspectionTool.h"
 
 
 ScannerResponseListener::ScannerResponseListener()
@@ -13,17 +15,21 @@ ScannerResponseListener::ScannerResponseListener()
 
 ScannerResponseListener::~ScannerResponseListener()
 {
+	delete listenSocket;
 }
 
 void ScannerResponseListener::startProcessing()
 {
 	while (listenSocket->hasPendingDatagrams()) {
-		QNetworkDatagram datagram = listenSocket->receiveDatagram();
-		processData(datagram.data());
+		processData(listenSocket->receiveDatagram());
 	}
 }
 
-void ScannerResponseListener::processData(QByteArray data)
+void ScannerResponseListener::processData(QNetworkDatagram data)
 {
-	//todo figure out what data is actually needed
+	ScannerDeviceInformation* device = new ScannerDeviceInformation();
+	device->name = data.data();
+	device->address = data.senderAddress();
+
+	emit newScannerFound(device);
 }

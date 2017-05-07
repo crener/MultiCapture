@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Threading;
 using Hub.Helpers;
 using Hub.Helpers.Interface;
 using Hub.Threaded;
 using Hub.Util;
+using Hub_Client.Desktop_Interconnect;
+using Hub_Client.Util;
 using SharedDeviceItems;
 
 namespace Hub
@@ -25,9 +28,7 @@ namespace Hub
         /// </summary>
         private void Start()
         {
-            Logger.Logger logs = new Logger.Logger();
-            logs.RemoveOldLogs(DateTime.Today.AddMonths(-1));
-            ICameraManager manager = new TaskManager(SaveContainer.Load());
+            ICameraManager manager = Deployer.Inst.Manager;
 
             string command = "";
             while ((command = Console.ReadLine()) != "e")

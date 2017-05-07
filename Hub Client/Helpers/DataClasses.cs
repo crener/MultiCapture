@@ -28,12 +28,12 @@ namespace Hub.Helpers
                 DataSocket.Send(Encoding.ASCII.GetBytes((int)CameraRequest.Alive + Constants.EndOfMessage));
 
                 //grab data
-                byte[] recieveData = new byte[1000];
-                int bytesRec = DataSocket.Receive(recieveData);
+                byte[] receiveData = new byte[1000];
+                int bytesRec = DataSocket.Receive(receiveData);
                 //if there was no data the camera must have been off
                 if(bytesRec <= 0)
                 {
-                    Console.WriteLine("Camera not active, No data recieved");
+                    Console.WriteLine("Camera not active, No data received");
                     DataSocket.Shutdown(SocketShutdown.Both);
                     DataSocket.Close();
                     return false;
@@ -41,7 +41,7 @@ namespace Hub.Helpers
                 else
                 {
                     Console.WriteLine("Camera response = {0}",
-                        Encoding.ASCII.GetString(recieveData, 0, bytesRec - Constants.EndOfMessage.Length));
+                        Encoding.ASCII.GetString(receiveData, 0, bytesRec - Constants.EndOfMessage.Length));
                 }
             }
             catch (SocketException e)

@@ -8,9 +8,9 @@ using static SharedDeviceItems.Constants;
 namespace Hub.Helpers
 {
     /// <summary>
-    /// Container for multipul camera configurations and other data.
+    /// Container for multiple camera configurations and other data.
     /// </summary>
-    public static class SaveContainer
+    public static class SaveLoad
     {
         public static Data Conf { get; set; }
 
@@ -113,13 +113,15 @@ namespace Hub.Helpers
         [Serializable]
         public struct Data : IEquatable<Data>
         {
+            public string name { get; set; }
             public CameraConfiguration[] Cameras { get; set; }
             [JsonIgnore]
             public int CameraCount => Cameras == null ? 0 : Cameras.Length;
             public Data Default()
             {
-                List<CameraConfiguration> cameras = new List<CameraConfiguration>();
+                name = "3D Scanner";
 
+                List<CameraConfiguration> cameras = new List<CameraConfiguration>();
                 cameras.Add(new CameraConfiguration
                 {
                     Address = 2668101289,

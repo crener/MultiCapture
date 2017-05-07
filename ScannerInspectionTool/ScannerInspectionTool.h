@@ -20,9 +20,11 @@ class ScannerInspectionTool : public QMainWindow
 public:
 	ScannerInspectionTool(QWidget *parent = Q_NULLPTR);
 
-private slots:
+	public slots:
+	void addNewScanner(ScannerDeviceInformation*);
+
+	private slots:
 	void refresh();
-	void addNewScanner(ScannerDeviceInformation &);
 
 private:
 	void setupBroadcastListener();
@@ -31,6 +33,8 @@ private:
 
 	ScannerResponseListener* listener;
 	QThread* listenerThread;
+	QStringList* scannerItems;
+	std::list<ScannerDeviceInformation*> scanners;
 
 	Ui::ScannerInspectionToolClass ui;
 	QByteArray datagram = "InspectionApp";

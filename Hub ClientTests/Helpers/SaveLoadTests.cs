@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace Hub.Helpers.Tests
 {
     [TestFixture]
-    public class SaveContainerTests
+    public class SaveLoadTests
     {
         /// <summary>
         /// test exception is thrown when loading invlid data
@@ -19,7 +19,7 @@ namespace Hub.Helpers.Tests
             //Invalid Data Exception when the path isn't valid
             try
             {
-                SaveContainer.Load("thisfileDoesn'tExitstAndIfItDoesThenThisWillFailSoDon'tHaveFileWithThisName2232.yep");
+                SaveLoad.Load("thisfileDoesn'tExitstAndIfItDoesThenThisWillFailSoDon'tHaveFileWithThisName2232.yep");
             }
             catch (Exception e)
             {
@@ -33,7 +33,7 @@ namespace Hub.Helpers.Tests
             //Other exception for when there is another issue
             try
             {
-                SaveContainer.Load(@"C:\scanimage\adminOnly.txt");
+                SaveLoad.Load(@"C:\scanimage\adminOnly.txt");
             }
             catch (Exception e)
             {
@@ -46,15 +46,15 @@ namespace Hub.Helpers.Tests
         [Test]
         public void StandardLoadSave()
         {
-            SaveContainer.CustomSaveDirectory = null;
-            SaveContainer.Conf = new SaveContainer.Data().Default();
+            SaveLoad.CustomSaveDirectory = null;
+            SaveLoad.Conf = new SaveLoad.Data().Default();
             try
             {
-                SaveContainer.Save();
-                Assert.IsTrue(File.Exists(SaveContainer.DefaultSavePath));
+                SaveLoad.Save();
+                Assert.IsTrue(File.Exists(SaveLoad.DefaultSavePath));
 
-                SaveContainer.Load();
-                File.Delete(SaveContainer.DefaultSavePath);
+                SaveLoad.Load();
+                File.Delete(SaveLoad.DefaultSavePath);
             }
             catch (Exception e)
             {
@@ -62,7 +62,7 @@ namespace Hub.Helpers.Tests
             }
             finally
             {
-                if (File.Exists(SaveContainer.DefaultSavePath)) File.Delete(SaveContainer.DefaultSavePath);
+                if (File.Exists(SaveLoad.DefaultSavePath)) File.Delete(SaveLoad.DefaultSavePath);
             }
         }
 
@@ -70,8 +70,8 @@ namespace Hub.Helpers.Tests
         public void AlternateSave()
         {
             #region initialise
-            SaveContainer.CustomSaveDirectory = "Alt.conf";
-            SaveContainer.Data testCase = new SaveContainer.Data
+            SaveLoad.CustomSaveDirectory = "Alt.conf";
+            SaveLoad.Data testCase = new SaveLoad.Data
             {
                 Cameras = new[]
                 {
@@ -95,14 +95,14 @@ namespace Hub.Helpers.Tests
 
             try
             {
-                SaveContainer.Conf = testCase;
-                SaveContainer.Save();
-                Assert.IsTrue(File.Exists(SaveContainer.CustomSaveDirectory));
+                SaveLoad.Conf = testCase;
+                SaveLoad.Save();
+                Assert.IsTrue(File.Exists(SaveLoad.CustomSaveDirectory));
 
-                SaveContainer.Load();
-                File.Delete(SaveContainer.CustomSaveDirectory);
+                SaveLoad.Load();
+                File.Delete(SaveLoad.CustomSaveDirectory);
 
-                Assert.IsTrue(SaveContainer.Conf.Equals(testCase));
+                Assert.IsTrue(SaveLoad.Conf.Equals(testCase));
             }
             catch (Exception e)
             {
@@ -110,21 +110,21 @@ namespace Hub.Helpers.Tests
             }
             finally
             {
-                if (File.Exists(SaveContainer.DefaultSavePath)) File.Delete(SaveContainer.DefaultSavePath);
+                if (File.Exists(SaveLoad.DefaultSavePath)) File.Delete(SaveLoad.DefaultSavePath);
             }
         }
 
         [Test]
         public void InvalidLoad()
         {
-            SaveContainer.CustomSaveDirectory = "testSave";
-            string save = SaveContainer.CustomSaveDirectory;
+            SaveLoad.CustomSaveDirectory = "testSave";
+            string save = SaveLoad.CustomSaveDirectory;
             try
             {
                 if (File.Exists(save)) File.Delete(save);
 
-                SaveContainer.Data config = SaveContainer.Load();
-                Assert.True(config.Equals(new SaveContainer.Data().Default()));
+                SaveLoad.Data config = SaveLoad.Load();
+                Assert.True(config.Equals(new SaveLoad.Data().Default()));
             }
             catch (Exception)
             {
@@ -143,7 +143,7 @@ namespace Hub.Helpers.Tests
         public void SaveException()
         {
             Exception ex = null;
-            SaveContainer.Conf = new SaveContainer.Data()
+            SaveLoad.Conf = new SaveLoad.Data()
             {
                 Cameras = new CameraConfiguration[0]
             };
@@ -151,7 +151,7 @@ namespace Hub.Helpers.Tests
             //No camera Exception
             try
             {
-                SaveContainer.Save("nope");
+                SaveLoad.Save("nope");
             }
             catch (Exception e)
             {
@@ -163,10 +163,10 @@ namespace Hub.Helpers.Tests
             ex = null;
 
             //Invlid path exception
-            SaveContainer.Conf = new SaveContainer.Data().Default();
+            SaveLoad.Conf = new SaveLoad.Data().Default();
             try
             {
-                SaveContainer.Save(null);
+                SaveLoad.Save(null);
             }
             catch (Exception e)
             {
@@ -180,7 +180,7 @@ namespace Hub.Helpers.Tests
             //Other exception for when there is another issue
             try
             {
-                SaveContainer.Save(@"C:\foob.test");
+                SaveLoad.Save(@"C:\foob.test");
 
                 //wow, ok that should't work so let's delete that file
                 File.Delete(@"C:\foob.test");
@@ -199,13 +199,13 @@ namespace Hub.Helpers.Tests
         [Test]
         public void DataTest()
         {
-            SaveContainer.Data testObject = new SaveContainer.Data();
+            SaveLoad.Data testObject = new SaveLoad.Data();
 
             //uninitialised
             Assert.IsTrue(testObject.Cameras == null);
             Assert.IsTrue(testObject.CameraCount == 0);
 
-            testObject = new SaveContainer.Data().Default();
+            testObject = new SaveLoad.Data().Default();
 
             //size test
             //Assert.IsTrue(testObject.Cameras.Length == 1);
@@ -218,20 +218,20 @@ namespace Hub.Helpers.Tests
         [Test]
         public void SaveandLoadNormally()
         {
-            SaveContainer.Data data = CreateDummyData(12);
+            SaveLoad.Data data = CreateDummyData(12);
             string fileLocation = @"C:\scanimage\testFile.test";
 
             //ensure that the file doesn't already exist
             if (File.Exists(fileLocation)) File.Delete(fileLocation);
 
-            SaveContainer.Conf = data;
-            SaveContainer.Save(fileLocation);
+            SaveLoad.Conf = data;
+            SaveLoad.Save(fileLocation);
 
             Assert.IsTrue(File.Exists(fileLocation));
 
             //check that the loaded file is identicle
-            SaveContainer.Conf = new SaveContainer.Data().Default();
-            SaveContainer.Data loadData = SaveContainer.Load(fileLocation);
+            SaveLoad.Conf = new SaveLoad.Data().Default();
+            SaveLoad.Data loadData = SaveLoad.Load(fileLocation);
             File.Delete(fileLocation);
 
             Assert.IsTrue(loadData.CameraCount == data.CameraCount);
@@ -244,9 +244,9 @@ namespace Hub.Helpers.Tests
             }
         }
 
-        private SaveContainer.Data CreateDummyData(int entryAmount)
+        private SaveLoad.Data CreateDummyData(int entryAmount)
         {
-            SaveContainer.Data data = new SaveContainer.Data();
+            SaveLoad.Data data = new SaveLoad.Data();
             List<CameraConfiguration> camConfigs = new List<CameraConfiguration>();
 
             Random rand = new Random();
