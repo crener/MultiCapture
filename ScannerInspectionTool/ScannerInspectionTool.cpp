@@ -26,6 +26,18 @@ ScannerInspectionTool::ScannerInspectionTool(QWidget *parent)
 	setupBroadcastListener();
 }
 
+ScannerInspectionTool::~ScannerInspectionTool()
+{
+	delete broadcastSocket;
+	delete scannerItems;
+	delete timer;
+
+	std::list<ScannerDeviceInformation*>::iterator it;
+	for (it = scanners.begin(); it != scanners.end(); ++it) {
+		delete *it;
+	}
+}
+
 void ScannerInspectionTool::refresh()
 {
 	broadcastSocket->writeDatagram(datagram.data(), datagram.size(), QHostAddress::Broadcast, brdPort);

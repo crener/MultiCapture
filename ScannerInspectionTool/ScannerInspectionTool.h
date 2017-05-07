@@ -19,6 +19,7 @@ class ScannerInspectionTool : public QMainWindow
 
 public:
 	ScannerInspectionTool(QWidget *parent = Q_NULLPTR);
+	~ScannerInspectionTool();
 
 	public slots:
 	void addNewScanner(ScannerDeviceInformation*);
