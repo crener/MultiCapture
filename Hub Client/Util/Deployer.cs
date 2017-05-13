@@ -31,9 +31,8 @@ namespace Hub_Client.Util
             logs.RemoveOldLogs(DateTime.Today.AddMonths(-1));
 
             SysConfig = SaveLoad.Load();
-            new DesktopThread();
+            DesktopThread.Start();
             Manager = new TaskManager(SysConfig);
-
         }
     }
 }

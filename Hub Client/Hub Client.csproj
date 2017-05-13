@@ -42,6 +42,7 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Desktop Interconnect\DesktopConnection.cs" />
     <Compile Include="Desktop Interconnect\DesktopThread.cs" />
     <Compile Include="Helpers\ByteManipulation.cs" />
     <Compile Include="Helpers\CameraHelper.cs" />

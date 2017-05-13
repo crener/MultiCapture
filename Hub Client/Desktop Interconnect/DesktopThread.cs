@@ -1,68 +1,103 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 using Hub_Client.Util;
 
 namespace Hub_Client.Desktop_Interconnect
 {
-    class DesktopThread
+    static class DesktopThread
     {
-        private readonly int DiscoveryPort = 8470;
-        private readonly int DiscoveryResponsePort = 8471;
-        private readonly int DesktopConnectionPort = 8472;
-        private volatile bool connected = false;
+        private static readonly int DiscoveryPort = 8470;
+        private static readonly int DiscoveryResponsePort = 8471;
+        private static readonly int DesktopConnectionPort = 8472;
+        private static volatile bool connected = false;
+        private static volatile bool started = false;
 
-        public DesktopThread()
+        private static DesktopConnection connection;
+        private static UdpClient udp;
+        private static TcpListener tcpListener;
+
+        public static void Start()
         {
+            if (started) return;
+            started = true;
+
+            //Desktop device discovery - external method to find device on the network
             IPEndPoint disc = new IPEndPoint(IPAddress.Any, DiscoveryPort);
-            UdpClient udp = new UdpClient();
+            udp = new UdpClient();
             Socket udpSocket = udp.Client;
             udpSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
             udpSocket.ExclusiveAddressUse = false;
             udpSocket.Bind(disc);
-            UdpState state = new UdpState { client = udp, end = disc };
-            udp.BeginReceive(DiscoveryAction, state);
+            udp.BeginReceive(DiscoveryAction, udp);
 
+            //Desktop device connection - direct interaction with device (stops D3)
             IPEndPoint desk = new IPEndPoint(IPAddress.Any, DesktopConnectionPort);
-            TcpListener tcp = new TcpListener(desk);
-            tcp.Start();
-            tcp.BeginAcceptTcpClient(DesktopConnection, tcp);
+            tcpListener = new TcpListener(desk);
+            tcpListener.Start();
+            tcpListener.BeginAcceptTcpClient(DesktopConnection, tcpListener);
         }
 
 
-        void DiscoveryAction(IAsyncResult result)
+        static void DiscoveryAction(IAsyncResult result)
         {
             if (connected) return;
 
-            UdpState state = (UdpState)result.AsyncState;
-            state.client.BeginReceive(DiscoveryAction, state);
-
-
+            UdpClient state = (UdpClient)result.AsyncState;
+            state.BeginReceive(DiscoveryAction, state);
             IPEndPoint endpoint = new IPEndPoint(IPAddress.Any, DiscoveryPort);
-            byte[] data = state.client.EndReceive(result, ref endpoint);
+
+            byte[] data = state.EndReceive(result, ref endpoint);
             Console.WriteLine("Discovery connection from: " + endpoint + ", message: " + Encoding.ASCII.GetString(data));
 
             byte[] response = Encoding.ASCII.GetBytes(Deployer.Inst.SysConfig.name);
             endpoint.Port = DiscoveryResponsePort;
 
-            new UdpClient().Send(response, response.Length, endpoint);
-        }
-
-        void DesktopConnection(IAsyncResult result)
-        {
-
+            state.Send(response, response.Length, endpoint);
         }
 
 
-        private class UdpState
+        static void DesktopConnection(IAsyncResult result)
         {
-            public UdpClient client { get; set; }
-            public IPEndPoint end { get; set; }
+            TcpListener listener = (TcpListener)result.AsyncState;
+            TcpClient tcp = listener.EndAcceptTcpClient(result);
+
+            Console.WriteLine("Desktop connection from " + tcp.Client.RemoteEndPoint);
+
+            if (connected)
+            {
+                Console.WriteLine("Already connected, ignoring request!");
+                return;
+            }
+
+            if (tcp.Connected)
+            {
+                //ensure that something will be able to handle the requests
+                connection = new DesktopConnection(tcp);
+                connected = true;
+                Console.WriteLine("Connection Successful");
+            }
+        }
+
+        public static void Disconnected()
+        {
+            Console.WriteLine("Desktop connection has been terminated");
+            connected = false;
+            connection = null;
+
+            //clear out old requests
+            if (udp.Available > 0)
+            {
+                IPEndPoint end = null;
+                do
+                {
+                    udp.Receive(ref end);
+                } while (udp.Available > 0);
+            }
+
+            udp.BeginReceive(DiscoveryAction, udp);
+            tcpListener.BeginAcceptTcpClient(DesktopConnection, tcpListener);
         }
     }
 }

@@ -79,6 +79,15 @@
     <ClCompile Include="ScannerDeviceInformation.cpp">
       <Filter>Source Files\DataHolders</Filter>
     </ClCompile>
+    <ClCompile Include="ScannerInteraction.cpp">
+      <Filter>Source Files\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ScannerInteraction.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ScannerInteraction.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ScannerInspectionTool.h">
@@ -91,6 +100,9 @@
       <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="ScannerResponseListener.h">
+      <Filter>Header Files\Threading</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ScannerInteraction.h">
       <Filter>Header Files\Threading</Filter>
     </CustomBuild>
   </ItemGroup>

@@ -14,7 +14,7 @@ public:
 	ScannerResponseListener();
 	~ScannerResponseListener();
 
-public slots:
+	public slots:
 	void startProcessing();
 
 signals:
