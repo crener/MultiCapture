@@ -2,7 +2,9 @@
 #include "ScannerResponseListener.h"
 #include <iostream>
 #include <QMessageBox>
+#include <QLabel>
 #include "ScannerInteraction.h"
+#include "parameterBuilder.h"
 
 
 ScannerInspectionTool::ScannerInspectionTool(QWidget *parent)
@@ -14,7 +16,11 @@ ScannerInspectionTool::ScannerInspectionTool(QWidget *parent)
 	deviceList->setSelectionMode(QAbstractItemView::SingleSelection);
 	deviceScanBtn = findChild<QPushButton*>("deviceScanBtn");
 	deviceConnectBtn = findChild<QPushButton*>("deviceConnectBtn");
+	currentLbl = findChild<QLabel*>("currentLbl");
 	broadcastSocket = new QUdpSocket(this);
+
+	nameText = findChild<QLineEdit*>("nameText");
+	nameBtn = findChild<QPushButton*>("nameUpdateBtn");
 
 	scannerItems = new QStringList();
 	deviceList->setModel(new QStringListModel(*scannerItems));
@@ -27,9 +33,10 @@ ScannerInspectionTool::ScannerInspectionTool(QWidget *parent)
 	connect(deviceList, &QListView::doubleClicked, this, &ScannerInspectionTool::handleConnectionBtn);
 	connect(deviceConnectBtn, &QPushButton::released, this, &ScannerInspectionTool::handleConnectionBtn);
 	connect(deviceScanBtn, SIGNAL(released()), this, SLOT(refresh()));
-	emit refresh();
+	connect(nameBtn, &QPushButton::released, this, &ScannerInspectionTool::changeScannerName);
 
 	setupBroadcastListener();
+	emit refresh();
 }
 
 ScannerInspectionTool::~ScannerInspectionTool()
@@ -54,6 +61,8 @@ ScannerInspectionTool::~ScannerInspectionTool()
 
 void ScannerInspectionTool::refresh()
 {
+	clearScanners();
+
 	broadcastSocket->writeDatagram(datagram.data(), datagram.size(), QHostAddress::Broadcast, brdPort);
 }
 
@@ -113,6 +122,7 @@ void ScannerInspectionTool::connectToScanner()
 	if (deviceInformation == nullptr) return;
 
 	emit connector->connectToScanner(deviceInformation);
+	nameText->setText(deviceInformation->name);
 }
 
 void ScannerInspectionTool::disconnectFromScanner()
@@ -123,13 +133,30 @@ void ScannerInspectionTool::disconnectFromScanner()
 void ScannerInspectionTool::scannerConnected()
 {
 	deviceConnectBtn->setText("Disconnect");
+	currentLbl->setText("Connected");
+	currentLbl->setStyleSheet("color: rgb(0, 128, 0);");
+
 	connected = true;
 }
 
 void ScannerInspectionTool::scannerDisconnected()
 {
-	deviceConnectBtn->setText("Connect");
+	deviceConnectBtn->setText("Connected");
+	currentLbl->setText("Disconnected");
+	currentLbl->setStyleSheet("color: rgb(237, 20, 61);");
+
 	connected = false;
+}
+
+void ScannerInspectionTool::changeScannerName()
+{
+	if (!connected) return;
+
+	emit connector->requestScanner(ScannerCommands::setName,
+		parameterBuilder().addParam("name", nameText->text())->toString());
+
+	clearScanners();
+	emit refresh();
 }
 
 void ScannerInspectionTool::addNewScanner(ScannerDeviceInformation* scanner)
@@ -173,4 +200,15 @@ void ScannerInspectionTool::setupBroadcastListener()
 	connect(connector, &ScannerInteraction::scannerConnectionLost, this, &ScannerInspectionTool::scannerDisconnected);
 
 	listenerThread->start();
+}
+
+void ScannerInspectionTool::clearScanners()
+{
+	for (int i = scanners.size() - 1; i >= 0; --i) {
+		ScannerDeviceInformation* remove = scanners.back();
+		scanners.remove(remove);
+		delete remove;
+	}
+
+	scannerItems->clear();
 }

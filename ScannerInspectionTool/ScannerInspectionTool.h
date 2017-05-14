@@ -11,6 +11,8 @@ QT_BEGIN_NAMESPACE
 class QUdpSocket;
 class QPushButton;
 class QListView;
+class QLabel;
+class QLineEdit;
 class QTimer;
 class QThread;
 QT_END_NAMESPACE
@@ -34,10 +36,11 @@ public:
 	void disconnectFromScanner();
 	void scannerConnected();
 	void scannerDisconnected();
+	void changeScannerName();
 
 private:
 	void setupBroadcastListener();
-
+	void clearScanners();
 	const int brdPort = 8470; //broadcast port
 
 	ScannerResponseListener* listener;
@@ -57,4 +60,7 @@ private:
 	QListView* deviceList;
 	QPushButton* deviceScanBtn;
 	QPushButton* deviceConnectBtn;
+	QLineEdit* nameText;
+	QPushButton* nameBtn;
+	QLabel* currentLbl;
 };

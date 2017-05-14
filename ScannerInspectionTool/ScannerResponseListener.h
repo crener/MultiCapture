@@ -29,4 +29,3 @@ private:
 	const int maxDataSize = 500;
 	const qint16 listenPort = 8471;
 };
-

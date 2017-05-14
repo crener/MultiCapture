@@ -22,7 +22,16 @@ namespace Hub_Client.Util
         private static Deployer inst;
 
         public ICameraManager Manager { get; private set; }
-        public SaveLoad.Data SysConfig { get; private set; }
+
+        public SaveLoad.Data SysConfig
+        {
+            get { return SaveLoad.Conf; }
+            set
+            {
+                SaveLoad.Conf = value;
+                SaveLoad.Save();
+            }
+        }
 
         public Deployer()
         {

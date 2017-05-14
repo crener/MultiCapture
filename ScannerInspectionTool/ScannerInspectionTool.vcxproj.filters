@@ -44,11 +44,11 @@
     <Filter Include="Source Files\Threading">
       <UniqueIdentifier>{1677e983-1f36-4cad-a43c-e93f49b28cac}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\DataHolders">
-      <UniqueIdentifier>{5e1f7be8-b0c9-4dbf-98c6-bad793e8913d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\DataHolders">
+    <Filter Include="Source Files\Data Handlers">
       <UniqueIdentifier>{a1ebb7d2-c82f-4347-87d9-32e5e128af09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Data Handlers">
+      <UniqueIdentifier>{5e1f7be8-b0c9-4dbf-98c6-bad793e8913d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -77,7 +77,7 @@
       <Filter>Source Files\Threading</Filter>
     </ClCompile>
     <ClCompile Include="ScannerDeviceInformation.cpp">
-      <Filter>Source Files\DataHolders</Filter>
+      <Filter>Source Files\Data Handlers</Filter>
     </ClCompile>
     <ClCompile Include="ScannerInteraction.cpp">
       <Filter>Source Files\Threading</Filter>
@@ -87,6 +87,9 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_ScannerInteraction.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="parameterBuilder.cpp">
+      <Filter>Source Files\Data Handlers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -111,7 +114,10 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="ScannerDeviceInformation.h">
-      <Filter>Header Files\DataHolders</Filter>
+      <Filter>Header Files\Data Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="parameterBuilder.h">
+      <Filter>Header Files\Data Handlers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

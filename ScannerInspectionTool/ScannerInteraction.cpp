@@ -2,7 +2,6 @@
 #include <QNetworkAccessManager>
 #include "ScannerDeviceInformation.h"
 
-
 ScannerInteraction::ScannerInteraction()
 {
 	connection = new QTcpSocket();
@@ -15,6 +14,19 @@ ScannerInteraction::ScannerInteraction()
 ScannerInteraction::~ScannerInteraction()
 {
 	delete connection;
+}
+
+void ScannerInteraction::requestScanner(ScannerCommands command, QString params)
+{
+	if (!connection->isWritable()) return;
+
+	QString data = QString(std::to_string(static_cast<int>(command)).c_str());
+	if (params != QString::null && !params.isEmpty()) data += '?' + params;
+
+	connection->write(data.toLatin1());
+	
+	//QByteArray result = connection->read(returnLengthLimit);
+	//emit scannerResult(command, result);
 }
 
 void ScannerInteraction::connectToScanner(ScannerDeviceInformation* device)

@@ -93,6 +93,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="parameterBuilder.cpp" />
     <ClCompile Include="ScannerDeviceInformation.cpp" />
     <ClCompile Include="ScannerInspectionTool.cpp" />
     <ClCompile Include="ScannerInteraction.cpp" />
@@ -124,6 +125,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_ScannerInspectionTool.h" />
+    <ClInclude Include="parameterBuilder.h" />
     <ClInclude Include="ScannerDeviceInformation.h" />
     <CustomBuild Include="ScannerInteraction.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
