@@ -2,9 +2,9 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using Hub_Client.Util;
+using Hub.Util;
 
-namespace Hub_Client.Desktop_Interconnect
+namespace Hub.DesktopInterconnect
 {
     static class DesktopThread
     {

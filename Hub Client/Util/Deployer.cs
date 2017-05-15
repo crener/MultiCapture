@@ -1,11 +1,10 @@
 ﻿using System;
-using System.ComponentModel;
+using Hub.DesktopInterconnect;
 using Hub.Helpers;
 using Hub.Helpers.Interface;
 using Hub.Threaded;
-using Hub_Client.Desktop_Interconnect;
 
-namespace Hub_Client.Util
+namespace Hub.Util
 {
 
     //responsible for correctly initializing all the resources required for correct operation

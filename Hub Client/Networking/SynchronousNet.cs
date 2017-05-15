@@ -92,16 +92,6 @@ namespace Hub.Networking
             catch (ArithmeticException e)
             {
                 Console.WriteLine(e);
-
-                int lastSpace = e.StackTrace.LastIndexOf(" ") + 1;
-                string errorLine = e.StackTrace.Substring(lastSpace, e.StackTrace.Length - lastSpace);
-                if (errorLine == "55")
-                {
-                    int indexData = ByteManipulation.SearchEndOfMessageStartIndex(buffer, recSize);
-                    Console.WriteLine("\tIndex Data Size: " + indexData);
-                    Console.WriteLine("\tRecieved Data Qty: " + recSize);
-                }
-
                 throw e;
             }
             catch (Exception e)

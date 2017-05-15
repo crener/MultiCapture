@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Threading;
-using Hub.Helpers;
 using Hub.Helpers.Interface;
-using Hub.Threaded;
 using Hub.Util;
-using Hub_Client.Desktop_Interconnect;
-using Hub_Client.Util;
 using SharedDeviceItems;
 
 namespace Hub
