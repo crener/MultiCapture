@@ -29,7 +29,7 @@ namespace Hub.Networking
             string requestStr = Encoding.ASCII.GetString(requestData);
 #endif
 
-            if (!socket.Connected) throw new Exception("Socket needs to be connnected");
+            if (!socket.Connected) throw new Exception("Socket needs to be connected");
             try
             {
                 // Encode the data string into a byte array and send to the camera

@@ -101,7 +101,7 @@ namespace Hub.Threaded
         }
 
         /// <summary>
-        /// Initialise the threads
+        /// Initialize the threads
         /// </summary>
         private void ConfigureThreads()
         {
@@ -110,10 +110,10 @@ namespace Hub.Threaded
 
             for (int i = 0; i < config.CameraCount; i++)
             {
-                //check that the camera is avalible
+                //check that the camera is available
                 CameraSocket tempCameraSockets = new CameraSocket
                 {
-                    DataSocket = new WSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp),
+                    DataSocket = new SocketWrapper(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp),
                     Config = config.Cameras[i]
                 };
 

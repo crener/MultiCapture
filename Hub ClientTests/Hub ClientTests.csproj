@@ -51,6 +51,10 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Desktop Interconnect\DesktopConnectionTest.cs" />
+    <Compile Include="Desktop Interconnect\DesktopThreadTest.cs" />
+    <Compile Include="Desktop Interconnect\MockDesktopThread.cs" />
+    <Compile Include="Desktop Interconnect\MockUdpClient.cs" />
     <Compile Include="Helpers\DataClasses.cs" />
     <Compile Include="Helpers\SaveLoadTests.cs" />
     <Compile Include="Helpers\Networking.cs" />

@@ -119,7 +119,7 @@ namespace Hub.Threaded
                 //check that the camera is available
                 CameraSocket tempCameraSockets = new CameraSocket
                 {
-                    DataSocket = new WSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp),
+                    DataSocket = new SocketWrapper(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp),
                     Config = config.Cameras[i]
                 };
 

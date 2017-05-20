@@ -22,14 +22,14 @@ namespace Hub.Helpers.Tests
 
             Assert.IsNull(testCameraSocket.DataSocket);
 
-            WSocket testSocket = new WSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            testCameraSocket.DataSocket = testSocket;
+            SocketWrapper testSocketWrapper = new SocketWrapper(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            testCameraSocket.DataSocket = testSocketWrapper;
 
             Assert.IsTrue(testCameraSocket.DataSocket != null);
-            Assert.IsTrue(testCameraSocket.DataSocket.Equals(testSocket));
+            Assert.IsTrue(testCameraSocket.DataSocket.Equals(testSocketWrapper));
 
             ISocket testSocketget = testCameraSocket.DataSocket;
-            Assert.IsTrue(testSocket.Equals(testSocketget));
+            Assert.IsTrue(testSocketWrapper.Equals(testSocketget));
 
             #endregion
 
@@ -56,7 +56,7 @@ namespace Hub.Helpers.Tests
         {
             CameraSocket testSocket = new CameraSocket
             {
-                DataSocket = new WSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp),
+                DataSocket = new SocketWrapper(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp),
                 Config = new CameraConfiguration()
             };
 

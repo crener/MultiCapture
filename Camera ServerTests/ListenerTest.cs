@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Threading;
-using Camera_Server;
 using Camera_ServerTests.Mocks;
 using Hub.Helpers;
 using Hub.Networking;
 using NUnit.Framework;
 using SharedDeviceItems;
 
-namespace Camera_ServerTests
+namespace Camera_Server.Tests
 {
     [TestFixture]
     public class ListenerTest

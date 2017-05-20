@@ -34,7 +34,7 @@ namespace Camera_Server
 
             // Create a TCP/IP socket.
             if (listener == null) listener =
-                    new WSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                    new SocketWrapper(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             ISocket handler = null;
 
             // Bind the socket to the local endpoint and 

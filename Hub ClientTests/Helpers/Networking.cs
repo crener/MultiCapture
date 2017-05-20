@@ -69,9 +69,9 @@ namespace Hub.Helpers.Tests
         [Test]
         public void Connected()
         {
-            WSocket socket = new WSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            SocketWrapper socketWrapper = new SocketWrapper(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-            Assert.IsFalse(socket.Connected);
+            Assert.IsFalse(socketWrapper.Connected);
         }
     }
 }

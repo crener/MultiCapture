@@ -7,7 +7,7 @@ using SharedDeviceItems;
 
 namespace Hub.Helpers.Interface
 {
-    interface ICameraManager
+    public interface ICameraManager
     {
         string SavePath { get; set; }
 

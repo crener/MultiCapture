@@ -8,16 +8,16 @@ namespace Hub.Helpers.Wrapper
     /// <summary>
     /// wrapper for the standard C# socket
     /// </summary>
-    public class WSocket : ISocket
+    public class SocketWrapper : ISocket
     {
         private Socket socket;
 
-        public WSocket(AddressFamily family, SocketType type, ProtocolType protocal)
+        public SocketWrapper(AddressFamily family, SocketType type, ProtocolType protocol)
         {
-            socket = new Socket(family, type, protocal);
+            socket = new Socket(family, type, protocol);
         }
 
-        private WSocket(Socket socket)
+        private SocketWrapper(Socket socket)
         {
             this.socket = socket;
         }
@@ -89,7 +89,7 @@ namespace Hub.Helpers.Wrapper
 
         public ISocket Accept()
         {
-            return new WSocket(socket.Accept());
+            return new SocketWrapper(socket.Accept());
         }
     }
 }

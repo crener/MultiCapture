@@ -13,7 +13,7 @@ namespace Hub.DesktopInterconnect
     /// <summary>
     /// Responsible for handling commands given from a desktop connected desktop
     /// </summary>
-    class DesktopConnection
+    public class DesktopConnection
     {
         private const int BufferSize = 1024;
         private const char Separator = '&';
@@ -85,9 +85,9 @@ namespace Hub.DesktopInterconnect
                         break;
                     }
 
-                    SaveLoad.Data newConf = Deployer.Inst.SysConfig;
+                    SaveLoad.Data newConf = Deployer.SysConfig;
                     newConf.name = parameters["name"];
-                    Deployer.Inst.SysConfig = newConf;
+                    Deployer.SysConfig = newConf;
 
                     Console.WriteLine("Scanner Name updated to: {0}", parameters["name"]);
                     sendResponse(stream, Encoding.ASCII.GetBytes("Success"));
@@ -124,7 +124,7 @@ namespace Hub.DesktopInterconnect
                 });
             } while (!done);
 
-            DesktopThread.Disconnected();
+            DesktopThread.Instance.Disconnected();
         }
 
         private void sendResponse(NetworkStream stream, byte[] data)

@@ -31,7 +31,7 @@ namespace Hub.Threaded.Tests
 
             CameraSocket testSocket = new CameraSocket
             {
-                DataSocket = new WSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp),
+                DataSocket = new SocketWrapper(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp),
                 Config = testConfig
             };
 

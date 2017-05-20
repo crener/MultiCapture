@@ -1,13 +1,11 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Net.Sockets;
 using System.Text;
 using Hub.Helpers;
 using NUnit.Framework;
-using Hub.Networking;
+using Hub_ClientTests.Networking;
 using SharedDeviceItems;
 
-namespace Hub_ClientTests.Networking
+namespace Hub.Networking
 {
     [TestFixture]
     public class SynchronousNetTest
@@ -63,16 +61,41 @@ namespace Hub_ClientTests.Networking
             socket.byteCount = 0;
             socket.maxSend = 0;
 
-            byte[] raw, socketData;
-            do
-            {
-                raw = new byte[qty];
-                new Random().NextBytes(raw);
-                byte[] EOM = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
-                socketData = new byte[raw.Length + EOM.Length];
-                Array.Copy(raw, socketData, raw.Length);
-                Array.Copy(EOM, 0, socketData, raw.Length, EOM.Length);
-            } while (ByteManipulation.SearchEndOfMessageIndex(socketData, socketData.Length) != raw.Length);
+            byte[] raw = new byte[qty];
+            byte[] EOM = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
+            byte[] socketData = new byte[qty + EOM.Length];
+            Array.Copy(raw, socketData, raw.Length);
+            Array.Copy(EOM, 0, socketData, raw.Length, EOM.Length);
+
+            socket.ReturnData = socketData;
+
+            byte[] netData = net.MakeRequest(new byte[] { 22, 88, 45 });
+            Assert.AreEqual(socket.ReturnData, netData);
+        }
+
+
+
+        [Test]
+        public void EndSequenceInMiddleOfData()
+        {
+            socket.Connected = true;
+            socket.FailCount = 1;
+            socket.byteCount = 0;
+            socket.maxSend = 0;
+
+            byte[] part1 = new byte[400];
+            byte[] part2 = new byte[400];
+            byte[] EOM = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
+
+            int socketDataWritten = 0;
+            byte[] socketData = new byte[part1.Length + part1.Length + (EOM.Length * 2)];
+            Array.Copy(part1, socketData, part1.Length);
+            socketDataWritten += part1.Length;
+            Array.Copy(EOM, 0, socketData, socketDataWritten, EOM.Length);
+            socketDataWritten += EOM.Length;
+            Array.Copy(part2, 0, socketData, socketDataWritten, part2.Length);
+            socketDataWritten += part2.Length;
+            Array.Copy(EOM, 0, socketData, socketDataWritten, EOM.Length);
 
             socket.ReturnData = socketData;
 

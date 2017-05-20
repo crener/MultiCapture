@@ -8,21 +8,11 @@ namespace Hub.Util
 {
 
     //responsible for correctly initializing all the resources required for correct operation
-    class Deployer
+    public static class Deployer
     {
-        public static Deployer Inst
-        {
-            get
-            {
-                if (inst == null) new Deployer();
-                return inst;
-            }
-        }
-        private static Deployer inst;
+        public static ICameraManager Manager { get; private set; }
 
-        public ICameraManager Manager { get; private set; }
-
-        public SaveLoad.Data SysConfig
+        public static SaveLoad.Data SysConfig
         {
             get { return SaveLoad.Conf; }
             set
@@ -32,14 +22,13 @@ namespace Hub.Util
             }
         }
 
-        public Deployer()
+        public static void Start()
         {
-            inst = this;
             Logger.Logger logs = new Logger.Logger();
             logs.RemoveOldLogs(DateTime.Today.AddMonths(-1));
 
             SysConfig = SaveLoad.Load();
-            DesktopThread.Start();
+            DesktopThread.Instance.Start();
             Manager = new TaskManager(SysConfig);
         }
     }

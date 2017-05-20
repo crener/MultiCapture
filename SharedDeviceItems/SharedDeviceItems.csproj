@@ -41,7 +41,9 @@
     <Compile Include="Helpers\NetworkHelpers.cs" />
     <Compile Include="Interface\ICamera.cs" />
     <Compile Include="Networking\ISocket.cs" />
-    <Compile Include="Networking\WSocket.cs" />
+    <Compile Include="Networking\IUdpClient.cs" />
+    <Compile Include="Networking\UdpClientWrapper.cs" />
+    <Compile Include="Networking\SocketWrapper.cs" />
     <Compile Include="Shared.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
