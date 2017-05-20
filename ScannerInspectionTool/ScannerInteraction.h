@@ -43,6 +43,7 @@ enum class ScannerCommands
 	getLoadedProjects = 13,
 	getCameraConfiguration = 14,
 	getCapacity = 15,
+	getApiVersion = 18,
 
 	//Camera Commands
 	captureImageSet = 20,
