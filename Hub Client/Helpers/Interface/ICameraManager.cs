@@ -13,6 +13,12 @@ namespace Hub.Helpers.Interface
 
         void CaptureImageSet();
         void CaptureImageSet(CameraRequest wanted);
+
+#if DEBUG
+        /// <summary>
+        /// use when debugging - clears every socket buffer of data
+        /// </summary>
         void ClearSockets();
+#endif
     }
 }

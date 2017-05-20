@@ -35,7 +35,7 @@ namespace Camera_Server
             string[] listed = Regex.Split(data, Constants.ParamSeperator);
 
             CameraRequest pre;
-            CameraRequest.TryParse(listed[0], out pre);
+            Enum.TryParse(listed[0], out pre);
             Request = pre;
 
             for (int i = 1; i < listed.Length; i++)

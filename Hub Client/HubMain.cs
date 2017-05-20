@@ -35,7 +35,9 @@ namespace Hub
                     Console.Write("new save path: ");
                     manager.SavePath = Console.ReadLine();
                 }
+#if DEBUG
                 else if (command == "clear") manager.ClearSockets();
+#endif
                 else manager.CaptureImageSet();
             }
             ProjectMapper.Instance.Save();

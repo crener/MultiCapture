@@ -186,6 +186,7 @@ namespace Hub.Threaded
             return true;
         }
 
+#if DEBUG
         /// <summary>
         /// use when debugging - clears every socket buffer of data
         /// </summary>
@@ -196,5 +197,6 @@ namespace Hub.Threaded
 
             Console.WriteLine("Cleared Sockets");
         }
+#endif
     }
 }

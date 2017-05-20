@@ -8,20 +8,20 @@ namespace Hub.Helpers
     public static class ByteManipulation
     {
         /// <summary>
-        /// Seperated the first section of data that matches the seperator string
+        /// Separated the first section of data that matches the separator string
         /// </summary>
-        /// <param before="before">String value of the data before the seperator</param>
+        /// <param before="before">String value of the data before the separator</param>
         /// <param before="rawData">Raw byte data that is parsed</param>
-        /// <param before="after">bytes that are after the seperator</param>
-        /// <returns>true if the operation was sucessful</returns>
-        public static bool SeperateData(out string before, byte[] rawData, out byte[] after, string seperator = Constants.MessageSeperator)
+        /// <param before="after">bytes that are after the separator</param>
+        /// <returns>true if the operation was successful</returns>
+        public static bool SeparateData(out string before, byte[] rawData, out byte[] after, string seperator = Constants.MessageSeperator)
         {
-            //initialise the before to blank encase there is no before in the data
+            //initialize the before to blank encase there is no before in the data
             before = "";
             after = new byte[0];
 
             byte[] eom = Encoding.ASCII.GetBytes(seperator);
-            bool foundSeperator = false;
+            bool foundSeparator = false;
 
             for (int i = 0; i < rawData.Length; i++)
             {
@@ -33,16 +33,16 @@ namespace Hub.Helpers
                     {
                         if (eom[j] == rawData[i + j])
                         {
-                            foundSeperator = true;
+                            foundSeparator = true;
                         }
                         else
                         {
-                            foundSeperator = false;
+                            foundSeparator = false;
                             break;
                         }
                     }
 
-                    if (foundSeperator)
+                    if (foundSeparator)
                     {
                         //looks like we found a match
                         before = Encoding.ASCII.GetString(rawData, 0, i);

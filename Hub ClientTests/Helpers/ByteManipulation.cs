@@ -26,7 +26,7 @@ namespace Hub.Helpers.Tests
             string returnName;
             byte[] returnBytes;
 
-            Assert.IsTrue(ByteManipulation.SeperateData(out returnName, testData, out returnBytes));
+            Assert.IsTrue(ByteManipulation.SeparateData(out returnName, testData, out returnBytes));
             Assert.IsTrue(returnName.Equals(name));
             Assert.IsTrue(data.Length == returnBytes.Length);
 
@@ -53,7 +53,7 @@ namespace Hub.Helpers.Tests
             string returnName;
             byte[] returnBytes;
 
-            Assert.IsFalse(ByteManipulation.SeperateData(out returnName, testData, out returnBytes));
+            Assert.IsFalse(ByteManipulation.SeparateData(out returnName, testData, out returnBytes));
             Assert.IsTrue(returnName == "");
             Assert.IsTrue(returnBytes.Length == 0);
         }
@@ -86,7 +86,7 @@ namespace Hub.Helpers.Tests
             string returnName;
             byte[] returnBytes;
 
-            Assert.IsTrue(ByteManipulation.SeperateData(out returnName, testData, out returnBytes));
+            Assert.IsTrue(ByteManipulation.SeparateData(out returnName, testData, out returnBytes));
             Assert.IsTrue(returnName.Equals(name));
             Assert.IsTrue(data.Length == returnBytes.Length);
 

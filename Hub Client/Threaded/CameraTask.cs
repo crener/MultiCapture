@@ -44,7 +44,7 @@ namespace Hub.Threaded
             //extract image data
             string imageName;
             byte[] imageData;
-            ByteManipulation.SeperateData(out imageName, data, out imageData);
+            ByteManipulation.SeparateData(out imageName, data, out imageData);
             if (imageName == "" || imageData.Length <= 0)
             {
                 Console.WriteLine("No Image data recieved!!");
@@ -82,6 +82,7 @@ namespace Hub.Threaded
             }
         }
 
+#if DEBUG
         public void ClearSockets()
         {
             byte[] ignore = new byte[300];
@@ -90,10 +91,9 @@ namespace Hub.Threaded
             {
                 total += config.DataSocket.Receive(ignore);
             }
-#if DEBUG
             Console.WriteLine("Total bytes flushed: " + total);
-#endif
         }
+#endif
 
         public void ShutDown()
         {

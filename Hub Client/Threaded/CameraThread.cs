@@ -86,7 +86,7 @@ namespace Hub.Threaded
             //extract image data
             string imageName;
             byte[] imageData;
-            ByteManipulation.SeperateData(out imageName, data, out imageData);
+            ByteManipulation.SeparateData(out imageName, data, out imageData);
             if (imageName == "" || imageData.Length <= 0)
             {
                 Console.WriteLine("No Image data recieved!!");

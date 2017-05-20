@@ -7,7 +7,7 @@ using Camera_Server;
 using Camera_ServerTests.Mocks;
 using CommandBuilder = Hub.Helpers.CommandBuilder;
 
-namespace Camera_ServerTests
+namespace CameraServer.Tests
 {
     [TestFixture]
     class RequestProcessTest

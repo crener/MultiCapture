@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Threading;
+using Camera_Server;
 using Camera_ServerTests.Mocks;
 using Hub.Helpers;
 using Hub.Networking;
 using NUnit.Framework;
 using SharedDeviceItems;
 
-namespace Camera_Server.Tests
+namespace CameraServer.Tests
 {
     [TestFixture]
     public class ListenerTest
@@ -55,10 +56,6 @@ namespace Camera_Server.Tests
 
                 Assert.IsTrue(socket.ReceiveCount > 0);
                 Assert.AreEqual(data, process.RequestProcessData);
-            }
-            catch(Exception)
-            {
-                throw;
             }
             finally
             {

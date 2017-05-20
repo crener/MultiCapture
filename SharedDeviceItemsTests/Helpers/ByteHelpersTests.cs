@@ -101,7 +101,7 @@ namespace SharedDeviceItems.Helpers.Tests
 
             byte[] methodData = ByteHelpers.FileToBytes(path), fileData = new byte[size];
             string name = "";
-            Assert.True(ByteManipulation.SeperateData(out name, methodData, out methodData, Constants.MessageSeperator));
+            Assert.True(ByteManipulation.SeparateData(out name, methodData, out methodData, Constants.MessageSeperator));
             Array.Copy(methodData, fileData, methodData.Length - Constants.EndOfMessage.Length);
 
             Assert.AreEqual("readfile.txt", name);

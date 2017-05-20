@@ -68,7 +68,7 @@ namespace Hub.Threaded
         {
             Console.WriteLine("Start of image capture, request: " + wanted + ", imageSet: " + (imagesetId + 1));
             Task[] camCommand = CollectImageCommands(wanted);
-            foreach(Task task in camCommand) task.Start();
+            foreach (Task task in camCommand) task.Start();
 
             projectFile.AddImageSet(imagesetId, "set-" + imagesetId);
             for (int i = 0; i < config.Cameras.Length; i++)
@@ -95,7 +95,7 @@ namespace Hub.Threaded
 
             for (int i = 0; i < cameras.Length; i++)
             {
-                if(needsStoreLocation)
+                if (needsStoreLocation)
                 {
                     cameras[i].SavePath = savePath + "set-" + imagesetId;
                     cameras[i].ImageSetName = imagesetId.ToString();
@@ -163,7 +163,7 @@ namespace Hub.Threaded
         }
 
         /// <summary>
-        /// Close all the threads proporly making sure to "force quit" them if they are being strnage
+        /// Close all the threads proporly making sure to "force quit" them if they are being strange
         /// </summary>
         protected void ShutDownCameras()
         {
@@ -173,6 +173,7 @@ namespace Hub.Threaded
             }
         }
 
+#if DEBUG
         /// <summary>
         /// use when debugging - clears every socket buffer of data
         /// </summary>
@@ -183,5 +184,6 @@ namespace Hub.Threaded
 
             Console.WriteLine("Cleared Sockets");
         }
+#endif
     }
 }

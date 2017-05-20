@@ -1,7 +1,8 @@
 ﻿using System.IO;
+using Camera_Server;
 using NUnit.Framework;
 
-namespace Camera_Server.Tests
+namespace CameraServer.Tests
 {
     [TestFixture]
     public class CameraSettingsTests
@@ -25,7 +26,7 @@ namespace Camera_Server.Tests
         }
 
         [OneTimeTearDown]
-        public void finish()
+        public void Finish()
         {
             if (newLocation != null)
             {
