@@ -55,6 +55,7 @@
     <Compile Include="Helpers\Interface\INetwork.cs" />
     <Compile Include="Networking\SynchronousNet.cs" />
     <Compile Include="Threaded\CameraTask.cs" />
+    <Compile Include="Threaded\GenericManager.cs" />
     <Compile Include="Threaded\TaskManager.cs" />
     <Compile Include="Util\Deployer.cs" />
     <Compile Include="Util\ProjectMapper.cs" />

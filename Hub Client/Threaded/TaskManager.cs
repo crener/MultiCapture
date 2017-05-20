@@ -12,59 +12,28 @@ using static Hub.Helpers.CameraHelper;
 
 namespace Hub.Threaded
 {
-    class TaskManager : ICameraManager
+    class TaskManager : GenericManager, ICameraManager
     {
-        private SaveLoad.Data config;
         private ICameraTask[] cameras;
-        private ProjectMapper projectFile;
 
-        //properties
-        private int imagesetId = -1;
-        private string savePath;
 
-        public TaskManager(SaveLoad.Data config)
+        public TaskManager(SaveLoad.Data config) : base(config)
         {
-            this.config = config;
 
-            Random rand = new Random();
-            int projectId = rand.Next(0, int.MaxValue - 1);
-            savePath = Constants.DefualtHubSaveLocation() + "Project" + projectId +
-                           Path.DirectorySeparatorChar;
-
-            //check that this new path has an existing path with no files in it
-            bool done = false;
-            do
-            {
-                if (!Directory.Exists(savePath)) Directory.CreateDirectory(savePath);
-                else if (Directory.GetFiles(savePath).Length > 0)
-                {
-                    Console.WriteLine(
-                        "Randomly generated project directory (id: " + projectId + ") contains files, trying another!");
-
-                    projectId = rand.Next(int.MaxValue, 0);
-                    savePath = Constants.DefualtHubSaveLocation() + "Project" + projectId + Path.DirectorySeparatorChar;
-                }
-                else done = true;
-            } while (!done);
-
-            Console.WriteLine("Project directory generated, id: " + projectId);
-            projectFile = new ProjectMapper(savePath + "project.xml", projectId);
-            projectFile.Save();
-
-            Configure();
         }
 
+        /// <summary>
+        /// Close all the threads proporly making sure to "force quit" them if they are being strange
+        /// </summary>
         ~TaskManager()
         {
-            ShutDownCameras();
+            foreach (ICameraTask camera in cameras)
+            {
+                camera.ShutDown();
+            }
         }
 
-        public void CaptureImageSet()
-        {
-            CaptureImageSet(CameraRequest.SendFullResImage);
-        }
-
-        public void CaptureImageSet(CameraRequest wanted)
+        public override void CaptureImageSet(CameraRequest wanted)
         {
             Console.WriteLine("Start of image capture, request: " + wanted + ", imageSet: " + (imagesetId + 1));
             Task[] camCommand = CollectImageCommands(wanted);
@@ -110,7 +79,7 @@ namespace Hub.Threaded
         /// <summary>
         /// Initializes resources for ThreadManager
         /// </summary>
-        private void Configure()
+        protected override void Configure()
         {
             List<ICameraTask> threadConfiguration = new List<ICameraTask>();
 
@@ -141,43 +110,17 @@ namespace Hub.Threaded
             projectFile.Save();
         }
 
-        public string SavePath
+        protected override void SaveChange(string value)
         {
-            set
-            {
-                savePath = value;
-
-                if (!Directory.Exists(savePath))
-                    Directory.CreateDirectory(savePath);
-
-                //since the directory has changed the image set should change too
-                imagesetId = 0;
-
-                foreach (ICameraTask thread in cameras)
-                    thread.SavePath = value + "set-" + imagesetId;
-            }
-            get
-            {
-                return savePath;
-            }
-        }
-
-        /// <summary>
-        /// Close all the threads proporly making sure to "force quit" them if they are being strange
-        /// </summary>
-        protected void ShutDownCameras()
-        {
-            foreach (ICameraTask camera in cameras)
-            {
-                camera.ShutDown();
-            }
+            foreach (ICameraTask cam in cameras)
+                cam.SavePath = value + "set-" + imagesetId;
         }
 
 #if DEBUG
         /// <summary>
         /// use when debugging - clears every socket buffer of data
         /// </summary>
-        public void ClearSockets()
+        public override void ClearSockets()
         {
             foreach (ICameraTask cam in cameras)
                 cam.ClearSockets();
