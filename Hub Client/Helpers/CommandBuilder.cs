@@ -21,17 +21,17 @@ namespace Hub.Helpers
 
         public CommandBuilder AddParam(string key, string value)
         {
-            if (key.Contains(Constants.ParamSeperator)) throw new CommandException("key cannot contain the parameter seperator");
-            if (key.Contains(Constants.MessageSeperator)) throw new CommandException("key cannot contain the message seperator");
+            if (key.Contains(Constants.ParamSeparator)) throw new CommandException("key cannot contain the parameter seperator");
+            if (key.Contains(Constants.MessageSeparator)) throw new CommandException("key cannot contain the message seperator");
             if (key.Contains(Constants.EndOfMessage)) throw new CommandException("key cannot contain the end of message key");
-            if (key.Contains(Constants.ParamKeyValueSeperator)) throw new CommandException("key cannot contain the key value seperator key");
+            if (key.Contains(Constants.ParamKeyValueSeparator)) throw new CommandException("key cannot contain the key value seperator key");
 
-            if (value.Contains(Constants.ParamSeperator)) throw new CommandException("value cannot contain the parameter seperator");
-            if (value.Contains(Constants.MessageSeperator)) throw new CommandException("value cannot contain the message seperator");
+            if (value.Contains(Constants.ParamSeparator)) throw new CommandException("value cannot contain the parameter seperator");
+            if (value.Contains(Constants.MessageSeparator)) throw new CommandException("value cannot contain the message seperator");
             if (value.Contains(Constants.EndOfMessage)) throw new CommandException("value cannot contain the end of message key");
-            if (value.Contains(Constants.ParamKeyValueSeperator)) throw new CommandException("value cannot contain the key value seperator key");
+            if (value.Contains(Constants.ParamKeyValueSeparator)) throw new CommandException("value cannot contain the key value seperator key");
 
-            command += Constants.ParamSeperator + key + Constants.ParamKeyValueSeperator + value;
+            command += Constants.ParamSeparator + key + Constants.ParamKeyValueSeparator + value;
             return this;
         }
 

@@ -23,6 +23,7 @@ namespace Hub
         /// </summary>
         private void Start()
         {
+            Deployer.Start();
             ICameraManager manager = Deployer.Manager;
 
             string command = "";

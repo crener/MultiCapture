@@ -21,7 +21,7 @@ namespace Hub.Threaded
         {
             config = socket;
             connection = new SynchronousNet(socket.DataSocket);
-            SavePath = Constants.DefualtHubSaveLocation();
+            SavePath = Constants.DefaultHubSaveLocation();
         }
 
         public CameraTask(CameraSocket socket, string saveLocation)

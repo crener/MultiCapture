@@ -8,13 +8,13 @@ using NUnit.Framework;
 using SharedDeviceItems;
 using SharedDeviceItems.Helpers;
 
-namespace Hub.Threaded.Tests
+namespace Hub.Threaded
 {
     [TestFixture]
     public class CameraThreadTest
     {
         //[Test]
-        public void CameraThreadConnectionTest()
+        /*public void CameraThreadConnectionTest()
         {
             Thread camServer = new Thread(new Listener().StartListening);
             camServer.Name = "CameraServer";
@@ -48,6 +48,6 @@ namespace Hub.Threaded.Tests
 
             camThread.Join();
             camServer.Join();
-        }
+        }*/
     }
 }

@@ -54,6 +54,7 @@ namespace Hub.Util
         private Dictionary<int, int> setLookUp = new Dictionary<int, int>();
 
         public int ImageSetCount => sets.Count;
+        public int CameraCount => cameras.Count;
         string fileLocation { get; set; }
 
         #region XML naming
@@ -92,7 +93,7 @@ namespace Hub.Util
 
         /// <summary>
         /// returns a static project mapper.
-        /// Note the class using this is responsible for initialising this if it is null
+        /// Note the class using this is responsible for initializing this if it is null
         /// </summary>
         /// <returns>static project mapper</returns>
         public static ProjectMapper Instance

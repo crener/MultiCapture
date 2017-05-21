@@ -90,8 +90,8 @@ namespace CameraServer.Tests
             RequestProcess processer = new MockRequestProcess(socket, cam);
             byte[] request = new CommandBuilder().Request(CameraRequest.SendTestImage).Build();
 
-            byte[] name = Encoding.ASCII.GetBytes("test.jpg" + Constants.MessageSeperator),
-                raw = File.ReadAllBytes(Constants.DefualtHubSaveLocation() + "test.jpg"),
+            byte[] name = Encoding.ASCII.GetBytes("test.jpg" + Constants.MessageSeparator),
+                raw = File.ReadAllBytes(Constants.DefaultHubSaveLocation() + "test.jpg"),
                 end = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
             byte[] imageData = new byte[name.Length + raw.Length + end.Length];
 
@@ -119,7 +119,7 @@ namespace CameraServer.Tests
             RequestProcess processer = new MockRequestProcess(socket, cam);
             byte[] request = new CommandBuilder().Request(CameraRequest.SendFullResImage).AddParam("id", nameData).Build();
 
-            byte[] name = Encoding.ASCII.GetBytes(cam.name + nameData + ".jpg" + Constants.MessageSeperator),
+            byte[] name = Encoding.ASCII.GetBytes(cam.name + nameData + ".jpg" + Constants.MessageSeparator),
                 end = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
             byte[] imageData = new byte[name.Length + cam.cameraData.Length + end.Length];
 
@@ -131,11 +131,11 @@ namespace CameraServer.Tests
             string converted = Encoding.ASCII.GetString(socket.SendData);
 
             Assert.AreEqual(imageData, socket.SendData);
-            Assert.AreEqual(cam.name + nameData + ".jpg", converted.Substring(0, converted.IndexOf(Constants.MessageSeperator)));
+            Assert.AreEqual(cam.name + nameData + ".jpg", converted.Substring(0, converted.IndexOf(Constants.MessageSeparator)));
 
             socket.SendData = new byte[] { };
             nameData = "string";
-            name = Encoding.ASCII.GetBytes(cam.name + nameData + ".jpg" + Constants.MessageSeperator);
+            name = Encoding.ASCII.GetBytes(cam.name + nameData + ".jpg" + Constants.MessageSeparator);
             imageData = new byte[name.Length + cam.cameraData.Length + end.Length];
             request = new CommandBuilder().Request(CameraRequest.SendFullResImage).AddParam("id", nameData).Build();
 
@@ -147,7 +147,7 @@ namespace CameraServer.Tests
             converted = Encoding.ASCII.GetString(socket.SendData);
 
             Assert.AreEqual(imageData, socket.SendData);
-            Assert.AreEqual(cam.name + nameData + ".jpg", converted.Substring(0, converted.IndexOf(Constants.MessageSeperator)));
+            Assert.AreEqual(cam.name + nameData + ".jpg", converted.Substring(0, converted.IndexOf(Constants.MessageSeparator)));
         }
 
         [Test]

@@ -13,7 +13,7 @@ namespace SharedDeviceItems.Helpers
         public static byte[] FileToBytes(string location)
         {
             string fileName = location.Substring(location.LastIndexOf(Path.DirectorySeparatorChar) + 1);
-            byte[] name = Encoding.ASCII.GetBytes(fileName + Constants.MessageSeperator),
+            byte[] name = Encoding.ASCII.GetBytes(fileName + Constants.MessageSeparator),
                         file = File.ReadAllBytes(location),
                         eom = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
 

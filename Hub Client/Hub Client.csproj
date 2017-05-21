@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Hub_Client</RootNamespace>
-    <AssemblyName>Hub Client</AssemblyName>
+    <AssemblyName>Hub</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -48,14 +48,15 @@
     <Compile Include="Helpers\CameraHelper.cs" />
     <Compile Include="Helpers\CommandBuilder.cs" />
     <Compile Include="Helpers\DataClasses.cs" />
-    <Compile Include="Helpers\Interface\ICameraManager.cs" />
-    <Compile Include="Helpers\Interface\ICameraTask.cs" />
+    <Compile Include="Threaded\Interface\ICameraManager.cs" />
+    <Compile Include="Threaded\Interface\ICameraTask.cs" />
     <Compile Include="Helpers\Networking.cs" />
     <Compile Include="HubMain.cs" />
-    <Compile Include="Helpers\Interface\INetwork.cs" />
+    <Compile Include="Networking\INetwork.cs" />
     <Compile Include="Networking\SynchronousNet.cs" />
     <Compile Include="Threaded\CameraTask.cs" />
     <Compile Include="Threaded\GenericManager.cs" />
+    <Compile Include="Threaded\Interface\ICameraThread.cs" />
     <Compile Include="Threaded\TaskManager.cs" />
     <Compile Include="Util\Deployer.cs" />
     <Compile Include="Util\ProjectMapper.cs" />

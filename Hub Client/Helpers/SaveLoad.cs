@@ -98,12 +98,12 @@ namespace Hub.Helpers
 
         public static string DefaultSavePath
         {
-            get { return DefualtHubSaveLocation() + defaultSaveFile; }
+            get { return DefaultHubSaveLocation() + defaultSaveFile; }
         }
 
         public static string CustomSaveDirectory
         {
-            get { return DefualtHubSaveLocation() + customSaveDirectory; }
+            get { return DefaultHubSaveLocation() + customSaveDirectory; }
             set { customSaveDirectory = value; }
         }
 
@@ -115,6 +115,7 @@ namespace Hub.Helpers
         {
             public string name { get; set; }
             public CameraConfiguration[] Cameras { get; set; }
+
             [JsonIgnore]
             public int CameraCount => Cameras == null ? 0 : Cameras.Length;
             public Data Default()

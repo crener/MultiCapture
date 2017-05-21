@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Hub.Helpers;
-using Hub.Helpers.Interface;
 using Hub.Helpers.Wrapper;
 using Hub.Util;
 using SharedDeviceItems;
 using static Hub.Helpers.CameraHelper;
 
+[assembly: InternalsVisibleTo("Hub ClientTests")]
 namespace Hub.Threaded
 {
-    class TaskManager : GenericManager, ICameraManager
+    internal class TaskManager : GenericManager
     {
         private ICameraTask[] cameras;
 
@@ -21,6 +22,18 @@ namespace Hub.Threaded
         {
 
         }
+
+#if DEBUG
+        /// <summary>
+        /// Use for debug to pass mock camera tasks
+        /// </summary>
+        /// <param name="config">standard config for initialization</param>
+        /// <param name="tasks">Cameras that will be used for processing</param>
+        public TaskManager(SaveLoad.Data config, ICameraTask[] tasks) : base(config)
+        {
+            cameras = tasks;
+        }
+#endif
 
         /// <summary>
         /// Close all the threads proporly making sure to "force quit" them if they are being strange
@@ -40,7 +53,7 @@ namespace Hub.Threaded
             foreach (Task task in camCommand) task.Start();
 
             projectFile.AddImageSet(imagesetId, "set-" + imagesetId);
-            for (int i = 0; i < config.Cameras.Length; i++)
+            for (int i = 0; i < config.CameraCount; i++)
             {
                 projectFile.AddImage(imagesetId, config.Cameras[i].CamFileIdentity + imagesetId + ".jpg", i);
             }
@@ -112,6 +125,8 @@ namespace Hub.Threaded
 
         protected override void SaveChange(string value)
         {
+            if(cameras == null || cameras.Length == 0) return;
+
             foreach (ICameraTask cam in cameras)
                 cam.SavePath = value + "set-" + imagesetId;
         }

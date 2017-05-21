@@ -9,11 +9,16 @@ using Hub.Networking;
 
 namespace Hub.Threaded
 {
-    public class CameraThread
+    internal class CameraThread : ICameraThread
     {
-        public volatile bool Finish = false;
-        public volatile CameraRequest Request = CameraRequest.Alive;
-        public volatile string SavePath;
+        public bool Finish { get { return finish; } set { finish = value; } }
+        private volatile bool finish = false;
+
+        public CameraRequest Request { get { return request; } set { request = value; } }
+        private volatile CameraRequest request = CameraRequest.Alive;
+
+        public string SavePath { get { return savePath; } set { savePath = value; } }
+        public volatile string savePath;
 
         public string ImageSetName { get; set; }
 
@@ -24,21 +29,21 @@ namespace Hub.Threaded
         {
             config = socket;
             connection = new SynchronousNet(socket.DataSocket);
-            SavePath = Constants.DefualtHubSaveLocation();
+            savePath = Constants.DefaultHubSaveLocation();
         }
 
         public CameraThread(CameraSocket socket, string saveLocation)
         {
             config = socket;
             connection = new SynchronousNet(socket.DataSocket);
-            SavePath = saveLocation;
+            savePath = saveLocation;
         }
 
         public void Start()
         {
             try
             {
-                SetCameraProporties();
+                SetCameraProperties();
 
                 while (!Finish)
                 {
@@ -78,10 +83,10 @@ namespace Hub.Threaded
             }
         }
 
-        private void ProcessRequest(CameraRequest request)
+        private void ProcessRequest(CameraRequest camRequest)
         {
             //start asking the camera for a new image
-            byte[] data = connection.MakeRequest(PropertyRequest(request));
+            byte[] data = connection.MakeRequest(PropertyRequest(camRequest));
 
             //extract image data
             string imageName;
@@ -89,7 +94,7 @@ namespace Hub.Threaded
             ByteManipulation.SeparateData(out imageName, data, out imageData);
             if (imageName == "" || imageData.Length <= 0)
             {
-                Console.WriteLine("No Image data recieved!!");
+                Console.WriteLine("No Image data received!!");
                 Console.WriteLine("Debug data:");
                 Console.WriteLine("\tThread Camera: " + config.Config.Id);
                 Console.WriteLine("\tImage set id: " + ImageSetName);
@@ -97,7 +102,7 @@ namespace Hub.Threaded
                 return;
             }
 
-            SaveData(imageData, SavePath + Path.DirectorySeparatorChar + imageName);
+            SaveData(imageData, savePath + Path.DirectorySeparatorChar + imageName);
 
             Console.WriteLine("Camera " + config.Config.Id + " image saved");
         }
@@ -113,11 +118,11 @@ namespace Hub.Threaded
             }
         }
 
-        private byte[] PropertyRequest(CameraRequest request)
+        private byte[] PropertyRequest(CameraRequest camRequest)
         {
-            CommandBuilder builder = new CommandBuilder().Request(request);
+            CommandBuilder builder = new CommandBuilder().Request(camRequest);
 
-            if (request == CameraRequest.Alive || request == CameraRequest.SendTestImage)
+            if (camRequest == CameraRequest.Alive || camRequest == CameraRequest.SendTestImage)
                 return builder.Build();
 
             builder.AddParam("id", ImageSetName);
@@ -126,9 +131,9 @@ namespace Hub.Threaded
         }
 
         /// <summary>
-        /// Sets the camera proporties
+        /// Sets the camera properties
         /// </summary>
-        private void SetCameraProporties()
+        private void SetCameraProperties()
         {
             CommandBuilder builder = new CommandBuilder().Request(CameraRequest.SetProporties);
             builder.AddParam("name", config.Config.CamFileIdentity);

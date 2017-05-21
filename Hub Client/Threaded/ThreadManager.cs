@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using Hub.Helpers;
@@ -11,16 +12,28 @@ using SharedDeviceItems;
 
 namespace Hub.Threaded
 {
-    class ThreadManager : GenericManager, ICameraManager
+    class ThreadManager : GenericManager
     {
         private Thread[] cameraThreads;
-        private CameraThread[] threadConfiguration;
+        private ICameraThread[] threadConfiguration;
         
 
         public ThreadManager(SaveLoad.Data config) : base(config)
         {
 
         }
+
+#if DEBUG
+        /// <summary>
+        /// Use for debug to pass mock camera tasks
+        /// </summary>
+        /// <param name="config">standard config for initialization</param>
+        /// <param name="tasks">Cameras that will be used for processing</param>
+        public ThreadManager(SaveLoad.Data config, ICameraThread[] tasks) : base(config)
+        {
+            threadConfiguration = tasks;
+        }
+#endif
 
         /// <summary>
         /// Close all the threads proporly making sure to "force quit" them if they are being strnage
@@ -109,13 +122,17 @@ namespace Hub.Threaded
         
         protected override void SaveChange(string value)
         {
-            foreach (CameraThread thread in threadConfiguration)
+            if(threadConfiguration == null) return;
+
+            foreach (ICameraThread thread in threadConfiguration)
                 thread.SavePath = value + "set-" + imagesetId;
         }
 
         private bool CheckDone()
         {
-            foreach (CameraThread thread in threadConfiguration)
+            if (threadConfiguration == null) return true;
+
+            foreach (ICameraThread thread in threadConfiguration)
             {
                 if (thread.Request != CameraRequest.Alive)
                     return false;

@@ -32,7 +32,7 @@ namespace Camera_Server
         private void ConvertData(string data)
         {
             Parameters = new Dictionary<string, string>();
-            string[] listed = Regex.Split(data, Constants.ParamSeperator);
+            string[] listed = Regex.Split(data, Constants.ParamSeparator);
 
             CameraRequest pre;
             Enum.TryParse(listed[0], out pre);
@@ -40,7 +40,7 @@ namespace Camera_Server
 
             for (int i = 1; i < listed.Length; i++)
             {
-                int sepindex = listed[i].IndexOf(Constants.ParamKeyValueSeperator);
+                int sepindex = listed[i].IndexOf(Constants.ParamKeyValueSeparator);
                 string key = listed[i].Substring(0, sepindex);
                 string value = listed[i].Substring(sepindex + 1, listed[i].Length - sepindex - 1);
 

@@ -17,7 +17,7 @@ namespace Hub.Helpers.Tests
             byte[] data = { 0, 23, 243, 231, 23, 234, 234, 23, 4, 4, 4, 0, 0, 234 };
 
             //create byte array for seperation
-            byte[] byteName = Encoding.ASCII.GetBytes(name + Constants.MessageSeperator);
+            byte[] byteName = Encoding.ASCII.GetBytes(name + Constants.MessageSeparator);
             byte[] testData = new byte[byteName.Length + data.Length];
             byteName.CopyTo(testData, 0);
             data.CopyTo(testData, byteName.Length);
@@ -70,14 +70,14 @@ namespace Hub.Helpers.Tests
 
             //create byte array for seperation
             string almostSeperator = "";
-            for (int i = 0; i < Constants.MessageSeperator.Length - 1; i++)
+            for (int i = 0; i < Constants.MessageSeparator.Length - 1; i++)
             {
-                almostSeperator += Constants.MessageSeperator[i];
+                almostSeperator += Constants.MessageSeparator[i];
             }
 
             name += almostSeperator;
 
-            byte[] byteName = Encoding.ASCII.GetBytes(name + Constants.MessageSeperator);
+            byte[] byteName = Encoding.ASCII.GetBytes(name + Constants.MessageSeparator);
             byte[] testData = new byte[byteName.Length + data.Length];
             byteName.CopyTo(testData, 0);
             data.CopyTo(testData, byteName.Length);

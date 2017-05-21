@@ -6,7 +6,7 @@
     <ProjectGuid>{2E9F0C10-FEBA-4296-BA0E-42FE98E7536B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Hub_ClientTests</RootNamespace>
+    <RootNamespace>Hub</RootNamespace>
     <AssemblyName>Hub ClientTests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -63,6 +63,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\ByteManipulation.cs" />
     <Compile Include="Threaded\CameraThread.cs" />
+    <Compile Include="Threaded\MockICameraTask.cs" />
+    <Compile Include="Threaded\MockICameraThread.cs" />
+    <Compile Include="Threaded\TaskManagerTest.cs" />
+    <Compile Include="Threaded\ThreadManagerTest.cs" />
     <Compile Include="Util\ProjectMapper.cs" />
   </ItemGroup>
   <ItemGroup>

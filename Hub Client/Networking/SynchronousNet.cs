@@ -108,7 +108,7 @@ namespace Hub.Networking
         private bool ExpectsSize(byte[] request)
         {
             string rawRequest = Encoding.ASCII.GetString(request);
-            int seperatorLocation = rawRequest.IndexOf(Constants.ParamSeperator);
+            int seperatorLocation = rawRequest.IndexOf(Constants.ParamSeparator);
             if (seperatorLocation <= 0) return true;
             string requestId = rawRequest.Substring(0, seperatorLocation);
 

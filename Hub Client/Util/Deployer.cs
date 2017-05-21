@@ -6,8 +6,9 @@ using Hub.Threaded;
 
 namespace Hub.Util
 {
-
-    //responsible for correctly initializing all the resources required for correct operation
+    /// <summary>
+    /// Correctly initializes and stores all the resources required for correct operation
+    /// </summary>
     public static class Deployer
     {
         public static ICameraManager Manager { get; private set; }

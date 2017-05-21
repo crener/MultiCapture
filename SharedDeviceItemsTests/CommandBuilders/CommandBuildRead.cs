@@ -48,10 +48,10 @@ namespace SharedDeviceItemsTests.CommandBuilders
             }
         }
 
-        [TestCase(Constants.ParamSeperator)]
-        [TestCase(Constants.MessageSeperator)]
+        [TestCase(Constants.ParamSeparator)]
+        [TestCase(Constants.MessageSeparator)]
         [TestCase(Constants.EndOfMessage)]
-        [TestCase(Constants.ParamKeyValueSeperator)]
+        [TestCase(Constants.ParamKeyValueSeparator)]
         public void BuilderParamException(string constant)
         {
             CommandBuilder test = new CommandBuilder().AddParam("legal", "entry");

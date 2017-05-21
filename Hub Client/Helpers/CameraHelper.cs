@@ -2,7 +2,7 @@
 
 namespace Hub.Helpers
 {
-    static class CameraHelper
+    public static class CameraHelper
     {
         /// <summary>
         /// checks if the image request needs to have a place to store images

@@ -96,7 +96,7 @@ namespace Camera_Server
 #if DEBUG
                 case CameraRequest.SendTestImage:
                     //For testing, send a static image saved on the device
-                    messageData = ByteHelpers.FileToBytes(Constants.DefualtHubSaveLocation() + "test.jpg");
+                    messageData = ByteHelpers.FileToBytes(Constants.DefaultHubSaveLocation() + "test.jpg");
                     SendResponse(client, messageData, false);
                     return;
 #endif

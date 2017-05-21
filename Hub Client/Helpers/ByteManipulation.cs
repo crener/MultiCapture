@@ -14,7 +14,7 @@ namespace Hub.Helpers
         /// <param before="rawData">Raw byte data that is parsed</param>
         /// <param before="after">bytes that are after the separator</param>
         /// <returns>true if the operation was successful</returns>
-        public static bool SeparateData(out string before, byte[] rawData, out byte[] after, string seperator = Constants.MessageSeperator)
+        public static bool SeparateData(out string before, byte[] rawData, out byte[] after, string seperator = Constants.MessageSeparator)
         {
             //initialize the before to blank encase there is no before in the data
             before = "";

@@ -16,7 +16,7 @@ namespace Logger
 
         public Logger()
         {
-            path = Constants.DefualtHubSaveLocation() + "Log" + Path.DirectorySeparatorChar;
+            path = Constants.DefaultHubSaveLocation() + "Log" + Path.DirectorySeparatorChar;
             Init();
         }
 
@@ -38,6 +38,7 @@ namespace Logger
 #if DEBUG
             Console.SetOut(new DualWriter(file, Console.Out));
 #else
+            Console.WriteLine("This version of the logger does not log to console!");
             Console.SetOut(file);
 #endif
             Console.WriteLine("Logger init done");
@@ -52,6 +53,7 @@ namespace Logger
 #if DEBUG
             Console.SetOut(new DualWriter(file, Console.Out));
 #else
+            Console.WriteLine("This version of the logger does not log to console!");
             Console.SetOut(file);
 #endif
         }
@@ -77,14 +79,18 @@ namespace Logger
                 return;
             }
 
-            foreach (string file in dir)
+            int total = 0;
+            foreach (string logFile in dir)
             {
-                DateTime fileDate = File.GetCreationTime(file);
+                DateTime fileDate = File.GetCreationTime(logFile);
                 if (fileDate < maxAge)
                 {
-                    File.Delete(file);
+                    File.Delete(logFile);
+                    total++;
                 }
             }
+
+            if (total > 0) Console.WriteLine("Removed {0} old log files", total);
         }
 
         public void Dispose()
