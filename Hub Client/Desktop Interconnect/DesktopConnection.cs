@@ -7,35 +7,10 @@ using System.Threading.Tasks;
 using Hub.Helpers;
 using Hub.Util;
 using static System.String;
+using static Hub.DesktopInterconnect.ResponseConstants;
 
 namespace Hub.DesktopInterconnect
 {
-    /// <summary>
-    /// Scanner command response codes
-    /// </summary>
-    public enum ScannerCommands
-    {
-        Unknown = 0,
-
-        //Global Commands
-        setName = 10,
-        setProjectNiceName = 11,
-        getRecentLogFile = 12,
-        getLoadedProjects = 13,
-        getCameraConfiguration = 14,
-        getCapacity = 15,
-        getApiVersion = 18,
-
-        //Camera Commands
-        CaptureImageSet = 20,
-
-        //Project Management Commands
-        RemoveProject = 30,
-        getAllImageSets = 31,
-        getImageSet = 32,
-        getProjectStats = 33
-    }
-
     /// <summary>
     /// Responsible for handling commands given from a desktop connected desktop
     /// </summary>
@@ -44,12 +19,6 @@ namespace Hub.DesktopInterconnect
         private const int BufferSize = 1024;
         private const char Separator = '&';
         private const char Splitter = '?';
-        private const float ApiVersion = 1f;
-
-        private const string SuccessString = "Success";
-        private const string FailString = "Fail";
-        private readonly byte[] successResponse = Encoding.ASCII.GetBytes(SuccessString);
-        private readonly byte[] apiResponse = Encoding.ASCII.GetBytes(ApiVersion.ToString("F"));
 
         byte[] readBuffer = new byte[BufferSize];
 
@@ -92,7 +61,7 @@ namespace Hub.DesktopInterconnect
             ScannerCommands command = ScannerCommands.Unknown;
             if (!IsNullOrEmpty(rawCommand)) command = (ScannerCommands)Enum.Parse(typeof(ScannerCommands), rawCommand);
 
-            if(command == ScannerCommands.Unknown)
+            if (command == ScannerCommands.Unknown)
             {
                 Console.WriteLine("Unknown Desktop instruction received: \"{0}\"", instruction);
                 SendResponse(stream, FailString + "?Unknown command: " + rawCommand);
@@ -121,31 +90,17 @@ namespace Hub.DesktopInterconnect
 
         private void ProcessRequest(ScannerCommands command, Dictionary<string, string> parameters, NetworkStream stream)
         {
-            switch (command)
+            Console.WriteLine("External Instruction received: \"{0}\"", command);
+            if (command == ScannerCommands.Unknown)
+                Console.WriteLine("\tParams: " + parameters);
+
+            if (DesktopThread.Responders.ContainsKey(command))
             {
-                case ScannerCommands.setName:
-                    if (!parameters.ContainsKey("name"))
-                    {
-                        Console.WriteLine("Name change instruction missing parameter: name");
-                        SendResponse(stream, FailString + "?\"name\" parameter missing");
-                        break;
-                    }
-
-                    SaveLoad.Data newConf = Deployer.SysConfig;
-                    newConf.name = parameters["name"];
-                    Deployer.SysConfig = newConf;
-
-                    Console.WriteLine("Scanner Name updated to: {0}", parameters["name"]);
-                    SendResponse(stream, successResponse);
-                    break;
-                case ScannerCommands.getApiVersion:
-                    SendResponse(stream, apiResponse);
-                    break;
-                default:
-                    Console.WriteLine("Unknown Desktop instruction received: \"{0}\"", command);
-                    SendResponse(stream, FailString + "?Unknown command: " + parameters);
-                    break;
+                SendResponse(stream, DesktopThread.Responders[command].GenerateResponse(command, parameters));
+                return;
             }
+
+            SendResponse(stream, FailString + "?Unknown command: " + parameters);
         }
 
 

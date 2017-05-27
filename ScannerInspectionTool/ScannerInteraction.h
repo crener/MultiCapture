@@ -36,22 +36,24 @@ private:
 
 enum class ScannerCommands
 {
+	Unknown = 0,
+
 	//Global Commands
-	setName = 10,
-	setProjectNiceName = 11,
-	getRecentLogFile = 12,
-	getLoadedProjects = 13,
-	getCameraConfiguration = 14,
-	getCapacity = 15,
-	getApiVersion = 18,
+	setName = 100,
+	setProjectNiceName = 110,
+	getRecentLogFile = 120,
+	getRecentLogDiff = 121,
+	getLoadedProjects = 130,
+	getCameraConfiguration = 140,
+	getCapacity = 150,
+	getApiVersion = 180,
 
 	//Camera Commands
-	captureImageSet = 20,
+	CaptureImageSet = 200,
 
 	//Project Management Commands
-	removeProject = 30,
-	getAllImageSets = 31,
-	getImageSet = 32,
-	getProjectStats = 33,
-
+	RemoveProject = 300,
+	getAllImageSets = 310,
+	getImageSet = 320,
+	getProjectStats = 330
 };

@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
+using Hub.DesktopInterconnect.Responses;
 using Hub.Util;
 using SharedDeviceItems.Networking;
 
@@ -30,6 +34,18 @@ namespace Hub.DesktopInterconnect
         protected static DesktopConnection connection;
         protected static IUdpClient udp;
         protected static TcpListener tcpListener;
+
+        public static Dictionary<ScannerCommands, IResponse> Responders = new Dictionary<ScannerCommands, IResponse>();
+
+        public DesktopThread()
+        {
+            //activate and itialiase all responders with the base responder as a sub class
+            foreach (Type type in Assembly.GetAssembly(typeof(IResponse)).GetTypes()
+                    .Where(myType => myType.IsClass && !myType.IsAbstract && myType.IsSubclassOf(typeof(BaseResponse))))
+            {
+                Activator.CreateInstance(type);
+            }
+        }
 
         public void Start()
         {
@@ -107,6 +123,12 @@ namespace Hub.DesktopInterconnect
                 {
                     udp.Receive(ref end);
                 } while (udp.Available > 0);
+            }
+
+            //reset responders
+            foreach(IResponse responder in Responders.Values)
+            {
+                responder.Reset();
             }
 
             udp.BeginReceive(DiscoveryAction, udp);

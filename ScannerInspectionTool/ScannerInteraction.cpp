@@ -25,8 +25,9 @@ void ScannerInteraction::requestScanner(ScannerCommands command, QString params)
 
 	connection->write(data.toLatin1());
 	
-	//QByteArray result = connection->read(returnLengthLimit);
-	//emit scannerResult(command, result);
+	connection->waitForReadyRead(-1);
+	QByteArray result = connection->read(returnLengthLimit);
+	emit scannerResult(command, result);
 }
 
 void ScannerInteraction::connectToScanner(ScannerDeviceInformation* device)
