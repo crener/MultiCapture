@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using System.IO;
 using SharedDeviceItems;
 
@@ -13,10 +12,11 @@ namespace Logger
         TextWriter standard;
         StreamWriter file;
         string path;
+        public string Path { get; private set; }
 
         public Logger()
         {
-            path = Constants.DefaultHubSaveLocation() + "Log" + Path.DirectorySeparatorChar;
+            path = Constants.DefaultHubSaveLocation() + "Log" + System.IO.Path.DirectorySeparatorChar;
             Init();
         }
 
@@ -31,9 +31,9 @@ namespace Logger
             standard = Console.Out;
 
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-            string filePath = path + DateTime.Today.ToString("dd.MM.yyyy") + ".txt";
+            Path = path + DateTime.Today.ToString("dd.MM.yyyy") + ".txt";
 
-            file = new StreamWriter(filePath, true, standard.Encoding);
+            file = new StreamWriter(Path, true, standard.Encoding);
             file.AutoFlush = true;
 #if DEBUG
             Console.SetOut(new DualWriter(file, Console.Out));
@@ -96,6 +96,7 @@ namespace Logger
         public void Dispose()
         {
             if (file != null) file.Close();
+            Restore();
         }
     }
 }

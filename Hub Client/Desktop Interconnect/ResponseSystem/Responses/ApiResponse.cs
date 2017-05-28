@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using Hub.DesktopInterconnect;
-using Hub.DesktopInterconnect.Responses;
 
-namespace Hub.DesktopInterconnect.Responses
+namespace Hub.ResponseSystem.Responses
 {
     [ResponseType(ScannerCommands.getApiVersion)]
     class ApiResponse : BaseResponse

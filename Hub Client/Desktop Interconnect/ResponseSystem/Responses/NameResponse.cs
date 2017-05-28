@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Hub.DesktopInterconnect;
-using Hub.DesktopInterconnect.Responses;
 using Hub.Helpers;
 using Hub.Util;
 
-namespace Hub.DesktopInterconnect.Responses
+namespace Hub.ResponseSystem.Responses
 {
     [ResponseType(ScannerCommands.setName)]
     class NameResponse : BaseResponse

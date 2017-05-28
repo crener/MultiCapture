@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using Hub.DesktopInterconnect;
 
-namespace Hub.DesktopInterconnect.Responses
+namespace Hub.ResponseSystem
 {
     abstract class BaseResponse : IResponse
     {

@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
-using Hub.DesktopInterconnect.Responses;
+using Hub.ResponseSystem;
 using Hub.Util;
 using SharedDeviceItems.Networking;
 
@@ -78,7 +78,7 @@ namespace Hub.DesktopInterconnect
             IPEndPoint endpoint = new IPEndPoint(IPAddress.Any, DiscoveryPort);
 
             byte[] data = state.EndReceive(result, ref endpoint);
-            Console.WriteLine("Discovery connection from: " + endpoint + ", message: " + Encoding.ASCII.GetString(data));
+            Console.WriteLine("Discovery connection from: {0}, message: {1}", endpoint, Encoding.ASCII.GetString(data));
 
             byte[] response = Encoding.ASCII.GetBytes(Deployer.SysConfig.name);
             endpoint.Port = DiscoveryResponsePort;
@@ -126,7 +126,7 @@ namespace Hub.DesktopInterconnect
             }
 
             //reset responders
-            foreach(IResponse responder in Responders.Values)
+            foreach (IResponse responder in Responders.Values)
             {
                 responder.Reset();
             }

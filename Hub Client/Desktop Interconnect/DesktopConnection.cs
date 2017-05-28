@@ -57,7 +57,7 @@ namespace Hub.DesktopInterconnect
 
         private void ExtractRequest(string instruction, NetworkStream stream)
         {
-            string rawCommand = instruction.Substring(0, instruction.IndexOf(Splitter));
+            string rawCommand = instruction.IndexOf(Splitter) >= 0 ? instruction.Substring(0, instruction.IndexOf(Splitter)) : instruction;
             ScannerCommands command = ScannerCommands.Unknown;
             if (!IsNullOrEmpty(rawCommand)) command = (ScannerCommands)Enum.Parse(typeof(ScannerCommands), rawCommand);
 

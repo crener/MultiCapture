@@ -12,6 +12,7 @@ namespace Hub.Util
     public static class Deployer
     {
         public static ICameraManager Manager { get; private set; }
+        public static Logger.Logger Log { get; private set; }
 
         public static SaveLoad.Data SysConfig
         {
@@ -25,8 +26,8 @@ namespace Hub.Util
 
         public static void Start()
         {
-            Logger.Logger logs = new Logger.Logger();
-            logs.RemoveOldLogs(DateTime.Today.AddMonths(-1));
+            Log = new Logger.Logger();
+            Log.RemoveOldLogs(DateTime.Today.AddMonths(-1));
 
             SysConfig = SaveLoad.Load();
             DesktopThread.Instance.Start();

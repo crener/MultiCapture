@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Hub.DesktopInterconnect.Responses
+namespace Hub.ResponseSystem
 {
     /// <summary>
     /// Reponse isn't known to this class

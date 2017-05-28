@@ -29,18 +29,25 @@ public:
 	void addNewScanner(ScannerDeviceInformation*);
 
 	private slots:
-	void refresh();
+	void refreshDevices();
 	void selectionChanged();
+
 	void handleConnectionBtn();
+	void changeScannerName();
+	void refreshLogs(bool);
+
 	void connectToScanner();
 	void disconnectFromScanner();
 	void scannerConnected();
 	void scannerDisconnected();
-	void changeScannerName();
+	void respondToScanner(ScannerCommands, QByteArray);
 
 private:
 	void setupBroadcastListener();
 	void clearScanners();
+	void setLogView(QByteArray);
+	void updateLogView(QByteArray);
+
 	const int brdPort = 8470; //broadcast port
 
 	ScannerResponseListener* listener;
@@ -63,4 +70,7 @@ private:
 	QLineEdit* nameText;
 	QPushButton* nameBtn;
 	QLabel* currentLbl;
+
+	QPushButton* logRefresh;
+	QListView* logView;
 };

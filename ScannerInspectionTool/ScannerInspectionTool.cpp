@@ -25,18 +25,23 @@ ScannerInspectionTool::ScannerInspectionTool(QWidget *parent)
 	scannerItems = new QStringList();
 	deviceList->setModel(new QStringListModel(*scannerItems));
 
+	logRefresh = findChild<QPushButton*>("deviceLogsBtn");
+	logView = findChild<QListView*>("deviceLogs");
+	logView->setSelectionMode(QAbstractItemView::NoSelection);
+
 	timer = new QTimer(this);
 	timer->start(30000);
 
-	connect(timer, SIGNAL(timeout()), this, SLOT(refresh()));
+	connect(timer, SIGNAL(timeout()), this, SLOT(refreshDevices()));
 	connect(deviceList, &QListView::clicked, this, &ScannerInspectionTool::selectionChanged);
 	connect(deviceList, &QListView::doubleClicked, this, &ScannerInspectionTool::handleConnectionBtn);
 	connect(deviceConnectBtn, &QPushButton::released, this, &ScannerInspectionTool::handleConnectionBtn);
-	connect(deviceScanBtn, SIGNAL(released()), this, SLOT(refresh()));
+	connect(deviceScanBtn, SIGNAL(released()), this, SLOT(refreshDevices()));
 	connect(nameBtn, &QPushButton::released, this, &ScannerInspectionTool::changeScannerName);
+	connect(logRefresh, SIGNAL(released()), this, SLOT(refreshLogs(true)));
 
 	setupBroadcastListener();
-	emit refresh();
+	emit refreshDevices();
 }
 
 ScannerInspectionTool::~ScannerInspectionTool()
@@ -59,7 +64,7 @@ ScannerInspectionTool::~ScannerInspectionTool()
 	//delete connector;
 }
 
-void ScannerInspectionTool::refresh()
+void ScannerInspectionTool::refreshDevices()
 {
 	clearScanners();
 
@@ -137,11 +142,12 @@ void ScannerInspectionTool::scannerConnected()
 	currentLbl->setStyleSheet("color: rgb(0, 128, 0);");
 
 	connected = true;
+	refreshLogs(false);
 }
 
 void ScannerInspectionTool::scannerDisconnected()
 {
-	deviceConnectBtn->setText("Connected");
+	deviceConnectBtn->setText("Connect");
 	currentLbl->setText("Disconnected");
 	currentLbl->setStyleSheet("color: rgb(237, 20, 61);");
 
@@ -156,7 +162,32 @@ void ScannerInspectionTool::changeScannerName()
 		parameterBuilder().addParam("name", nameText->text())->toString());
 
 	clearScanners();
-	emit refresh();
+	emit refreshDevices();
+}
+
+void ScannerInspectionTool::refreshLogs(bool partial)
+{
+	if (partial)
+	{
+		connector->requestScanner(ScannerCommands::getRecentLogDiff, "");
+	}
+	else
+	{
+		connector->requestScanner(ScannerCommands::getRecentLogFile, "");
+	}
+}
+
+void ScannerInspectionTool::respondToScanner(ScannerCommands command, QByteArray data)
+{
+	switch (command)
+	{
+	case ScannerCommands::getRecentLogFile:
+		setLogView(data);
+		break;
+	case ScannerCommands::getRecentLogDiff:
+		updateLogView(data);
+		break;
+	}
 }
 
 void ScannerInspectionTool::addNewScanner(ScannerDeviceInformation* scanner)
@@ -198,6 +229,7 @@ void ScannerInspectionTool::setupBroadcastListener()
 	connect(listener, &ScannerResponseListener::newScannerFound, this, &ScannerInspectionTool::addNewScanner);
 	connect(connector, &ScannerInteraction::scannerConnected, this, &ScannerInspectionTool::scannerConnected);
 	connect(connector, &ScannerInteraction::scannerConnectionLost, this, &ScannerInspectionTool::scannerDisconnected);
+	connect(connector, &ScannerInteraction::scannerResult, this, &ScannerInspectionTool::respondToScanner);
 
 	listenerThread->start();
 }
@@ -211,4 +243,13 @@ void ScannerInspectionTool::clearScanners()
 	}
 
 	scannerItems->clear();
+}
+
+void ScannerInspectionTool::setLogView(QByteArray data)
+{
+
+}
+
+void ScannerInspectionTool::updateLogView(QByteArray data)
+{
 }

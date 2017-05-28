@@ -36,7 +36,7 @@ namespace SharedDeviceItems.Networking
 
         public int Send(byte[] dgram, int bytes, IPEndPoint endPoint)
         {
-            return Send(dgram, bytes, endPoint);
+            return client.Send(dgram, bytes, endPoint);
         }
     }
 }

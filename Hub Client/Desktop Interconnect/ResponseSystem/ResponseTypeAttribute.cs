@@ -1,6 +1,7 @@
 ﻿using System;
+using Hub.DesktopInterconnect;
 
-namespace Hub.DesktopInterconnect.Responses
+namespace Hub.ResponseSystem
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     internal class ResponseTypeAttribute : Attribute
