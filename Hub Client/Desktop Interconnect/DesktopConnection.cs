@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Hub.Helpers;
+using Hub.ResponseSystem;
 using Hub.Util;
 using static System.String;
 using static Hub.DesktopInterconnect.ResponseConstants;
@@ -96,7 +97,26 @@ namespace Hub.DesktopInterconnect
 
             if (DesktopThread.Responders.ContainsKey(command))
             {
-                SendResponse(stream, DesktopThread.Responders[command].GenerateResponse(command, parameters));
+                try
+                {
+                    SendResponse(stream, DesktopThread.Responders[command].GenerateResponse(command, parameters));
+                }
+                catch(UnknownResponseException ex)
+                {
+                    Console.WriteLine("Response didn't know what to do! Response: {0}",
+                        DesktopThread.Responders[command].GetType());
+                    SendResponse(stream, FailString + "?Response didn't know what to do" + parameters);
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine("Response Threw Exception! Response: {0}, Exception: {1}, Message: {2}",
+                        DesktopThread.Responders[command].GetType(), ex.GetType(), ex.Message);
+#if DEBUG
+                    Console.WriteLine(ex);
+#endif
+
+                    SendResponse(stream, FailString + "?Response didn't know what to do" + parameters);
+                }
                 return;
             }
 
