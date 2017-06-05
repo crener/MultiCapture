@@ -50,6 +50,9 @@
     <Filter Include="Header Files\Data Handlers">
       <UniqueIdentifier>{5e1f7be8-b0c9-4dbf-98c6-bad793e8913d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Lib">
+      <UniqueIdentifier>{c9fa883e-cdcc-4692-9e2e-da58fb5cf1bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -118,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="parameterBuilder.h">
       <Filter>Header Files\Data Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="Lib\json.hpp">
+      <Filter>Lib</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
