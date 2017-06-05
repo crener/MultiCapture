@@ -18,7 +18,9 @@ namespace Hub.ResponseSystem.Responses
                 return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?\"name\" parameter missing");
             }
 
+
             SaveLoad.Data newConf = Deployer.SysConfig;
+            Console.WriteLine("Scanner Name Was: {0}", newConf.name);
             newConf.name = parameters["name"];
             Deployer.SysConfig = newConf;
 

@@ -82,6 +82,8 @@ namespace Hub.Threaded
 
         public abstract void CaptureImageSet(CameraRequest wanted);
 
+#if DEBUG
         public abstract void ClearSockets();
+#endif
     }
 }

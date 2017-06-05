@@ -33,7 +33,7 @@ public:
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
     QSplitter *top;
-    QWidget *widget;
+    QWidget *layoutWidget;
     QVBoxLayout *connections;
     QVBoxLayout *connectionControl;
     QLabel *currentLbl;
@@ -68,18 +68,18 @@ public:
         top = new QSplitter(centralWidget);
         top->setObjectName(QStringLiteral("top"));
         top->setOrientation(Qt::Horizontal);
-        widget = new QWidget(top);
-        widget->setObjectName(QStringLiteral("widget"));
-        connections = new QVBoxLayout(widget);
+        layoutWidget = new QWidget(top);
+        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
+        connections = new QVBoxLayout(layoutWidget);
         connections->setSpacing(6);
         connections->setContentsMargins(11, 11, 11, 11);
         connections->setObjectName(QStringLiteral("connections"));
-        connections->setContentsMargins(5, 5, 5, 5);
+        connections->setContentsMargins(5, 5, 5, 0);
         connectionControl = new QVBoxLayout();
         connectionControl->setSpacing(6);
         connectionControl->setObjectName(QStringLiteral("connectionControl"));
         connectionControl->setSizeConstraint(QLayout::SetDefaultConstraint);
-        currentLbl = new QLabel(widget);
+        currentLbl = new QLabel(layoutWidget);
         currentLbl->setObjectName(QStringLiteral("currentLbl"));
         QFont font;
         font.setPointSize(14);
@@ -93,7 +93,7 @@ public:
 
         connectionControl->addWidget(currentLbl);
 
-        deviceList = new QListView(widget);
+        deviceList = new QListView(layoutWidget);
         deviceList->setObjectName(QStringLiteral("deviceList"));
         deviceList->setEditTriggers(QAbstractItemView::NoEditTriggers);
         deviceList->setResizeMode(QListView::Fixed);
@@ -103,13 +103,13 @@ public:
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        deviceScanBtn = new QPushButton(widget);
+        deviceScanBtn = new QPushButton(layoutWidget);
         deviceScanBtn->setObjectName(QStringLiteral("deviceScanBtn"));
         deviceScanBtn->setMinimumSize(QSize(80, 23));
 
         horizontalLayout->addWidget(deviceScanBtn);
 
-        deviceConnectBtn = new QPushButton(widget);
+        deviceConnectBtn = new QPushButton(layoutWidget);
         deviceConnectBtn->setObjectName(QStringLiteral("deviceConnectBtn"));
         deviceConnectBtn->setEnabled(false);
         deviceConnectBtn->setMinimumSize(QSize(80, 23));
@@ -125,12 +125,12 @@ public:
         nameControl = new QHBoxLayout();
         nameControl->setSpacing(6);
         nameControl->setObjectName(QStringLiteral("nameControl"));
-        nameText = new QLineEdit(widget);
+        nameText = new QLineEdit(layoutWidget);
         nameText->setObjectName(QStringLiteral("nameText"));
 
         nameControl->addWidget(nameText);
 
-        nameUpdateBtn = new QPushButton(widget);
+        nameUpdateBtn = new QPushButton(layoutWidget);
         nameUpdateBtn->setObjectName(QStringLiteral("nameUpdateBtn"));
 
         nameControl->addWidget(nameUpdateBtn);
@@ -138,7 +138,7 @@ public:
 
         connections->addLayout(nameControl);
 
-        top->addWidget(widget);
+        top->addWidget(layoutWidget);
         deviceImagePreview = new QGraphicsView(top);
         deviceImagePreview->setObjectName(QStringLiteral("deviceImagePreview"));
         deviceImagePreview->setMinimumSize(QSize(270, 0));
@@ -150,7 +150,7 @@ public:
         logs->setSpacing(6);
         logs->setObjectName(QStringLiteral("logs"));
         logs->setSizeConstraint(QLayout::SetNoConstraint);
-        logs->setContentsMargins(5, 5, 5, 5);
+        logs->setContentsMargins(5, 5, 0, 5);
         deviceLogsBtn = new QPushButton(centralWidget);
         deviceLogsBtn->setObjectName(QStringLiteral("deviceLogsBtn"));
 

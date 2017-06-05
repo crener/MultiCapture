@@ -9,7 +9,9 @@ namespace Hub.Threaded
         string SavePath { get; set; }
         CameraRequest Request { get; set; }
 
+#if DEBUG
         void ClearSockets();
+#endif
         void Start();
     }
 }

@@ -32,8 +32,12 @@ namespace Hub.Util
             if (started) return;
 
             started = true;
-            Log = new Logger.Logger();
-            Log.RemoveOldLogs(DateTime.Today.AddMonths(-1));
+            if (!mock)
+            {
+                Log = new Logger.Logger();
+                Log.RemoveOldLogs(DateTime.Today.AddMonths(-1));
+            }
+
 
             SysConfig = SaveLoad.Load();
             DesktopThread.Instance.Start();

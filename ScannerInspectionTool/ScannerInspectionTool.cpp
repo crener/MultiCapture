@@ -32,13 +32,14 @@ ScannerInspectionTool::ScannerInspectionTool(QWidget *parent)
 	timer = new QTimer(this);
 	timer->start(30000);
 
-	connect(timer, SIGNAL(timeout()), this, SLOT(refreshDevices()));
+	connect(timer, &QTimer::timeout, this, &ScannerInspectionTool::refreshDevices);
 	connect(deviceList, &QListView::clicked, this, &ScannerInspectionTool::selectionChanged);
 	connect(deviceList, &QListView::doubleClicked, this, &ScannerInspectionTool::handleConnectionBtn);
 	connect(deviceConnectBtn, &QPushButton::released, this, &ScannerInspectionTool::handleConnectionBtn);
-	connect(deviceScanBtn, SIGNAL(released()), this, SLOT(refreshDevices()));
+	connect(deviceScanBtn, &QPushButton::released, this, &ScannerInspectionTool::refreshDevices);
 	connect(nameBtn, &QPushButton::released, this, &ScannerInspectionTool::changeScannerName);
-	connect(logRefresh, SIGNAL(released()), this, SLOT(refreshLogs(true)));
+	connect(logRefresh, SIGNAL(released()), this, SLOT(refreshLogs()));
+	//connect(logRefresh, &QPushButton::released, this, &ScannerInspectionTool::refreshLogs);
 
 	setupBroadcastListener();
 	emit refreshDevices();
@@ -163,6 +164,11 @@ void ScannerInspectionTool::changeScannerName()
 
 	clearScanners();
 	emit refreshDevices();
+}
+
+void ScannerInspectionTool::refreshLogs()
+{
+	refreshLogs(true);
 }
 
 void ScannerInspectionTool::refreshLogs(bool partial)

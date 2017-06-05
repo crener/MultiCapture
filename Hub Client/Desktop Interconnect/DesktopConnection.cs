@@ -54,6 +54,8 @@ namespace Hub.DesktopInterconnect
 
             string instruction = Encoding.ASCII.GetString(readBuffer, 0, read);
             ExtractRequest(instruction, stream);
+            
+            stream.BeginRead(readBuffer, 0, BufferSize, NewInstructionCallback, stream);
         }
 
         private void ExtractRequest(string instruction, NetworkStream stream)
@@ -99,15 +101,22 @@ namespace Hub.DesktopInterconnect
             {
                 try
                 {
-                    SendResponse(stream, DesktopThread.Responders[command].GenerateResponse(command, parameters));
+                    byte[] data = DesktopThread.Responders[command].GenerateResponse(command, parameters);
+                    byte[] pre = Encoding.ASCII.GetBytes("<" + (int)command + ":" + data.Length + ">");
+
+                    byte[] message = new byte[pre.Length + data.Length];
+                    pre.CopyTo(message, 0);
+                    data.CopyTo(message, pre.Length);
+
+                    SendResponse(stream, message);
                 }
-                catch(UnknownResponseException ex)
+                catch (UnknownResponseException ex)
                 {
                     Console.WriteLine("Response didn't know what to do! Response: {0}",
                         DesktopThread.Responders[command].GetType());
                     SendResponse(stream, FailString + "?Response didn't know what to do" + parameters);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine("Response Threw Exception! Response: {0}, Exception: {1}, Message: {2}",
                         DesktopThread.Responders[command].GetType(), ex.GetType(), ex.Message);
@@ -130,24 +139,24 @@ namespace Hub.DesktopInterconnect
         /// <param name="clientSocket">connected socket</param>
         private async void PollClient(TcpClient clientSocket)
         {
-            bool done = false;
+            bool disconnected = false;
 
             do
             {
-                await Task.Delay(5000);
+                await Task.Delay(15000);
                 await Task.Run(() =>
                 {
                     try
                     {
-                        done = !(!clientSocket.Client.Poll(1, SelectMode.SelectRead) &&
+                        disconnected = !(!clientSocket.Client.Poll(1, SelectMode.SelectRead) &&
                                  clientSocket.Available == 0);
                     }
                     catch (SocketException)
                     {
-                        done = false;
+                        disconnected = false;
                     }
                 });
-            } while (!done);
+            } while (!disconnected);
 
             DesktopThread.Instance.Disconnected();
         }

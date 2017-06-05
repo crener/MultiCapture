@@ -10,7 +10,7 @@ namespace Logger
     public class Logger : IDisposable
     {
         TextWriter standard;
-        StreamWriter file;
+        DateWriter file;
         string path;
         public string Path { get; private set; }
 
@@ -33,12 +33,14 @@ namespace Logger
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
             Path = path + DateTime.Today.ToString("dd.MM.yyyy") + ".txt";
 
-            file = new StreamWriter(Path, true, standard.Encoding);
-            file.AutoFlush = true;
+            StreamWriter writer = new StreamWriter(Path, true, standard.Encoding) {AutoFlush = true};
+            file = new DateWriter(writer);
+
 #if DEBUG
             Console.SetOut(new DualWriter(file, Console.Out));
 #else
-            Console.WriteLine("This version of the logger does not log to console!");
+            Console.WriteLine("This version does not log to console!");
+            Console.WriteLine("Look at the logs: {0}", Path);
             Console.SetOut(file);
 #endif
             Console.WriteLine("Logger init done");

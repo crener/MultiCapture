@@ -34,7 +34,7 @@ public:
 
 	void handleConnectionBtn();
 	void changeScannerName();
-	void refreshLogs(bool);
+	void refreshLogs();
 
 	void connectToScanner();
 	void disconnectFromScanner();
@@ -47,6 +47,7 @@ private:
 	void clearScanners();
 	void setLogView(QByteArray);
 	void updateLogView(QByteArray);
+	void refreshLogs(bool);
 
 	const int brdPort = 8470; //broadcast port
 
