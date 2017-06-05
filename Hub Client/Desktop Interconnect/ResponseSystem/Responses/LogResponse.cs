@@ -18,46 +18,66 @@ namespace Hub.ResponseSystem.Responses
         {
             if (command == ScannerCommands.getRecentLogFile)
             {
-                try
-                {
-                    string path = Deployer.Log.Path;
-                    if (File.Exists(path))
-                    {
-                        string line;
-                        List<string> lines = new List<string>();
-
-                        using (FileStream file =
-                            new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                        {
-                            using (StreamReader sr = new StreamReader(file, Encoding.Default))
-                            {
-                                while ((line = sr.ReadLine()) != null)
-                                    lines.Add(line);
-                            }
-                        }
-
-                        string[] array = lines.ToArray();
-                        lastLogPosition = array.Length;
-
-                        string json = JsonConvert.SerializeObject(array);
-                        return Encoding.ASCII.GetBytes(json);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Log file not found! Path: " + path);
-                    }
-                }
-                catch (IOException io)
-                {
-                    Console.WriteLine("Error Reading File! " + io.Message);
-#if DEBUG
-                    Console.WriteLine(io);
-#endif
-                }
-
-                return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?Unable to read log file");
+                return LogFull();
             }
             else if (command == ScannerCommands.getRecentLogDiff)
+            {
+                return LogDiff();
+            }
+
+            throw new UnknownResponseException();
+        }
+
+        private byte[] LogFull()
+        {
+            try
+            {
+                string path = Deployer.Log.Path;
+                if (File.Exists(path))
+                {
+                    string line;
+                    List<string> lines = new List<string>();
+
+                    using (FileStream file =
+                        new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    {
+                        using (StreamReader sr = new StreamReader(file, Encoding.Default))
+                        {
+                            while ((line = sr.ReadLine()) != null)
+                                lines.Add(line);
+                        }
+                    }
+
+                    string[] array = lines.ToArray();
+                    lastLogPosition = array.Length;
+
+                    string json = JsonConvert.SerializeObject(array);
+                    return Encoding.ASCII.GetBytes(json);
+                }
+                else
+                {
+                    Console.WriteLine("Log file not found! Path: " + path);
+                }
+            }
+            catch (IOException io)
+            {
+                Console.WriteLine("Error Reading File! " + io.Message);
+#if DEBUG
+                Console.WriteLine(io);
+#endif
+            }
+
+            return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?Unable to read log file");
+        }
+
+        private byte[] LogDiff()
+        {
+            if(lastLogPosition == -1)
+            {
+                return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?No log position, get the full log first!");
+            }
+
+            try
             {
                 string path = Deployer.Log.Path;
                 if (File.Exists(path))
@@ -89,8 +109,15 @@ namespace Hub.ResponseSystem.Responses
                     Console.WriteLine("Log file not found! Path: " + path);
                 }
             }
+            catch (IOException io)
+            {
+                Console.WriteLine("Error Reading File! " + io.Message);
+#if DEBUG
+                Console.WriteLine(io);
+#endif
+            }
 
-            throw new UnknownResponseException();
+            return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?Unable to read log file");
         }
 
         public override void Reset()

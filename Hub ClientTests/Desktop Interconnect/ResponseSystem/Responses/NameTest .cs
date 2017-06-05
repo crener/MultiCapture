@@ -7,7 +7,6 @@ using Hub.DesktopInterconnect;
 using Hub.Helpers;
 using Hub.Util;
 using NUnit.Framework;
-using NUnit.Framework.Interfaces;
 
 namespace Hub.ResponseSystem.Responses
 {
