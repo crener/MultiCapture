@@ -4,11 +4,13 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Hub.ResponseSystem;
 using Hub.Util;
 using SharedDeviceItems.Networking;
 
+[assembly: InternalsVisibleTo("Hub ClientTests")]
 namespace Hub.DesktopInterconnect
 {
     public class DesktopThread

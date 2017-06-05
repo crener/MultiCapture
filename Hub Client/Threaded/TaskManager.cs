@@ -42,7 +42,7 @@ namespace Hub.Threaded
         {
             foreach (ICameraTask camera in cameras)
             {
-                camera.ShutDown();
+                camera.Dispose();
             }
         }
 

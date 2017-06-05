@@ -78,7 +78,7 @@ namespace Hub.Helpers
         /// <param name="path">Place to save the configuration file</param>
         public static void Save(string path)
         {
-            if (Conf.CameraCount == 0) throw new NullReferenceException();
+            if (Conf.CameraCount == 0) throw new ArgumentException();
             if (path == null) throw new NullReferenceException();
 
             try

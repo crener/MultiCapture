@@ -14,6 +14,9 @@ namespace Hub.Util
         public static ICameraManager Manager { get; private set; }
         public static Logger.Logger Log { get; private set; }
 
+        private static bool started = false;
+        internal static bool mock = false;
+
         public static SaveLoad.Data SysConfig
         {
             get { return SaveLoad.Conf; }
@@ -26,12 +29,15 @@ namespace Hub.Util
 
         public static void Start()
         {
+            if (started) return;
+
+            started = true;
             Log = new Logger.Logger();
             Log.RemoveOldLogs(DateTime.Today.AddMonths(-1));
 
             SysConfig = SaveLoad.Load();
             DesktopThread.Instance.Start();
-            Manager = new TaskManager(SysConfig);
+            if (!mock) Manager = new TaskManager(SysConfig);
         }
     }
 }

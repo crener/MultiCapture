@@ -15,7 +15,7 @@ namespace Hub.Threaded
             return new Task(() => Task.Delay(2));
         }
 
-        public void ShutDown()
+        public void Dispose()
         {
             ShutDownTriggered = true;
         }

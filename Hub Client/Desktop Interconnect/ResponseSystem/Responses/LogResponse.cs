@@ -10,7 +10,7 @@ namespace Hub.ResponseSystem.Responses
 {
     [ResponseType(ScannerCommands.getRecentLogFile),
      ResponseType(ScannerCommands.getRecentLogDiff)]
-    class LogResponse : BaseResponse
+    internal class LogResponse : BaseResponse
     {
         private long lastLogPosition = -1;
 

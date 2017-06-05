@@ -95,7 +95,7 @@ namespace Hub.Threaded
         }
 #endif
 
-        public void ShutDown()
+        public void Dispose()
         {
             try
             {
@@ -108,6 +108,5 @@ namespace Hub.Threaded
                 Console.WriteLine(e);
             }
         }
-
     }
 }
