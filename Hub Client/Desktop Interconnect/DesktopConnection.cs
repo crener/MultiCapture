@@ -4,9 +4,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using Hub.Helpers;
 using Hub.ResponseSystem;
-using Hub.Util;
 using static System.String;
 using static Hub.DesktopInterconnect.ResponseConstants;
 
@@ -18,6 +16,7 @@ namespace Hub.DesktopInterconnect
     public class DesktopConnection
     {
         private const int BufferSize = 1024;
+        private const int ConnectionCheckMs = 15000;
         private const char Separator = '&';
         private const char Splitter = '?';
 
@@ -93,7 +92,7 @@ namespace Hub.DesktopInterconnect
 
         private void ProcessRequest(ScannerCommands command, Dictionary<string, string> parameters, NetworkStream stream)
         {
-            Console.WriteLine("External Instruction received: \"{0}\"", command);
+            Console.WriteLine("External Instruction received: \"{0}\", code: {1}", command, (int) command);
             if (command == ScannerCommands.Unknown)
                 Console.WriteLine("\tParams: " + parameters);
 
@@ -143,7 +142,7 @@ namespace Hub.DesktopInterconnect
 
             do
             {
-                await Task.Delay(15000);
+                await Task.Delay(ConnectionCheckMs);
                 await Task.Run(() =>
                 {
                     try

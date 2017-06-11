@@ -45,7 +45,6 @@ public:
 private:
 	void setupBroadcastListener();
 	void clearScanners();
-	void setLogView(QByteArray);
 	void updateLogView(QByteArray);
 	void refreshLogs(bool);
 

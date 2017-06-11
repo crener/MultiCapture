@@ -175,14 +175,7 @@ void ScannerInspectionTool::refreshLogs()
 
 void ScannerInspectionTool::refreshLogs(bool partial)
 {
-	if (partial)
-	{
-		connector->requestScanner(ScannerCommands::getRecentLogDiff, "");
-	}
-	else
-	{
-		connector->requestScanner(ScannerCommands::getRecentLogFile, "");
-	}
+	connector->requestScanner(partial ? ScannerCommands::getRecentLogDiff : ScannerCommands::getRecentLogFile, "");
 }
 
 void ScannerInspectionTool::respondToScanner(ScannerCommands command, QByteArray data)
@@ -190,8 +183,6 @@ void ScannerInspectionTool::respondToScanner(ScannerCommands command, QByteArray
 	switch (command)
 	{
 	case ScannerCommands::getRecentLogFile:
-		setLogView(data);
-		break;
 	case ScannerCommands::getRecentLogDiff:
 		updateLogView(data);
 		break;
@@ -253,20 +244,6 @@ void ScannerInspectionTool::clearScanners()
 	scannerItems->clear();
 }
 
-void ScannerInspectionTool::setLogView(QByteArray data)
-{
-	nlohmann::json j = nlohmann::json::parse(data.toStdString().c_str());
-
-	for (int i = 0; i < j.size(); ++i)
-	{
-		std::string normal = j[i];
-		QString* logString = new QString(normal.c_str());
-		logData->append(*logString);
-	}
-
-	static_cast<QStringListModel*>(logView->model())->setStringList(*logData);
-}
-
 void ScannerInspectionTool::updateLogView(QByteArray data)
 {
 	nlohmann::json j = nlohmann::json::parse(data.toStdString().c_str());
@@ -279,4 +256,5 @@ void ScannerInspectionTool::updateLogView(QByteArray data)
 	}
 
 	static_cast<QStringListModel*>(logView->model())->setStringList(*logData);
+	logView->scrollToBottom();
 }
