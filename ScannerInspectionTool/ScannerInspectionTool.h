@@ -74,4 +74,5 @@ private:
 
 	QPushButton* logRefresh;
 	QListView* logView;
+	QStringList* logData;
 };

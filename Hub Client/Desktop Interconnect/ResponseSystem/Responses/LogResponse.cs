@@ -48,10 +48,9 @@ namespace Hub.ResponseSystem.Responses
                         }
                     }
 
-                    string[] array = lines.ToArray();
-                    lastLogPosition = array.Length;
+                    lastLogPosition = lines.Count;
 
-                    string json = JsonConvert.SerializeObject(array);
+                    string json = JsonConvert.SerializeObject(lines);
                     return Encoding.ASCII.GetBytes(json);
                 }
                 else
@@ -72,7 +71,7 @@ namespace Hub.ResponseSystem.Responses
 
         private byte[] LogDiff()
         {
-            if(lastLogPosition == -1)
+            if (lastLogPosition == -1)
             {
                 return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?No log position, get the full log first!");
             }
@@ -83,6 +82,7 @@ namespace Hub.ResponseSystem.Responses
                 if (File.Exists(path))
                 {
                     string line;
+                    int lineCount = 0;
                     List<string> lines = new List<string>();
 
                     using (FileStream file =
@@ -91,15 +91,16 @@ namespace Hub.ResponseSystem.Responses
                         using (StreamReader sr = new StreamReader(file, Encoding.Default))
                         {
                             while ((line = sr.ReadLine()) != null)
+                            {
+                                ++lineCount;
+
+                                if (lineCount < lastLogPosition) continue;
                                 lines.Add(line);
+                            }
                         }
                     }
 
-                    string[] array = lines.ToArray();
-                    string[] needed = new string[array.Length - lastLogPosition];
-
-                    array.CopyTo(needed, lastLogPosition);
-                    lastLogPosition = array.Length;
+                    lastLogPosition += lines.Count;
 
                     string json = JsonConvert.SerializeObject(lines);
                     return Encoding.ASCII.GetBytes(json);

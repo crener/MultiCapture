@@ -1,10 +1,10 @@
 #include "ScannerInspectionTool.h"
 #include "ScannerResponseListener.h"
-#include <iostream>
 #include <QMessageBox>
 #include <QLabel>
 #include "ScannerInteraction.h"
 #include "parameterBuilder.h"
+#include "Lib/json.hpp"
 
 
 ScannerInspectionTool::ScannerInspectionTool(QWidget *parent)
@@ -26,8 +26,10 @@ ScannerInspectionTool::ScannerInspectionTool(QWidget *parent)
 	deviceList->setModel(new QStringListModel(*scannerItems));
 
 	logRefresh = findChild<QPushButton*>("deviceLogsBtn");
+	logData = new QStringList();
 	logView = findChild<QListView*>("deviceLogs");
 	logView->setSelectionMode(QAbstractItemView::NoSelection);
+	logView->setModel(new QStringListModel(*logData));
 
 	timer = new QTimer(this);
 	timer->start(30000);
@@ -48,14 +50,11 @@ ScannerInspectionTool::ScannerInspectionTool(QWidget *parent)
 ScannerInspectionTool::~ScannerInspectionTool()
 {
 	delete broadcastSocket;
-	delete scannerItems;
 	delete timer;
+	delete logData;
 
-	for (int i = scanners.size() - 1; i >= 0; --i) {
-		ScannerDeviceInformation* remove = scanners.back();
-		scanners.remove(remove);
-		delete remove;
-	}
+	clearScanners();
+	delete scannerItems;
 
 	//remove threaded items
 	listenerThread->quit();
@@ -67,7 +66,10 @@ ScannerInspectionTool::~ScannerInspectionTool()
 
 void ScannerInspectionTool::refreshDevices()
 {
+	//clear out the existing data
 	clearScanners();
+	scannerItems->clear();
+	deviceList->model()->removeRows(0, deviceList->model()->rowCount());
 
 	broadcastSocket->writeDatagram(datagram.data(), datagram.size(), QHostAddress::Broadcast, brdPort);
 }
@@ -253,9 +255,28 @@ void ScannerInspectionTool::clearScanners()
 
 void ScannerInspectionTool::setLogView(QByteArray data)
 {
+	nlohmann::json j = nlohmann::json::parse(data.toStdString().c_str());
 
+	for (int i = 0; i < j.size(); ++i)
+	{
+		std::string normal = j[i];
+		QString* logString = new QString(normal.c_str());
+		logData->append(*logString);
+	}
+
+	static_cast<QStringListModel*>(logView->model())->setStringList(*logData);
 }
 
 void ScannerInspectionTool::updateLogView(QByteArray data)
 {
+	nlohmann::json j = nlohmann::json::parse(data.toStdString().c_str());
+
+	for (int i = 0; i < j.size(); ++i)
+	{
+		std::string normal = j[i];
+		QString* logString = new QString(normal.c_str());
+		logData->append(*logString);
+	}
+
+	static_cast<QStringListModel*>(logView->model())->setStringList(*logData);
 }
