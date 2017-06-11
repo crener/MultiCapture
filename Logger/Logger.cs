@@ -9,8 +9,7 @@ namespace Logger
     /// </summary>
     public class Logger : IDisposable
     {
-        TextWriter standard;
-        DateWriter file;
+        TextWriter standard, file;
         string path;
         public string Path { get; private set; }
 
@@ -33,9 +32,14 @@ namespace Logger
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
             Path = path + DateTime.Today.ToString("dd.MM.yyyy") + ".txt";
 
+#if DEBUG
+            file = new StreamWriter(Path, true, standard.Encoding) {AutoFlush = true};
+#else
             StreamWriter writer = new StreamWriter(Path, true, standard.Encoding) {AutoFlush = true};
             file = new DateWriter(writer);
+#endif
 
+            //only show output on a debug build
 #if DEBUG
             Console.SetOut(new DualWriter(file, Console.Out));
 #else
