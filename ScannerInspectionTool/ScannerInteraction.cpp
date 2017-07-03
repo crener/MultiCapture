@@ -16,7 +16,7 @@ ScannerInteraction::~ScannerInteraction()
 	delete connection;
 }
 
-void ScannerInteraction::requestScanner(ScannerCommands command, QString params)
+void ScannerInteraction::requestScanner(ScannerCommands command, QString params, IDeviceResponder* responder)
 {
 	if (!connection->isWritable()) return;
 
@@ -49,21 +49,22 @@ void ScannerInteraction::requestScanner(ScannerCommands command, QString params)
 			if (!connection->isReadable()) break;
 			QByteArray temp = connection->read(returnLengthLimit);
 
-			if(progress + temp.length() > correct.length())
+			if (progress + temp.length() > correct.length())
 			{
 				//either there is another command in there or something is wrong
 				break;
 			}
 
 			for (int i = 0; i < temp.length(); ++i, ++progress)
-				correct[progress] = temp[progress];
+				correct[progress] = temp[i];
 		}
 
 		result = correct;
 	}
 	else result = result.mid(result.indexOf(">") + 1);
 
-	emit scannerResult(command, result);
+	//emit scannerResult(command, result);
+	responder->respondToScanner(command, result);
 }
 
 void ScannerInteraction::connectToScanner(ScannerDeviceInformation* device)

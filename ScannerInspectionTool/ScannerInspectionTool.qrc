@@ -1,4 +1,8 @@
 <RCC>
-    <qresource prefix="ScannerInspectionTool">
-    </qresource>
+  <qresource prefix="ScannerInspectionTool">
+    <file>Resources/icon-inspector.png</file>
+  </qresource>
+  <qresource prefix="DirectInteractionWindow">
+    <file>Resources/icon-direct.png</file>
+  </qresource>
 </RCC>

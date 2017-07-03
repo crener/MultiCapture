@@ -20,6 +20,8 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QListView>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QVBoxLayout>
@@ -30,6 +32,9 @@ QT_BEGIN_NAMESPACE
 class Ui_ScannerInspectionToolClass
 {
 public:
+    QAction *action5;
+    QAction *action888;
+    QAction *actionDirect_Interaction_Window;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
     QSplitter *top;
@@ -48,17 +53,36 @@ public:
     QVBoxLayout *logs;
     QPushButton *deviceLogsBtn;
     QListView *deviceLogs;
+    QMenuBar *menuBar;
+    QMenu *menuDirectInteraction;
 
     void setupUi(QMainWindow *ScannerInspectionToolClass)
     {
         if (ScannerInspectionToolClass->objectName().isEmpty())
             ScannerInspectionToolClass->setObjectName(QStringLiteral("ScannerInspectionToolClass"));
-        ScannerInspectionToolClass->resize(745, 630);
+        ScannerInspectionToolClass->resize(746, 630);
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(ScannerInspectionToolClass->sizePolicy().hasHeightForWidth());
         ScannerInspectionToolClass->setSizePolicy(sizePolicy);
+        QIcon icon;
+        QString iconThemeName = QStringLiteral("icon");
+        if (QIcon::hasThemeIcon(iconThemeName)) {
+            icon = QIcon::fromTheme(iconThemeName);
+        } else {
+            icon.addFile(QStringLiteral(":/ScannerInspectionTool/Resources/icon.png"), QSize(), QIcon::Normal, QIcon::Off);
+        }
+        ScannerInspectionToolClass->setWindowIcon(icon);
+        action5 = new QAction(ScannerInspectionToolClass);
+        action5->setObjectName(QStringLiteral("action5"));
+        action888 = new QAction(ScannerInspectionToolClass);
+        action888->setObjectName(QStringLiteral("action888"));
+        actionDirect_Interaction_Window = new QAction(ScannerInspectionToolClass);
+        actionDirect_Interaction_Window->setObjectName(QStringLiteral("actionDirect_Interaction_Window"));
+        QIcon icon1;
+        icon1.addFile(QStringLiteral(":/ScannerInspectionTool/Resources/icon-inspector.png"), QSize(), QIcon::Normal, QIcon::Off);
+        actionDirect_Interaction_Window->setIcon(icon1);
         centralWidget = new QWidget(ScannerInspectionToolClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         verticalLayout = new QVBoxLayout(centralWidget);
@@ -165,6 +189,16 @@ public:
         verticalLayout->addLayout(logs);
 
         ScannerInspectionToolClass->setCentralWidget(centralWidget);
+        menuBar = new QMenuBar(ScannerInspectionToolClass);
+        menuBar->setObjectName(QStringLiteral("menuBar"));
+        menuBar->setGeometry(QRect(0, 0, 746, 21));
+        menuDirectInteraction = new QMenu(menuBar);
+        menuDirectInteraction->setObjectName(QStringLiteral("menuDirectInteraction"));
+        menuDirectInteraction->setTearOffEnabled(false);
+        ScannerInspectionToolClass->setMenuBar(menuBar);
+
+        menuBar->addAction(menuDirectInteraction->menuAction());
+        menuDirectInteraction->addAction(actionDirect_Interaction_Window);
 
         retranslateUi(ScannerInspectionToolClass);
 
@@ -174,11 +208,15 @@ public:
     void retranslateUi(QMainWindow *ScannerInspectionToolClass)
     {
         ScannerInspectionToolClass->setWindowTitle(QApplication::translate("ScannerInspectionToolClass", "Scanner Inspection Tool", Q_NULLPTR));
+        action5->setText(QApplication::translate("ScannerInspectionToolClass", "5", Q_NULLPTR));
+        action888->setText(QApplication::translate("ScannerInspectionToolClass", "888", Q_NULLPTR));
+        actionDirect_Interaction_Window->setText(QApplication::translate("ScannerInspectionToolClass", "Direct Interaction Window", Q_NULLPTR));
         currentLbl->setText(QApplication::translate("ScannerInspectionToolClass", "Disconnected", Q_NULLPTR));
         deviceScanBtn->setText(QApplication::translate("ScannerInspectionToolClass", "Refresh", Q_NULLPTR));
         deviceConnectBtn->setText(QApplication::translate("ScannerInspectionToolClass", "Connect", Q_NULLPTR));
         nameUpdateBtn->setText(QApplication::translate("ScannerInspectionToolClass", "Update Name", Q_NULLPTR));
         deviceLogsBtn->setText(QApplication::translate("ScannerInspectionToolClass", "Refresh Scanner Logs", Q_NULLPTR));
+        menuDirectInteraction->setTitle(QApplication::translate("ScannerInspectionToolClass", "Tools", Q_NULLPTR));
     } // retranslateUi
 
 };

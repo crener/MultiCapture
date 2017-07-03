@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>745</width>
+    <width>746</width>
     <height>630</height>
    </rect>
   </property>
@@ -18,6 +18,10 @@
   </property>
   <property name="windowTitle">
    <string>Scanner Inspection Tool</string>
+  </property>
+  <property name="windowIcon">
+   <iconset theme="icon">
+    <normaloff>:/ScannerInspectionTool/Resources/icon.png</normaloff>:/ScannerInspectionTool/Resources/icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -177,6 +181,45 @@
     </item>
    </layout>
   </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>746</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuDirectInteraction">
+    <property name="tearOffEnabled">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionDirect_Interaction_Window"/>
+   </widget>
+   <addaction name="menuDirectInteraction"/>
+  </widget>
+  <action name="action5">
+   <property name="text">
+    <string>5</string>
+   </property>
+  </action>
+  <action name="action888">
+   <property name="text">
+    <string>888</string>
+   </property>
+  </action>
+  <action name="actionDirect_Interaction_Window">
+   <property name="icon">
+    <iconset resource="ScannerInspectionTool.qrc">
+     <normaloff>:/ScannerInspectionTool/Resources/icon-inspector.png</normaloff>:/ScannerInspectionTool/Resources/icon-inspector.png</iconset>
+   </property>
+   <property name="text">
+    <string>Direct Interaction Window</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>

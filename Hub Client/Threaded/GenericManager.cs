@@ -21,7 +21,7 @@ namespace Hub.Threaded
 
             Random rand = new Random();
             int projectId = rand.Next(0, int.MaxValue - 1);
-            SavePath = Constants.DefaultHubSaveLocation() + "Project" + projectId +
+            SavePath = Constants.DefaultHubSaveLocation() + projectId +
                            Path.DirectorySeparatorChar;
 
             //check that this new path has an existing path with no files in it
@@ -35,7 +35,7 @@ namespace Hub.Threaded
                         "Randomly generated project directory (id: " + projectId + ") contains files, trying another!");
 
                     projectId = rand.Next(int.MaxValue, 0);
-                    savePath = Constants.DefaultHubSaveLocation() + "Project" + projectId + Path.DirectorySeparatorChar;
+                    savePath = Constants.DefaultHubSaveLocation() + projectId + Path.DirectorySeparatorChar;
                 }
                 else done = true;
             } while (!done);

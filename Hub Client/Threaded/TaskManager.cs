@@ -116,6 +116,8 @@ namespace Hub.Threaded
                 else
                 {
                     Console.WriteLine("Failed to connect to camera " + config.Cameras[i].Id + "!!");
+                    Console.WriteLine("\tPort: \t" + config.Cameras[i].Port);
+                    Console.WriteLine("\tFile ID: " + config.Cameras[i].CamFileIdentity);
                 }
             }
 

@@ -44,6 +44,13 @@ ScannerInspectionTool::ScannerInspectionTool(QWidget *parent)
 	//connect(logRefresh, &QPushButton::released, this, &ScannerInspectionTool::refreshLogs);
 
 	setupBroadcastListener();
+
+	wdg = new QWidget;
+	directWn = new DirectInteractionWindow(wdg);
+	directWn->setConnection(connector);
+	DirectInteractionBtn = findChild<QAction*>("actionDirect_Interaction_Window");
+	connect(DirectInteractionBtn, &QAction::triggered, this, &ScannerInspectionTool::openDirectInteraction);
+
 	emit refreshDevices();
 }
 
@@ -162,7 +169,7 @@ void ScannerInspectionTool::changeScannerName()
 	if (!connected) return;
 
 	emit connector->requestScanner(ScannerCommands::setName,
-		parameterBuilder().addParam("name", nameText->text())->toString());
+		parameterBuilder().addParam("name", nameText->text())->toString(), this);
 
 	clearScanners();
 	emit refreshDevices();
@@ -170,12 +177,14 @@ void ScannerInspectionTool::changeScannerName()
 
 void ScannerInspectionTool::refreshLogs()
 {
+	if (!connected) return;
+
 	refreshLogs(true);
 }
 
 void ScannerInspectionTool::refreshLogs(bool partial)
 {
-	connector->requestScanner(partial ? ScannerCommands::getRecentLogDiff : ScannerCommands::getRecentLogFile, "");
+	connector->requestScanner(partial ? ScannerCommands::getRecentLogDiff : ScannerCommands::getRecentLogFile, "", this);
 }
 
 void ScannerInspectionTool::respondToScanner(ScannerCommands command, QByteArray data)
@@ -187,6 +196,13 @@ void ScannerInspectionTool::respondToScanner(ScannerCommands command, QByteArray
 		updateLogView(data);
 		break;
 	}
+}
+
+void ScannerInspectionTool::openDirectInteraction()
+{
+	if (wdg->isVisible()) return;
+
+	wdg->show();
 }
 
 void ScannerInspectionTool::addNewScanner(ScannerDeviceInformation* scanner)
@@ -228,7 +244,7 @@ void ScannerInspectionTool::setupBroadcastListener()
 	connect(listener, &ScannerResponseListener::newScannerFound, this, &ScannerInspectionTool::addNewScanner);
 	connect(connector, &ScannerInteraction::scannerConnected, this, &ScannerInspectionTool::scannerConnected);
 	connect(connector, &ScannerInteraction::scannerConnectionLost, this, &ScannerInspectionTool::scannerDisconnected);
-	connect(connector, &ScannerInteraction::scannerResult, this, &ScannerInspectionTool::respondToScanner);
+	//connect(connector, &ScannerInteraction::scannerResult, this, &ScannerInspectionTool::respondToScanner);
 
 	listenerThread->start();
 }

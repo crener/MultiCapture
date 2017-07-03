@@ -53,7 +53,7 @@ namespace Hub.DesktopInterconnect
 
             string instruction = Encoding.ASCII.GetString(readBuffer, 0, read);
             ExtractRequest(instruction, stream);
-            
+
             stream.BeginRead(readBuffer, 0, BufferSize, NewInstructionCallback, stream);
         }
 
@@ -92,7 +92,7 @@ namespace Hub.DesktopInterconnect
 
         private void ProcessRequest(ScannerCommands command, Dictionary<string, string> parameters, NetworkStream stream)
         {
-            Console.WriteLine("External Instruction received: \"{0}\", code: {1}", command, (int) command);
+            Console.WriteLine("External Instruction received: \"{0}\", code: {1}", command, (int)command);
             if (command == ScannerCommands.Unknown)
                 Console.WriteLine("\tParams: " + parameters);
 
@@ -113,7 +113,10 @@ namespace Hub.DesktopInterconnect
                 {
                     Console.WriteLine("Response didn't know what to do! Response: {0}",
                         DesktopThread.Responders[command].GetType());
-                    SendResponse(stream, FailString + "?Response didn't know what to do" + parameters);
+                    SendResponse(stream, FailString + "?Response didn't know what to do. " + parameters.ToString());
+#if DEBUG
+                    Console.WriteLine(ex);
+#endif
                 }
                 catch (Exception ex)
                 {
@@ -123,12 +126,12 @@ namespace Hub.DesktopInterconnect
                     Console.WriteLine(ex);
 #endif
 
-                    SendResponse(stream, FailString + "?Response didn't know what to do" + parameters);
+                    SendResponse(stream, FailString + "?Response didn't know what to do!\nType: " + ex.GetType() + "\nMessage: " + ex.Message);
                 }
                 return;
             }
 
-            SendResponse(stream, FailString + "?Unknown command: " + parameters);
+            SendResponse(stream, FailString + "?Unknown command! " + parameters.ToString());
         }
 
 

@@ -25,7 +25,6 @@ namespace Hub.DesktopInterconnect
 
         //Global Commands
         setName = 100,
-        setProjectNiceName = 110,
         getRecentLogFile = 120,
         getRecentLogDiff = 121,
         getLoadedProjects = 130,
@@ -40,6 +39,7 @@ namespace Hub.DesktopInterconnect
         RemoveProject = 300,
         getAllImageSets = 310,
         getImageSet = 320,
-        getProjectStats = 330
+        getProjectStats = 330,
+        setProjectNiceName = 110,
     }
 }

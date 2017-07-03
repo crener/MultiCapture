@@ -6,18 +6,20 @@
 #include "ScannerDeviceInformation.h"
 #include "ScannerResponseListener.h"
 #include "ScannerInteraction.h"
+#include "DirectInteractionWindow.h"
 
 QT_BEGIN_NAMESPACE
 class QUdpSocket;
 class QPushButton;
 class QListView;
+class QAction;
 class QLabel;
 class QLineEdit;
 class QTimer;
 class QThread;
 QT_END_NAMESPACE
 
-class ScannerInspectionTool : public QMainWindow
+class ScannerInspectionTool : public QMainWindow, public IDeviceResponder
 {
 	Q_OBJECT
 
@@ -40,7 +42,9 @@ public:
 	void disconnectFromScanner();
 	void scannerConnected();
 	void scannerDisconnected();
-	void respondToScanner(ScannerCommands, QByteArray);
+	void respondToScanner(ScannerCommands, QByteArray) override;
+
+	void openDirectInteraction();
 
 private:
 	void setupBroadcastListener();
@@ -55,6 +59,10 @@ private:
 	QThread* listenerThread;
 	QStringList* scannerItems;
 	std::list<ScannerDeviceInformation*> scanners;
+
+	QWidget* wdg;
+	DirectInteractionWindow* directWn;
+	QAction* DirectInteractionBtn;
 
 	Ui::ScannerInspectionToolClass ui;
 	QByteArray datagram = "InspectionApp";

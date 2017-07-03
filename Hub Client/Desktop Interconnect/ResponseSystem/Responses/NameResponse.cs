@@ -20,7 +20,7 @@ namespace Hub.ResponseSystem.Responses
 
 
             SaveLoad.Data newConf = Deployer.SysConfig;
-            Console.WriteLine("Scanner Name Was: {0}", newConf.name);
+            Console.WriteLine("Scanner Name was: {0}", newConf.name);
             newConf.name = parameters["name"];
             Deployer.SysConfig = newConf;
 

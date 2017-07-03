@@ -94,6 +94,15 @@
     <ClCompile Include="parameterBuilder.cpp">
       <Filter>Source Files\Data Handlers</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_DirectInteractionWindow.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_DirectInteractionWindow.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectInteractionWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ScannerInspectionTool.h">
@@ -111,6 +120,12 @@
     <CustomBuild Include="ScannerInteraction.h">
       <Filter>Header Files\Threading</Filter>
     </CustomBuild>
+    <CustomBuild Include="DirectInteractionWindow.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="DirectInteractionWindow.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_ScannerInspectionTool.h">
@@ -124,6 +139,15 @@
     </ClInclude>
     <ClInclude Include="Lib\json.hpp">
       <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_DirectInteractionWindow.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IDeviceResponder.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

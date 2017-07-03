@@ -94,7 +94,7 @@ namespace Hub.ResponseSystem.Responses
                             {
                                 ++lineCount;
 
-                                if (lineCount < lastLogPosition) continue;
+                                if (lineCount <= lastLogPosition) continue;
                                 lines.Add(line);
                             }
                         }

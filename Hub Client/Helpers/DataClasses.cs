@@ -46,7 +46,9 @@ namespace Hub.Helpers
             }
             catch (SocketException e)
             {
+#if DEBUG
                 Console.WriteLine("Socket Exception : {0}", e);
+#endif
 
                 if (!DataSocket.Connected) return false;
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <QObject>
 #include <qtcpsocket.h>
+#include "IDeviceResponder.h"
 
 enum class ScannerCommands;
 class ScannerDeviceInformation;
@@ -16,8 +17,11 @@ public:
 
 	public slots:
 	void connectToScanner(ScannerDeviceInformation* device);
-	void requestScanner(ScannerCommands, QString);
+	//void requestScanner(ScannerCommands, QString);
+	void requestScanner(ScannerCommands command, QString params, IDeviceResponder* responder);
 	void disconnect();
+
+	bool isConnected() { return connection->isWritable(); }
 
 signals:
 	void scannerConnected();
