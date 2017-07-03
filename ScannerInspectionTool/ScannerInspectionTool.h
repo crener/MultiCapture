@@ -60,7 +60,6 @@ private:
 	QStringList* scannerItems;
 	std::list<ScannerDeviceInformation*> scanners;
 
-	QWidget* wdg;
 	DirectInteractionWindow* directWn;
 	QAction* DirectInteractionBtn;
 

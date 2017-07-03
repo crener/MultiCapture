@@ -45,8 +45,7 @@ ScannerInspectionTool::ScannerInspectionTool(QWidget *parent)
 
 	setupBroadcastListener();
 
-	wdg = new QWidget;
-	directWn = new DirectInteractionWindow(wdg);
+	directWn = new DirectInteractionWindow();
 	directWn->setConnection(connector);
 	DirectInteractionBtn = findChild<QAction*>("actionDirect_Interaction_Window");
 	connect(DirectInteractionBtn, &QAction::triggered, this, &ScannerInspectionTool::openDirectInteraction);
@@ -200,9 +199,7 @@ void ScannerInspectionTool::respondToScanner(ScannerCommands command, QByteArray
 
 void ScannerInspectionTool::openDirectInteraction()
 {
-	if (wdg->isVisible()) return;
-
-	wdg->show();
+	if (!directWn->isVisible()) directWn->show();
 }
 
 void ScannerInspectionTool::addNewScanner(ScannerDeviceInformation* scanner)
