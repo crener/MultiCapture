@@ -4,10 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Hub.DesktopInterconnect;
-using Hub.ResponseSystem;
 using Hub.Util;
 
-namespace Hub.Desktop_Interconnect.ResponseSystem.Responses
+namespace Hub.ResponseSystem.Responses
 {
     [ResponseType(ScannerCommands.getCapacity)]
     class CapacityResponse : BaseResponse

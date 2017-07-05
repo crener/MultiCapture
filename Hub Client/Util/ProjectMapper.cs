@@ -247,15 +247,21 @@ namespace Hub.Util
 
         private void Load(string path)
         {
-            using (StreamReader stream = new StreamReader(fileLocation))
-            {
-                string saved = stream.ReadToEnd();
-                data = JsonConvert.DeserializeObject<Data>(saved);
-            }
+            data = ExtractSaveData(path);
 
+            //reconstruct lookup data
             for(int i = 0; i < data.sets.Count; i++)
             {
                 setLookUp.Add(data.sets[i].ImageSetId,i);
+            }
+        }
+
+        public static Data ExtractSaveData(string path)
+        {
+            using (StreamReader stream = new StreamReader(path))
+            {
+                string saved = stream.ReadToEnd();
+                return JsonConvert.DeserializeObject<Data>(saved);
             }
         }
 
