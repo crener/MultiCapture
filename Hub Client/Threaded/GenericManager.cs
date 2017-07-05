@@ -41,8 +41,9 @@ namespace Hub.Threaded
             } while (!done);
 
             Console.WriteLine("Project directory generated, id: " + projectId);
-            projectFile = new ProjectMapper(savePath + "project.xml", projectId);
+            projectFile = new ProjectMapper(savePath + ProjectMapper.FileName, projectId);
             projectFile.Save();
+            Deployer.CurrentProject = projectFile;
 
             Configure();
         }

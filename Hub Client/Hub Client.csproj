@@ -68,6 +68,7 @@
     <Compile Include="Threaded\Interface\ICameraThread.cs" />
     <Compile Include="Threaded\TaskManager.cs" />
     <Compile Include="Util\Deployer.cs" />
+    <Compile Include="Util\ProjectManager.cs" />
     <Compile Include="Util\ProjectMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\SaveLoad.cs" />

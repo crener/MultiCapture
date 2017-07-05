@@ -28,8 +28,8 @@ namespace Hub.Threaded
             manager = new ThreadManager(new SaveLoad.Data());
 
             Assert.NotNull(manager.SavePath);
-            Assert.NotNull(ProjectMapper.Instance);
-            Assert.AreNotEqual(0, ProjectMapper.Instance.ProjectId);
+            Assert.NotNull(Deployer.CurrentProject);
+            Assert.AreNotEqual(0, Deployer.CurrentProject.saveData.ProjectId);
         }
 
 
@@ -56,7 +56,7 @@ namespace Hub.Threaded
             else Assert.AreEqual(request, mockCam.Request);
 
             if (CameraHelper.SavesImage(request)) Assert.AreEqual("1", mockCam.ImageSetName);
-            Assert.AreEqual(1, ProjectMapper.Instance.ImageSetCount);
+            Assert.AreEqual(1, Deployer.CurrentProject.ImageSetCount);
         }
 
 
@@ -75,7 +75,7 @@ namespace Hub.Threaded
 
             manager = new ThreadManager(data);
 
-            Assert.AreEqual(0, ProjectMapper.Instance.CameraCount);
+            Assert.AreEqual(0, Deployer.CurrentProject.CameraCount);
         }
     }
 }

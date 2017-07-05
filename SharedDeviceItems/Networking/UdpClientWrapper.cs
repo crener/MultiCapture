@@ -26,12 +26,26 @@ namespace SharedDeviceItems.Networking
 
         public IAsyncResult BeginReceive(AsyncCallback requestCallback, object state)
         {
-            return client.BeginReceive(requestCallback, state);
+            try
+            {
+                return client.BeginReceive(requestCallback, state);
+            }
+            catch (ObjectDisposedException)
+            {
+                return null;
+            }
         }
 
         public byte[] EndReceive(IAsyncResult asyncResult, ref IPEndPoint remoteEP)
         {
-            return client.EndReceive(asyncResult, ref remoteEP);
+            try
+            {
+                return client.EndReceive(asyncResult, ref remoteEP);
+            }
+            catch (ObjectDisposedException)
+            {
+                return null;
+            }
         }
 
         public int Send(byte[] dgram, int bytes, IPEndPoint endPoint)

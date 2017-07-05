@@ -41,7 +41,7 @@ namespace Hub
 #endif
                 else manager.CaptureImageSet();
             }
-            ProjectMapper.Instance.Save();
+
             Console.WriteLine("Quitting");
         }
     }

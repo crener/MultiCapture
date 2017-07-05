@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using Hub.DesktopInterconnect;
 using Hub.Helpers;
 using Hub.Helpers.Interface;
@@ -13,6 +14,8 @@ namespace Hub.Util
     {
         public static ICameraManager Manager { get; private set; }
         public static Logger.Logger Log { get; private set; }
+        public static ProjectManager ProjectManager { get; private set; }
+        public static ProjectMapper CurrentProject { get; set; }
 
         private static bool started = false;
         internal static bool mock = false;
@@ -38,10 +41,11 @@ namespace Hub.Util
                 Log.RemoveOldLogs(DateTime.Today.AddMonths(-1));
             }
 
-
             SysConfig = SaveLoad.Load();
-            DesktopThread.Instance.Start();
             if (!mock) Manager = new TaskManager(SysConfig);
+            DesktopThread.Instance.Start();
+
+            ProjectManager = new ProjectManager();
         }
     }
 }

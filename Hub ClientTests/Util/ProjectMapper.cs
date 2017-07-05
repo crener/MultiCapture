@@ -11,7 +11,7 @@ namespace Hub.Util.Tests
     class ProjectMapperTest
     {
         string saveLocation = Path.DirectorySeparatorChar + "scanimage" +
-            Path.DirectorySeparatorChar + "testProject." + Constants.ProjectFileExtention;
+            Path.DirectorySeparatorChar + ProjectMapper.FileName;
 
         [SetUp]
         public void setup()
@@ -174,7 +174,7 @@ namespace Hub.Util.Tests
 
             ProjectMapper reader = new ProjectMapper(saveLocation, project - 12);
 
-            Assert.AreEqual(project, reader.ProjectId);
+            Assert.AreEqual(project, reader.saveData.ProjectId);
             Assert.AreEqual(2, reader.ImageSetCount);
             Assert.AreEqual(2, reader.ImageCount(0));
             Assert.AreEqual(3, reader.ImageCount(1));
@@ -202,7 +202,7 @@ namespace Hub.Util.Tests
 
             ProjectMapper reader = new ProjectMapper(saveLocation, project);
 
-            Assert.AreEqual(project, reader.ProjectId);
+            Assert.AreEqual(project, reader.saveData.ProjectId);
             Assert.AreEqual(true, reader.hasSent(0, "cryo"));
             Assert.AreEqual(true, reader.hasSent(1, "Amsterdam"));
             Assert.AreEqual(false, reader.hasSent(1, "london"));
@@ -414,7 +414,7 @@ namespace Hub.Util.Tests
             mapper.Save();
             mapper = new ProjectMapper(saveLocation, 2333);
 
-            Assert.AreNotEqual(2333, mapper.ProjectId);
+            Assert.AreNotEqual(2333, mapper.saveData.ProjectId);
 
             Assert.AreEqual(saveLocation + "\\next\\maps", mapper.ImageAbsolutePath(1, "maps"));
             Assert.AreEqual(saveLocation + "\\other\\bike", mapper.ImageAbsolutePath(2, "bike"));
@@ -480,7 +480,7 @@ namespace Hub.Util.Tests
 
             public List<Camera> getCameraList()
             {
-                return cameras;
+                return data.cameras;
             }
         }
     }

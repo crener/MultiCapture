@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace Hub.Util
 {
@@ -41,22 +41,19 @@ namespace Hub.Util
          * <path to the project file>/<image set, file>/<image name>
          * C://scanpath/project234312/imageSet2/Hub2.jpg
          */
-        private static ProjectMapper instance;
-        public int ProjectId { get; private set; }
-        public string ProjectName { get; set; }
-
-        private const int Version = 2;
-        private int loadVersion = -1;
-        private bool transferComplete = false;
-
-        private List<ImageSet> sets = new List<ImageSet>();
-        protected List<Camera> cameras = new List<Camera>();
+        
+        private const int Version = 3;
+        public const string FileName = "project.json";
+        
+        public Data saveData { get { return data; } }
+        protected Data data = new Data(); 
         private Dictionary<int, int> setLookUp = new Dictionary<int, int>();
 
-        public int ImageSetCount => sets.Count;
-        public int CameraCount => cameras.Count;
+        public int ImageSetCount => data.sets.Count;
+        public int CameraCount => data.cameras.Count;
         string fileLocation { get; set; }
 
+/**
         #region XML naming
         private const string ProdId = "projectID";
         private const string ProdName = "projectName";
@@ -81,28 +78,17 @@ namespace Hub.Util
         private const string ImageSent = "sent";
         private const string ImageSentDate = "sentDate";
         #endregion
+        **/
 
         public ProjectMapper(string project, int projectId)
         {
-            fileLocation = project;
-            if (File.Exists(project)) Load(project);
-            else ProjectId = projectId;
+            if (project.EndsWith(FileName)) fileLocation = project;
+            else fileLocation = project + Path.DirectorySeparatorChar + FileName;
 
-            if (instance == null) instance = this;
+            if (File.Exists(fileLocation)) Load(fileLocation);
+            else data.ProjectId = projectId;
         }
 
-        /// <summary>
-        /// returns a static project mapper.
-        /// Note the class using this is responsible for initializing this if it is null
-        /// </summary>
-        /// <returns>static project mapper</returns>
-        public static ProjectMapper Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
 
         /// <summary>
         /// Add a new image to an existing image set
@@ -114,7 +100,7 @@ namespace Hub.Util
         {
             if (ImageExists(setId, name)) throw new Exception("Image already exists");
 
-            sets[setLookUp[setId]].images.Add(new Image() { File = name, CameraId = camId });
+            data.sets[setLookUp[setId]].images.Add(new Image() { File = name, CameraId = camId });
         }
 
         /// <summary>
@@ -127,8 +113,8 @@ namespace Hub.Util
             if (ImageSetExists(setId)) throw new KeyNotFoundException("Image Set already exists");
             if (path == null) throw new NullReferenceException("Path cannot be null");
 
-            setLookUp.Add(setId, sets.Count);
-            sets.Add(new ImageSet { ImageSetId = setId, Path = path });
+            setLookUp.Add(setId, data.sets.Count);
+            data.sets.Add(new ImageSet { ImageSetId = setId, Path = path });
         }
 
         /// <summary>
@@ -144,9 +130,9 @@ namespace Hub.Util
                 CameraName = name
             };
 
-            if (cameras.Contains(newCam)) throw new Exception("Camera already exists");
+            if (data.cameras.Contains(newCam)) throw new Exception("Camera already exists");
 
-            cameras.Add(newCam);
+            data.cameras.Add(newCam);
         }
 
         public void Sent(int setId, string imageName)
@@ -172,7 +158,7 @@ namespace Hub.Util
             Image look;
             if (!ImageExists(setId, imageName, out look)) throw new Exception("Image doesn't exist");
 
-            return fileLocation + Path.DirectorySeparatorChar + sets[setLookUp[setId]].Path + Path.DirectorySeparatorChar + imageName;
+            return fileLocation + Path.DirectorySeparatorChar + data.sets[setLookUp[setId]].Path + Path.DirectorySeparatorChar + imageName;
         }
 
         public bool hasSent(int setId, string imageName)
@@ -185,7 +171,7 @@ namespace Hub.Util
         public bool hasSent(int setId)
         {
             if (!ImageSetExists(setId)) throw new Exception("Image Set doesn't exist");
-            return sets[setId].AllSent;
+            return data.sets[setId].AllSent;
         }
 
         public long SendTime(int setId, string imageName)
@@ -203,9 +189,9 @@ namespace Hub.Util
         public bool ImageSetIsDone(int setId)
         {
             if (!ImageSetExists(setId)) throw new KeyNotFoundException("Image Set not found");
-            if (sets[setLookUp[setId]].images.Count <= 0) throw new NullReferenceException("No Images in set");
+            if (data.sets[setLookUp[setId]].images.Count <= 0) throw new NullReferenceException("No Images in set");
 
-            foreach (Image img in sets[setLookUp[setId]].images) if (img.Sent == false) return false;
+            foreach (Image img in data.sets[setLookUp[setId]].images) if (img.Sent == false) return false;
             return true;
         }
 
@@ -219,7 +205,7 @@ namespace Hub.Util
         {
             if (!ImageSetExists(setId)) throw new KeyNotFoundException("Image Set not found");
 
-            foreach (Image img in sets[setLookUp[setId]].images)
+            foreach (Image img in data.sets[setLookUp[setId]].images)
             {
                 if (img.File == imageName) return true;
             }
@@ -231,7 +217,7 @@ namespace Hub.Util
         {
             if (!ImageSetExists(setId)) throw new KeyNotFoundException("Image Set not found");
 
-            foreach (Image img in sets[setLookUp[setId]].images)
+            foreach (Image img in data.sets[setLookUp[setId]].images)
             {
                 if (img.File == imageName)
                 {
@@ -248,194 +234,54 @@ namespace Hub.Util
         {
             if (!ImageSetExists(setId)) throw new KeyNotFoundException("Image Set not found");
 
-            return sets[setLookUp[setId]].images.Count;
+            return data.sets[setLookUp[setId]].images.Count;
         }
 
         public void Save()
         {
-            using (XmlWriter writer = XmlWriter.Create(fileLocation))
+            using(StreamWriter stream = new StreamWriter(fileLocation))
             {
-                writer.WriteStartDocument();
-
-                writer.WriteStartElement("Project");
-                writer.WriteElementString(MapperVersion, Version.ToString());
-                writer.WriteElementString(ProdId, ProjectId.ToString());
-                writer.WriteElementString(ProdName, ProjectName);
-                writer.WriteElementString(Done, transferComplete.ToString());
-
-                writer.WriteStartElement(CameraGroup);
-                foreach (Camera cam in cameras)
-                {
-                    writer.WriteStartElement(CameraSetLabel);
-
-                    writer.WriteAttributeString(CameraId, cam.CameraId.ToString());
-                    writer.WriteAttributeString(CameraName, XmlConvert.EncodeName(cam.CameraName));
-
-                    writer.WriteEndElement();
-                }
-                writer.WriteEndElement();
-
-                writer.WriteStartElement(ImageSetGroup);
-                for (int i = 0; i <= sets.Count; ++i)
-                {
-                    if (!setLookUp.ContainsKey(i)) continue;
-                    ImageSet set = sets[setLookUp[i]];
-
-                    writer.WriteStartElement(XmlConvert.EncodeName(ImageSetLabel));
-
-                    writer.WriteElementString(ImageSetId, set.ImageSetId.ToString());
-                    writer.WriteElementString(ImageSetGroupFile, set.Path);
-                    writer.WriteElementString(ImageSetGroupDone, set.AllSent.ToString());
-
-                    writer.WriteStartElement(ImageGroupHeader);
-                    foreach (Image img in set.images)
-                    {
-                        writer.WriteStartElement(ImageHeader);
-
-                        writer.WriteAttributeString(ImagePath, img.File);
-                        writer.WriteAttributeString(ImageCamera, img.CameraId.ToString());
-                        writer.WriteAttributeString(ImageSent, img.Sent.ToString());
-                        writer.WriteAttributeString(ImageSentDate, img.SendDate.ToString());
-
-                        writer.WriteEndElement();
-                    }
-                    writer.WriteEndElement();
-                    writer.WriteEndElement();
-                }
-                writer.WriteEndElement();
-                writer.WriteEndDocument();
+                stream.WriteLine(JsonConvert.SerializeObject(data));
             }
         }
 
         private void Load(string path)
         {
-            using (XmlReader reader = XmlReader.Create(path))
+            using (StreamReader stream = new StreamReader(fileLocation))
             {
-                while (reader.Read())
-                {
-                    if (reader.IsStartElement())
-                    {
-                        switch (reader.Name)
-                        {
-                            case ProdId:
-                                int projID = -1;
-                                if (reader.Read())
-                                {
-                                    if (int.TryParse(reader.Value, out projID)) ProjectId = projID;
-                                    else Console.WriteLine("Project reader - Project ID could not be extracted");
-                                }
-                                break;
-                            case ProdName:
-                                ProjectName = reader.Value;
-                                break;
-                            case MapperVersion:
-                                if (reader.Read()) int.TryParse(reader.Value, out loadVersion);
+                string saved = stream.ReadToEnd();
+                data = JsonConvert.DeserializeObject<Data>(saved);
+            }
 
-                                if (loadVersion != Version)
-                                {
-                                    Console.WriteLine("Project reader - Project Version doesn't match the current Version");
-                                    Console.WriteLine("Project reader - Current Version:" + Version + ", Project Version: " + loadVersion);
-                                }
-                                break;
-                            case Done:
-                                bool doneVal;
-                                if (reader.Read() && bool.TryParse(reader.Value, out doneVal)) transferComplete = doneVal;
-                                break;
-                            case ImageSetGroup:
-                                while (reader.Read() && reader.Name == XmlConvert.DecodeName(ImageSetLabel))
-                                    do
-                                    {
-                                        int setId = -1;
-                                        if (reader.Read() && reader.Name == ImageSetId)
-                                        {
-                                            while (reader.NodeType != XmlNodeType.Text) reader.Read();
-                                            int.TryParse(reader.Value, out setId);
-                                        }
-                                        while (reader.NodeType != XmlNodeType.EndElement) reader.Read();
-
-                                        string setPath = null;
-                                        if (reader.Read() && reader.Name == ImageSetGroupFile)
-                                        {
-                                            while (reader.NodeType != XmlNodeType.Text) reader.Read();
-                                            setPath = reader.Value;
-                                        }
-                                        while (reader.NodeType != XmlNodeType.EndElement) reader.Read();
-
-                                        AddImageSet(setId, setPath);
-
-                                        //skip done
-                                        reader.Read();
-                                        while (reader.NodeType != XmlNodeType.EndElement) reader.Read();
-
-                                        #region extract image data
-
-                                        if (reader.Read() && reader.Name == ImageGroupHeader)
-                                        {
-                                            while (reader.Read() && reader.NodeType != XmlNodeType.EndElement &&
-                                                  reader.Name != ImageGroupHeader)
-                                            {
-                                                if (reader.AttributeCount != 3)
-                                                {
-                                                    Console.WriteLine(
-                                                        "Project reader - incorrect amount of information about image");
-                                                    Console.WriteLine("Project reader - image attribute count: " +
-                                                                      reader.AttributeCount + ", should be 3");
-                                                }
-
-                                                //image file name
-                                                string file = reader.GetAttribute(ImagePath);
-                                                int cam = int.Parse(reader.GetAttribute(ImageCamera));
-                                                AddImage(setId, file, cam);
-
-                                                //image sent?
-                                                bool sentImg;
-                                                bool.TryParse(reader.GetAttribute(ImageSent), out sentImg);
-
-                                                //image send date
-                                                if (sentImg)
-                                                {
-                                                    long sendDate = -1;
-                                                    long.TryParse(reader.GetAttribute(ImageSentDate), out sendDate);
-                                                    if (sendDate > 0) Sent(setId, file, sendDate);
-                                                }
-                                            }
-                                        }
-
-                                        #endregion
-
-                                        while (reader.NodeType != XmlNodeType.Element && reader.Name != XmlConvert.DecodeName(ImageSetLabel)) reader.Read();
-                                    } while (reader.Read() && reader.NodeType != XmlNodeType.EndElement && reader.Name != ImageSetGroup);
-                                break;
-                            case CameraGroup:
-                                while (reader.Read() && reader.Name != XmlConvert.DecodeName(CameraSetLabel)) ;
-                                do
-                                {
-                                    Camera newCam = new Camera
-                                    {
-                                        CameraId = int.Parse(reader.GetAttribute(CameraId)),
-                                        CameraName = XmlConvert.DecodeName(reader.GetAttribute(CameraName))
-                                    };
-
-                                    cameras.Add(newCam);
-                                } while (reader.Read() && reader.Name != CameraGroup);
-                                break;
-                            default:
-                                if (reader.Name == "Project") break;
-                                Console.WriteLine("Project reader - unknown state");
-                                Console.WriteLine("Project reader - name: " + reader.Name);
-                                Console.WriteLine("Project reader - value: " + reader.Value);
-                                Console.WriteLine("Project reader - attributes: " + reader.AttributeCount);
-                                break;
-                        }
-                    }
-                }
+            for(int i = 0; i < data.sets.Count; i++)
+            {
+                setLookUp.Add(data.sets[i].ImageSetId,i);
             }
         }
 
         #region data containers
-        private class ImageSet
+
+        public class Data
         {
+            [JsonProperty(PropertyName = "MapperVersion")]
+            public int version = Version;
+
+            [JsonProperty(PropertyName = "projectID")]
+            public int ProjectId { get; set; }
+            [JsonProperty(PropertyName = "projectName")]
+            public string ProjectName { get; set; }
+
+            [JsonProperty(PropertyName = "imageSets")]
+            public List<ImageSet> sets = new List<ImageSet>();
+            [JsonProperty(PropertyName = "cameras")]
+            public List<Camera> cameras = new List<Camera>();
+        }
+
+        public class ImageSet
+        {
+            [JsonProperty(PropertyName = "id")]
             public int ImageSetId { get; set; }
+            [JsonProperty(PropertyName = "path")]
             public string Path { get; set; } //relative
 
             public bool AllSent
@@ -448,20 +294,27 @@ namespace Hub.Util
                 }
             }
 
+            [JsonProperty(PropertyName = "images")]
             public List<Image> images = new List<Image>();
         }
 
-        private class Image
+        public class Image
         {
+            [JsonProperty(PropertyName = "path")]
             public string File { get; set; }
+            [JsonProperty(PropertyName = "id")]
             public int CameraId { get; set; }
+            [JsonProperty(PropertyName = "sent")]
             public bool Sent { get; set; }
+            [JsonProperty(PropertyName = "sentDate")]
             public long SendDate { get; set; }
         }
 
         public class Camera
         {
+            [JsonProperty(PropertyName = "name")]
             public string CameraName { get; set; }
+            [JsonProperty(PropertyName = "id")]
             public int CameraId { get; set; }
         }
         #endregion

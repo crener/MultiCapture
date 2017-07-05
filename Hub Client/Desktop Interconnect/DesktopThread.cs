@@ -66,8 +66,20 @@ namespace Hub.DesktopInterconnect
             //Desktop device connection - direct interaction with device (stops D3)
             IPEndPoint desk = new IPEndPoint(IPAddress.Any, DesktopConnectionPort);
             tcpListener = new TcpListener(desk);
-            tcpListener.Start();
-            tcpListener.BeginAcceptTcpClient(DesktopConnection, tcpListener);
+            try
+            {
+                tcpListener.Start();
+                tcpListener.BeginAcceptTcpClient(DesktopConnection, tcpListener);
+            }
+            catch (SocketException soc)
+            {
+                Console.WriteLine("Unable to start Desktop connection socket. External Connection will be unavaliable until restart");
+#if DEBUG
+                Console.WriteLine(soc);
+#endif
+
+                udpSocket.Close();
+            }
         }
 
 
@@ -80,6 +92,8 @@ namespace Hub.DesktopInterconnect
             IPEndPoint endpoint = new IPEndPoint(IPAddress.Any, DiscoveryPort);
 
             byte[] data = state.EndReceive(result, ref endpoint);
+            if(data == null) return;
+
             Console.WriteLine("Discovery connection from: {0}, message: {1}", endpoint, Encoding.ASCII.GetString(data));
 
             byte[] response = Encoding.ASCII.GetBytes(Deployer.SysConfig.name);
