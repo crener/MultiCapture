@@ -20,8 +20,8 @@
    <string>Scanner Inspection Tool</string>
   </property>
   <property name="windowIcon">
-   <iconset theme="icon">
-    <normaloff>:/ScannerInspectionTool/Resources/icon.png</normaloff>:/ScannerInspectionTool/Resources/icon.png</iconset>
+   <iconset resource="ScannerInspectionTool.qrc">
+    <normaloff>:/ScannerInspectionTool/Resources/icon-inspector.png</normaloff>:/ScannerInspectionTool/Resources/icon-inspector.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -214,7 +214,7 @@
   <action name="actionDirect_Interaction_Window">
    <property name="icon">
     <iconset resource="ScannerInspectionTool.qrc">
-     <normaloff>:/ScannerInspectionTool/Resources/icon-inspector.png</normaloff>:/ScannerInspectionTool/Resources/icon-inspector.png</iconset>
+     <normaloff>:/DirectInteractionWindow/Resources/icon-direct.png</normaloff>:/DirectInteractionWindow/Resources/icon-direct.png</iconset>
    </property>
    <property name="text">
     <string>Direct Interaction Window</string>
