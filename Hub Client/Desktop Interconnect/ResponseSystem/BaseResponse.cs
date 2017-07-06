@@ -19,6 +19,10 @@ namespace Hub.ResponseSystem
         }
 
         public abstract byte[] GenerateResponse(ScannerCommands command, Dictionary<string, string> parameters);
-        public abstract void Reset();
+
+        public virtual void Reset()
+        {
+
+        }
     }
 }

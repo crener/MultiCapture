@@ -7,7 +7,7 @@ using Hub.Util;
 
 namespace Hub.ResponseSystem.Responses
 {
-    [ResponseType(ScannerCommands.setName)]
+    [ResponseType(ScannerCommands.SetName)]
     internal class NameResponse : BaseResponse
     {
         public override byte[] GenerateResponse(ScannerCommands command, Dictionary<string, string> parameters)
@@ -18,7 +18,6 @@ namespace Hub.ResponseSystem.Responses
                 return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?\"name\" parameter missing");
             }
 
-
             SaveLoad.Data newConf = Deployer.SysConfig;
             Console.WriteLine("Scanner Name was: {0}", newConf.name);
             newConf.name = parameters["name"];
@@ -26,10 +25,6 @@ namespace Hub.ResponseSystem.Responses
 
             Console.WriteLine("Scanner Name updated to: {0}", parameters["name"]);
             return ResponseConstants.SuccessResponse;
-        }
-
-        public override void Reset()
-        {
         }
     }
 }

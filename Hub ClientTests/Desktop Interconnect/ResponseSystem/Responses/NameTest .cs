@@ -27,7 +27,7 @@ namespace Hub.ResponseSystem.Responses
         public void ResponseFail()
         {
             Dictionary<string, string> parameters = new Dictionary<string, string>();
-            byte[] value = response.GenerateResponse(ScannerCommands.setName, parameters);
+            byte[] value = response.GenerateResponse(ScannerCommands.SetName, parameters);
             string convertValue = Encoding.ASCII.GetString(value);
 
             Assert.IsTrue(convertValue.Contains(ResponseConstants.FailString));
@@ -45,7 +45,7 @@ namespace Hub.ResponseSystem.Responses
             {
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
                 parameters.Add("name", name);
-                byte[] value = response.GenerateResponse(ScannerCommands.setName, parameters);
+                byte[] value = response.GenerateResponse(ScannerCommands.SetName, parameters);
                 string convertValue = Encoding.ASCII.GetString(value);
 
                 Assert.AreEqual(ResponseConstants.SuccessResponse, value);
@@ -65,7 +65,7 @@ namespace Hub.ResponseSystem.Responses
         [Test]
         public void Register()
         {
-            IResponse resp = DesktopThread.Responders[ScannerCommands.setName];
+            IResponse resp = DesktopThread.Responders[ScannerCommands.SetName];
 
             Assert.NotNull(resp);
             Assert.AreEqual(response.GetType(), resp.GetType());

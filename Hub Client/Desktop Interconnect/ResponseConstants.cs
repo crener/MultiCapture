@@ -22,15 +22,16 @@ namespace Hub.DesktopInterconnect
     public enum ScannerCommands
     {
         Unknown = 0,
+        ApiCompatability = 1,
 
         //Global Commands
-        setName = 100,
-        getRecentLogFile = 120,
-        getRecentLogDiff = 121,
+        SetName = 100,
+        LogFile = 120,
+        LogDiff = 121,
         getLoadedProjects = 130,
         getCameraConfiguration = 140,
         getCapacity = 150,
-        getApiVersion = 180,
+        ApiVersion = 180,
 
         //Camera Commands
         CaptureImageSet = 200,

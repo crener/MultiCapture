@@ -49,10 +49,5 @@ namespace Hub.ResponseSystem.Responses
             Console.WriteLine("Remaining Capacity: {0}MB", freeMB.ToString("N"));
             return Encoding.ASCII.GetBytes(ResponseConstants.SuccessString + "?" + freeMB.ToString("F3"));
         }
-
-        public override void Reset()
-        {
-            
-        }
     }
 }

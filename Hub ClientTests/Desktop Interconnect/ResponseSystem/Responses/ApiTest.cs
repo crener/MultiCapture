@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Hub.DesktopInterconnect;
-using Hub.Util;
+﻿using Hub.DesktopInterconnect;
 using NUnit.Framework;
 
 namespace Hub.ResponseSystem.Responses
@@ -22,7 +16,7 @@ namespace Hub.ResponseSystem.Responses
         [Test]
         public void Response()
         {
-            byte[] value = response.GenerateResponse(ScannerCommands.getApiVersion, null);
+            byte[] value = response.GenerateResponse(ScannerCommands.ApiVersion, null);
 
             Assert.AreEqual(ResponseConstants.ApiResponse, value);
         }
@@ -30,7 +24,7 @@ namespace Hub.ResponseSystem.Responses
         [Test]
         public void Register()
         {
-            IResponse resp = DesktopThread.Responders[ScannerCommands.getApiVersion];
+            IResponse resp = DesktopThread.Responders[ScannerCommands.ApiVersion];
 
             Assert.NotNull(resp);
             Assert.AreEqual(response.GetType(), resp.GetType());

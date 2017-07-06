@@ -8,19 +8,19 @@ using Newtonsoft.Json;
 
 namespace Hub.ResponseSystem.Responses
 {
-    [ResponseType(ScannerCommands.getRecentLogFile),
-     ResponseType(ScannerCommands.getRecentLogDiff)]
+    [ResponseType(ScannerCommands.LogFile),
+     ResponseType(ScannerCommands.LogDiff)]
     internal class LogResponse : BaseResponse
     {
         private long lastLogPosition = -1;
 
         public override byte[] GenerateResponse(ScannerCommands command, Dictionary<string, string> parameters)
         {
-            if (command == ScannerCommands.getRecentLogFile)
+            if (command == ScannerCommands.LogFile)
             {
                 return LogFull();
             }
-            else if (command == ScannerCommands.getRecentLogDiff)
+            else if (command == ScannerCommands.LogDiff)
             {
                 return LogDiff();
             }
