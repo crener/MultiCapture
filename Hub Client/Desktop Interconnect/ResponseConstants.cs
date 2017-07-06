@@ -28,7 +28,7 @@ namespace Hub.DesktopInterconnect
         SetName = 100,
         LogFile = 120,
         LogDiff = 121,
-        getLoadedProjects = 130,
+        CurrentProjects = 130,
         getCameraConfiguration = 140,
         getCapacity = 150,
         ApiVersion = 180,

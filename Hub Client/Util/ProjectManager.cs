@@ -17,6 +17,8 @@ namespace Hub.Util
         List<ProjectInfo> project = new List<ProjectInfo>();
         private const string fileName = "summary.json";
 
+        public string Json{ get { return JsonConvert.SerializeObject(project); } }
+
         public ProjectManager()
         {
             RecalculateData();
@@ -45,10 +47,10 @@ namespace Hub.Util
 
         public void Save()
         {
-            string path = SharedDeviceItems.Constants.DefaultHubSaveLocation() + Path.DirectorySeparatorChar + fileName;
+            string path = SharedDeviceItems.Constants.DefaultHubSaveLocation() + fileName;
             using (StreamWriter writer = new StreamWriter(path))
             {
-                writer.WriteLine(JsonConvert.SerializeObject(project));
+                writer.WriteLine(Json);
             }
         }
 
@@ -65,7 +67,7 @@ namespace Hub.Util
 
             public ProjectInfo(ProjectMapper.Data data)
             {
-                Name = data.ProjectName;
+                Name = data.ProjectName ?? data.ProjectId.ToString();
                 Id = data.ProjectId;
 
                 foreach (ProjectMapper.ImageSet imageSet in data.sets)
