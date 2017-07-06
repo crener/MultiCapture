@@ -6,7 +6,6 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Hub.Helpers;
 using Hub.Helpers.Wrapper;
-using Hub.Util;
 using SharedDeviceItems;
 using static Hub.Helpers.CameraHelper;
 

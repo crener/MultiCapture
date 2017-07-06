@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace Hub.Util
@@ -17,7 +15,7 @@ namespace Hub.Util
         List<ProjectInfo> project = new List<ProjectInfo>();
         private const string fileName = "summary.json";
 
-        public string Json{ get { return JsonConvert.SerializeObject(project); } }
+        public string Json { get { return JsonConvert.SerializeObject(project); } }
 
         public ProjectManager()
         {
@@ -45,13 +43,45 @@ namespace Hub.Util
             Save();
         }
 
-        public void Save()
+        private void Save()
         {
             string path = SharedDeviceItems.Constants.DefaultHubSaveLocation() + fileName;
             using (StreamWriter writer = new StreamWriter(path))
             {
                 writer.WriteLine(Json);
             }
+        }
+
+        public void RemoveProject(int projectId)
+        {
+            ProjectInfo remove;
+
+            try
+            {
+                remove = project.First(p => p.Id == projectId);
+            }
+            catch (InvalidOperationException)
+            {
+                //project not found
+                Console.WriteLine("Project Manger attempted to remove project " + projectId + " could not be found");
+                return;
+            }
+
+            project.Remove(remove);
+        }
+
+        public bool ProjectExists(int projectId)
+        {
+            try
+            {
+                project.First(p => p.Id == projectId);
+            }
+            catch (InvalidOperationException)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private class ProjectInfo

@@ -5,6 +5,7 @@ namespace Hub.Helpers.Interface
     public interface ICameraManager
     {
         string SavePath { get; set; }
+        int ProjectId { get; }
 
         void CaptureImageSet();
         void CaptureImageSet(CameraRequest wanted);

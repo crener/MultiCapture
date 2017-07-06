@@ -14,14 +14,15 @@ namespace Hub.Threaded
 
         protected string savePath;
         protected int imagesetId = -1;
+        public int ProjectId { get; }
 
         internal GenericManager(SaveLoad.Data config)
         {
             this.config = config;
 
             Random rand = new Random();
-            int projectId = rand.Next(0, int.MaxValue - 1);
-            SavePath = Constants.DefaultHubSaveLocation() + projectId +
+            ProjectId = rand.Next(0, int.MaxValue - 1);
+            SavePath = Constants.DefaultHubSaveLocation() + ProjectId +
                            Path.DirectorySeparatorChar;
 
             //check that this new path has an existing path with no files in it
@@ -32,16 +33,16 @@ namespace Hub.Threaded
                 else if (Directory.GetFiles(savePath).Length > 0)
                 {
                     Console.WriteLine(
-                        "Randomly generated project directory (id: " + projectId + ") contains files, trying another!");
+                        "Randomly generated project directory (id: " + ProjectId + ") contains files, trying another!");
 
-                    projectId = rand.Next(int.MaxValue, 0);
-                    savePath = Constants.DefaultHubSaveLocation() + projectId + Path.DirectorySeparatorChar;
+                    ProjectId = rand.Next(int.MaxValue, 0);
+                    savePath = Constants.DefaultHubSaveLocation() + ProjectId + Path.DirectorySeparatorChar;
                 }
                 else done = true;
             } while (!done);
 
-            Console.WriteLine("Project directory generated, id: " + projectId);
-            projectFile = new ProjectMapper(savePath + ProjectMapper.FileName, projectId);
+            Console.WriteLine("Project directory generated, id: " + ProjectId);
+            projectFile = new ProjectMapper(savePath + ProjectMapper.FileName, ProjectId);
             projectFile.Save();
             Deployer.CurrentProject = projectFile;
 

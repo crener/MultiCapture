@@ -47,6 +47,7 @@
     <Compile Include="Desktop Interconnect\ResponseConstants.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\BaseResponse.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\IResponse.cs" />
+    <Compile Include="Desktop Interconnect\ResponseSystem\Responses\RemoveProjectResponse.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\SavedProjectsResponse.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\ApiCompatability.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\CapacityResponse.cs" />
