@@ -102,10 +102,11 @@ namespace Hub.Util
 
                 foreach (ProjectMapper.ImageSet imageSet in data.sets)
                 {
-                    foreach (ProjectMapper.Image image in imageSet.images)
+                    foreach (ProjectMapper.Image image in imageSet.Images)
                     {
                         ImageCount++;
-                        if (File.Exists(image.File)) SavedCount++;
+                        if (File.Exists(ProjectMapper.AbsoluteImagePath(data, imageSet.ImageSetId, image.File)))
+                            SavedCount++;
                     }
                 }
             }

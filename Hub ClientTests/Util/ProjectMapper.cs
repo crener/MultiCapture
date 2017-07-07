@@ -374,19 +374,19 @@ namespace Hub.Util.Tests
 
             try
             {
-                mapper.ImageAbsolutePath(2, "nope");
+                mapper.AbsoluteImagePath(2, "nope");
                 Assert.Fail("Image set 2 doesn't exist");
             }
             catch (Exception) { };
 
             try
             {
-                mapper.ImageAbsolutePath(1, "nope");
+                mapper.AbsoluteImagePath(1, "nope");
                 Assert.Fail("Image doesn't exist");
             }
             catch (Exception) { };
 
-            Assert.IsTrue(mapper.ImageAbsolutePath(0, "cryo").Length > 5);
+            Assert.IsTrue(mapper.AbsoluteImagePath(0, "cryo").Length > 5);
         }
 
         [Test]
@@ -416,9 +416,9 @@ namespace Hub.Util.Tests
 
             Assert.AreNotEqual(2333, mapper.saveData.ProjectId);
 
-            Assert.AreEqual(saveLocation + "\\next\\maps", mapper.ImageAbsolutePath(1, "maps"));
-            Assert.AreEqual(saveLocation + "\\other\\bike", mapper.ImageAbsolutePath(2, "bike"));
-            Assert.AreEqual(saveLocation + "\\car\\feet", mapper.ImageAbsolutePath(0, "feet"));
+            Assert.AreEqual(saveLocation + "\\next\\maps", mapper.AbsoluteImagePath(1, "maps"));
+            Assert.AreEqual(saveLocation + "\\other\\bike", mapper.AbsoluteImagePath(2, "bike"));
+            Assert.AreEqual(saveLocation + "\\car\\feet", mapper.AbsoluteImagePath(0, "feet"));
         }
 
         [Test]

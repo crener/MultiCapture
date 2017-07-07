@@ -71,7 +71,11 @@ namespace Hub.DesktopInterconnect
                 tcpListener.Start();
                 tcpListener.BeginAcceptTcpClient(DesktopConnection, tcpListener);
             }
+#if DEBUG
             catch (SocketException soc)
+#else
+            catch (SocketException)
+#endif
             {
                 Console.WriteLine("Unable to start Desktop connection socket. External Connection will be unavaliable until restart");
 #if DEBUG

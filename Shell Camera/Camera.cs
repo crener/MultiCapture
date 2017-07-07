@@ -48,60 +48,18 @@ namespace Shell_Camera
 
             string loc = currentDir + name + identifier + ".jpg";
             int i = 0;
-            Console.Write("Checking for image file");
 
             do
             {
                 Thread.Sleep(10);
                 ++i;
             } while (!File.Exists(loc) || i > iLimit);
+
             if (i > iLimit)
             {
                 throw new CaptureFailedException("Image could not be found after taking the image");
             }
             Console.WriteLine(" ...Done");
-
-            Console.Write("Checking if file is still writing");
-            i = 0;
-            int identicleCount = 0;
-            bool b = true;
-            long lastSize = -1;
-
-            do
-            {
-                try
-                {
-                    if (File.GetAttributes(loc).HasFlag(FileAttributes.ReadOnly)) b = true;
-
-                    //figure out if more data is being written to the file
-                    FileInfo info = new FileInfo(loc);
-                    if (info.Length <= 0) b = true;
-                    else
-                    {
-                        if(info.Length > lastSize)
-                        {
-                            lastSize = info.Length;
-                            identicleCount = 0;
-                        }
-                        else if(info.Length == lastSize)
-                        {
-                            ++identicleCount;
-                            if(identicleCount > 2) b = false;
-                        }
-                    }
-
-                    if (b) ++i;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Attempt " + i + " Failed: " + e.Message);
-                    b = true;
-                    ++i;
-                }
-            } while (b || i > iLimit / 2);
-            Console.WriteLine(i > iLimit ? " ...Checking aborted" : " ...Done");
-
-            Thread.Sleep(1000);
 
             return loc;
         }

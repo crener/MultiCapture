@@ -33,6 +33,7 @@ namespace Hub.Threaded
         }
 
 
+#if DEBUG
         [TestCase(CameraRequest.Unknown)]
         [TestCase(CameraRequest.SendFullResImage)]
         [TestCase(CameraRequest.Alive)]
@@ -51,6 +52,7 @@ namespace Hub.Threaded
 
             if(CameraHelper.SavesImage(request)) Assert.AreEqual("1", mockCam.ImageSetName);
         }
+#endif
 
 
         [Test]

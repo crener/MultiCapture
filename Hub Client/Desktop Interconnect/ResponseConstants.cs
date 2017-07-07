@@ -39,7 +39,8 @@ namespace Hub.DesktopInterconnect
         //Project Management Commands
         RemoveProject = 300,
         getAllImageSets = 310,
-        getImageSet = 320,
+        ImageSetMetaData = 320,
+        ImageSetImageData = 321,
         getProjectStats = 330,
         setProjectNiceName = 110,
     }

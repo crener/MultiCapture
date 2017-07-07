@@ -114,17 +114,14 @@ namespace Hub.DesktopInterconnect
                     Console.WriteLine("Response didn't know what to do! Response: {0}",
                         DesktopThread.Responders[command].GetType());
                     SendResponse(stream, FailString + "?Response didn't know what to do. " + parameters.ToString());
-#if DEBUG
+
                     Console.WriteLine(ex);
-#endif
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Response Threw Exception! Response: {0}, Exception: {1}, Message: {2}",
                         DesktopThread.Responders[command].GetType(), ex.GetType(), ex.Message);
-#if DEBUG
                     Console.WriteLine(ex);
-#endif
 
                     SendResponse(stream, FailString + "?Response didn't know what to do!\nType: " + ex.GetType() + "\nMessage: " + ex.Message);
                 }

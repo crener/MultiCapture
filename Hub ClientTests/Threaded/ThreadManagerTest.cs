@@ -33,6 +33,7 @@ namespace Hub.Threaded
         }
 
 
+#if DEBUG
         /// <summary>
         /// Test broken can't get the manager to actually tell the camera thread to do work because it needs an
         /// active thread to make it work. 
@@ -58,6 +59,7 @@ namespace Hub.Threaded
             if (CameraHelper.SavesImage(request)) Assert.AreEqual("1", mockCam.ImageSetName);
             Assert.AreEqual(1, Deployer.CurrentProject.ImageSetCount);
         }
+#endif
 
 
         [Test]

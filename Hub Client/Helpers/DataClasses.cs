@@ -44,7 +44,11 @@ namespace Hub.Helpers
                         Encoding.ASCII.GetString(receiveData, 0, bytesRec - Constants.EndOfMessage.Length));
                 }
             }
+#if DEBUG
+            catch (SocketException e) 
+#else
             catch (SocketException e)
+#endif
             {
 #if DEBUG
                 Console.WriteLine("Socket Exception : {0}", e);

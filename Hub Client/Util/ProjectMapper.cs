@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
+using SharedDeviceItems;
 
 namespace Hub.Util
 {
@@ -53,33 +55,6 @@ namespace Hub.Util
         public int CameraCount => data.cameras.Count;
         string fileLocation { get; set; }
 
-/**
-        #region XML naming
-        private const string ProdId = "projectID";
-        private const string ProdName = "projectName";
-        private const string MapperVersion = "MapperVersion";
-        private const string Done = "done";
-
-        private const string CameraGroup = "cameras";
-        private const string CameraSetLabel = "camera";
-        private const string CameraId = "id";
-        private const string CameraName = "name";
-
-        private const string ImageSetGroup = "imageSets";
-        private const string ImageSetLabel = "set";
-        private const string ImageSetGroupFile = "file";
-        private const string ImageSetGroupDone = "done";
-        private const string ImageSetId = "id";
-
-        private const string ImageGroupHeader = "images";
-        private const string ImageHeader = "image";
-        private const string ImagePath = "path";
-        private const string ImageCamera = "cam";
-        private const string ImageSent = "sent";
-        private const string ImageSentDate = "sentDate";
-        #endregion
-        **/
-
         public ProjectMapper(string project, int projectId)
         {
             if (project.EndsWith(FileName)) fileLocation = project;
@@ -100,7 +75,7 @@ namespace Hub.Util
         {
             if (ImageExists(setId, name)) throw new Exception("Image already exists");
 
-            data.sets[setLookUp[setId]].images.Add(new Image() { File = name, CameraId = camId });
+            data.sets[setLookUp[setId]].Images.Add(new Image() { File = name, CameraId = camId });
         }
 
         /// <summary>
@@ -153,12 +128,19 @@ namespace Hub.Util
             look.SendDate = sendDate;
         }
 
-        public string ImageAbsolutePath(int setId, string imageName)
+        public string AbsoluteImagePath(int setId, string imageName)
         {
             Image look;
             if (!ImageExists(setId, imageName, out look)) throw new Exception("Image doesn't exist");
 
             return fileLocation + Path.DirectorySeparatorChar + data.sets[setLookUp[setId]].Path + Path.DirectorySeparatorChar + imageName;
+        }
+
+        public static string AbsoluteImagePath(Data details, int set, string imageName)
+        {
+            ImageSet imSet = details.sets.First(i => i.ImageSetId == set);
+
+            return Constants.DefaultHubSaveLocation() + details.ProjectId + Path.DirectorySeparatorChar + imSet.Path  + Path.DirectorySeparatorChar + imageName;
         }
 
         public bool hasSent(int setId, string imageName)
@@ -189,9 +171,9 @@ namespace Hub.Util
         public bool ImageSetIsDone(int setId)
         {
             if (!ImageSetExists(setId)) throw new KeyNotFoundException("Image Set not found");
-            if (data.sets[setLookUp[setId]].images.Count <= 0) throw new NullReferenceException("No Images in set");
+            if (data.sets[setLookUp[setId]].Images.Count <= 0) throw new NullReferenceException("No Images in set");
 
-            foreach (Image img in data.sets[setLookUp[setId]].images) if (img.Sent == false) return false;
+            foreach (Image img in data.sets[setLookUp[setId]].Images) if (img.Sent == false) return false;
             return true;
         }
 
@@ -205,7 +187,7 @@ namespace Hub.Util
         {
             if (!ImageSetExists(setId)) throw new KeyNotFoundException("Image Set not found");
 
-            foreach (Image img in data.sets[setLookUp[setId]].images)
+            foreach (Image img in data.sets[setLookUp[setId]].Images)
             {
                 if (img.File == imageName) return true;
             }
@@ -217,7 +199,7 @@ namespace Hub.Util
         {
             if (!ImageSetExists(setId)) throw new KeyNotFoundException("Image Set not found");
 
-            foreach (Image img in data.sets[setLookUp[setId]].images)
+            foreach (Image img in data.sets[setLookUp[setId]].Images)
             {
                 if (img.File == imageName)
                 {
@@ -234,7 +216,7 @@ namespace Hub.Util
         {
             if (!ImageSetExists(setId)) throw new KeyNotFoundException("Image Set not found");
 
-            return data.sets[setLookUp[setId]].images.Count;
+            return data.sets[setLookUp[setId]].Images.Count;
         }
 
         public void Save()
@@ -294,14 +276,14 @@ namespace Hub.Util
             {
                 get
                 {
-                    foreach (Image img in images)
+                    foreach (Image img in Images)
                         if (!img.Sent) return false;
                     return true;
                 }
             }
 
             [JsonProperty(PropertyName = "images")]
-            public List<Image> images = new List<Image>();
+            public List<Image> Images = new List<Image>();
         }
 
         public class Image
@@ -316,7 +298,7 @@ namespace Hub.Util
             public long SendDate { get; set; }
         }
 
-        public class Camera
+        public struct Camera
         {
             [JsonProperty(PropertyName = "name")]
             public string CameraName { get; set; }

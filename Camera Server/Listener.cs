@@ -29,7 +29,6 @@ namespace Camera_Server
 
             Console.WriteLine("Camera Name\t= " + CameraSettings.GetSetting("name"));
             Console.WriteLine("IP address\t= " + ipAddress);
-            Console.WriteLine("IP long address\t= " + ipAddress.Address);
             Console.WriteLine("Port\t\t= " + CameraSettings.GetSetting("port"));
 
             // Create a TCP/IP socket.

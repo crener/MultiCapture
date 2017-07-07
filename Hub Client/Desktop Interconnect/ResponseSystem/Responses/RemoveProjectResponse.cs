@@ -14,7 +14,7 @@ namespace Hub.ResponseSystem.Responses
         {
             if (!parameters.ContainsKey("id"))
             {
-                Console.WriteLine(command + " is missing id parameter");
+                Console.WriteLine(command + " is missisng parameter: id");
                 return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?\"id\" parameters is missing");
             }
 

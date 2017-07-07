@@ -15,6 +15,7 @@ namespace Hub.Threaded
         protected string savePath;
         protected int imagesetId = -1;
         public int ProjectId { get; }
+        public ProjectMapper ProjectData { get { return projectFile; } }
 
         internal GenericManager(SaveLoad.Data config)
         {

@@ -1,4 +1,5 @@
-﻿using SharedDeviceItems;
+﻿using Hub.Util;
+using SharedDeviceItems;
 
 namespace Hub.Helpers.Interface
 {
@@ -6,6 +7,7 @@ namespace Hub.Helpers.Interface
     {
         string SavePath { get; set; }
         int ProjectId { get; }
+        ProjectMapper ProjectData { get; }
 
         void CaptureImageSet();
         void CaptureImageSet(CameraRequest wanted);
