@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text;
 
 namespace SharedDeviceItems
 {
@@ -18,6 +19,8 @@ namespace SharedDeviceItems
         public const string MessageSeparator = "<,,,>";
         public const string FailString = "FAIL";
         public const string SuccessString = "SUCCESS";
+
+        public static readonly byte[] EndOfMessageBytes = Encoding.ASCII.GetBytes(EndOfMessage);
 
         public const int ByteArraySize = 10485760;
         public const int CameraBufferSize = 128;

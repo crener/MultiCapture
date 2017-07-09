@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace SharedDeviceItems.Helpers
@@ -22,6 +23,39 @@ namespace SharedDeviceItems.Helpers
             file.CopyTo(messageData, name.Length);
             eom.CopyTo(messageData, name.Length + file.Length);
             return messageData;
+        }
+
+        /// <summary>
+        /// Check if the end of message string is inside the data 
+        /// </summary>
+        /// <param before="data">the data array to parse</param>
+        /// <param before="size">amount of data populated with valid data (starting from 0)</param>
+        /// <returns>first byte location of the end of message</returns>
+        public static int SearchEomIndex(byte[] data, int size)
+        {
+            if (size > data.Length) size = data.Length;
+
+            for (int i = size - 1; i >= 0; i--)
+            {
+                if (data[i] == Constants.EndOfMessageBytes.Last())
+                {
+                    int i2 = i;
+                    bool valid = true;
+                    //last element has been found search for the lest of them
+                    for (int u = Constants.EndOfMessageBytes.Length - 1; u >= 0; u--, i2--)
+                    {
+                        if (Constants.EndOfMessageBytes[u] != data[i2])
+                        {
+                            valid = false;
+                            break;
+                        }
+                    }
+
+                    if (valid) return i2 + 1;
+                }
+            }
+
+            return -1;
         }
     }
 }

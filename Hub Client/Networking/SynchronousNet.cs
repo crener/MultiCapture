@@ -47,10 +47,7 @@ namespace Hub.Networking
 
                     byte[] raw = new byte[recSize - Constants.EndOfMessage.Length];
                     Array.Copy(buffer, 0, raw, 0, raw.Length);
-#if DEBUG
-                    string bufferStr = Encoding.ASCII.GetString(buffer);
-                    string rawStr = Encoding.ASCII.GetString(raw);
-#endif
+
                     int indexData = ByteManipulation.SearchEndOfMessageStartIndex(buffer, recSize);
                     byte[] sizeData = new byte[indexData];
                     Array.Copy(buffer, 0, sizeData, 0, sizeData.Length);
@@ -58,7 +55,8 @@ namespace Hub.Networking
                     string sizeStr = Encoding.ASCII.GetString(sizeData);
                     if (!int.TryParse(sizeStr, out dataSize)) Console.WriteLine("Failed to extract image size");
 #else
-                    if (!int.TryParse(Encoding.ASCII.GetString(sizeData), out dataSize)) Console.WriteLine("Failed to extract image size");
+                    if (!int.TryParse(Encoding.ASCII.GetString(sizeData), out dataSize)) 
+                        Console.WriteLine("Failed to extract image size");
 #endif
                     else
                     {
@@ -70,7 +68,7 @@ namespace Hub.Networking
                 }
 
                 bool pass = dataSize > 0 && totalData < dataSize;
-                if (!pass) pass = !ByteManipulation.SearchEndOfMessage(bytes, totalData);
+                if (!pass) pass = !ByteManipulation.ContainsEom(bytes, totalData);
                 while (pass)
                 {
                     int bytesRec = socket.Receive(buffer);
@@ -78,7 +76,7 @@ namespace Hub.Networking
                     totalData += bytesRec;
 
                     pass = dataSize > 0 && totalData < dataSize;
-                    if (pass) pass = !ByteManipulation.SearchEndOfMessage(bytes, totalData);
+                    if (pass) pass = !ByteManipulation.ContainsEom(bytes, totalData);
                 }
 
 #if DEBUG

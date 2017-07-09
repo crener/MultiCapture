@@ -62,66 +62,9 @@ namespace Hub.Helpers
         /// <param name="data">the data array to parse</param>
         /// <param name="size">amount of data populated with valid data (starting from 0)</param>
         /// <returns>true of the data contains the endof message string</returns>
-        public static bool SearchEndOfMessage(byte[] data, int size)
+        public static bool ContainsEom(byte[] data, int size)
         {
-            if (size > data.Length) size = data.Length;
-            byte[] mesg = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
-
-            for (int i = size - 1; i >= 0; i--)
-            {
-                if (data[i] == mesg.Last())
-                {
-                    int i2 = i;
-                    //last element has been found search for the lest of them
-                    for (int u = mesg.Length - 1; u >= 0; u--, i2--)
-                    {
-                        if (u == 0 && mesg[u] == data[i2])
-                        {
-                            return true;
-                        }
-                        if (mesg[u] != data[i2])
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Check if the end of message string is inside the data 
-        /// </summary>
-        /// <param before="data">the data array to parse</param>
-        /// <param before="size">amount of data populated with valid data (starting from 0)</param>
-        /// <returns>first byte location of the end of message</returns>
-        public static int SearchEndOfMessageIndex(byte[] data, int size)
-        {
-            if (size > data.Length) size = data.Length;
-            byte[] mesg = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
-
-            for (int i = size - 1; i >= 0; i--)
-            {
-                if (data[i] == mesg.Last())
-                {
-                    int i2 = i;
-                    bool valid = true;
-                    //last element has been found search for the lest of them
-                    for (int u = mesg.Length - 1; u >= 0; u--, i2--)
-                    {
-                        if (mesg[u] != data[i2])
-                        {
-                            valid = false;
-                            break;
-                        }
-                    }
-
-                    if (valid) return i2 + 1;
-                }
-            }
-
-            return -1;
+            return SharedDeviceItems.Helpers.ByteHelpers.SearchEomIndex(data, size) != -1;
         }
 
         /// <summary>
@@ -134,19 +77,18 @@ namespace Hub.Helpers
         public static int SearchEndOfMessageStartIndex(byte[] data, int size)
         {
             if (size > data.Length) size = data.Length;
-            byte[] mesg = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
 
             for (int i = 0; i < size; i++)
             {
-                if (data[i] == mesg[0])
+                if (data[i] == Constants.EndOfMessageBytes[0])
                 {
-                    if(data.Length < i + mesg.Length) break;
+                    if(data.Length < i + Constants.EndOfMessageBytes.Length) break;
                     int i2 = i;
                     bool valid = true;
                     //last element has been found search for the lest of them
-                    for(int j = 1; j < mesg.Length; j++)
+                    for(int j = 1; j < Constants.EndOfMessageBytes.Length; j++)
                     {
-                        if(mesg[j] != data[i2 + j])
+                        if(Constants.EndOfMessageBytes[j] != data[i2 + j])
                         {
                             valid = false;
                             break;

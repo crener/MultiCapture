@@ -54,11 +54,7 @@ namespace Camera_Server
                         data = null;
                         Console.WriteLine("Connected!!");
 
-#if DEBUG
                         while (Connected(handler) && !stop)
-#else
-                        while (Connected(handler))
-#endif
                         {
                             RequestProcess process = NewProcessor(handler);
                             bytes = new byte[Constants.CameraBufferSize];

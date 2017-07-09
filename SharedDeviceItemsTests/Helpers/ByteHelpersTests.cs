@@ -30,8 +30,8 @@ namespace SharedDeviceItems.Helpers.Tests
 
             byte[] bytes = ByteHelpers.FileToBytes(filePath);
 
-            Assert.IsTrue(ByteManipulation.SearchEndOfMessage(bytes, bytes.Length));
-            Assert.IsTrue(ByteManipulation.SearchEndOfMessageIndex(bytes, bytes.Length) ==
+            Assert.IsTrue(ByteManipulation.ContainsEom(bytes, bytes.Length));
+            Assert.IsTrue(SharedDeviceItems.Helpers.ByteHelpers.SearchEomIndex(bytes, bytes.Length) ==
                 bytes.Length - Constants.EndOfMessage.Length);
 
             File.Delete(filePath);
