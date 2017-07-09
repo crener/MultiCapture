@@ -41,6 +41,7 @@
     <Compile Include="Helpers\NetworkHelpers.cs" />
     <Compile Include="Interface\ICamera.cs" />
     <Compile Include="Networking\CameraHubConnection\Exceptions.cs" />
+    <Compile Include="Networking\CameraHubConnection\InterconnectHelper.cs" />
     <Compile Include="Networking\CameraHubConnection\IRequester.cs" />
     <Compile Include="Networking\CameraHubConnection\IResponder.cs" />
     <Compile Include="Networking\CameraHubConnection\SocketRequester.cs" />

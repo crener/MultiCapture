@@ -73,8 +73,6 @@ namespace Hub.Networking
             Assert.AreEqual(socket.ReturnData, netData);
         }
 
-
-
         [Test]
         public void EndSequenceInMiddleOfData()
         {

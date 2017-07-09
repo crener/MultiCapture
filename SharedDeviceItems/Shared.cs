@@ -22,7 +22,7 @@ namespace SharedDeviceItems
 
         public static readonly byte[] EndOfMessageBytes = Encoding.ASCII.GetBytes(EndOfMessage);
 
-        public const int ByteArraySize = 10485760;
+        public const int HubBufferSize = 400000;
         public const int CameraBufferSize = 128;
 
         public const string ParamSeparator = "&&";

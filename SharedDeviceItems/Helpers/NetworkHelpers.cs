@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using Hub.Networking;
 
 namespace SharedDeviceItems.Helpers
 {
@@ -31,6 +32,21 @@ namespace SharedDeviceItems.Helpers
                 }
             }
             return ipHostInfo.AddressList[0];
+        }
+
+
+
+        /// <summary>
+        /// test if the socket is connected to a device
+        /// </summary>
+        /// <param name="s">socket that needs to be tested</param>
+        /// <returns>true if connected to a client</returns>
+        public static bool Connected(ISocket s)
+        {
+            if (!s.Connected || s.Poll(1000, SelectMode.SelectRead) && s.Available == 0)
+                return false;
+
+            return true;
         }
     }
 }

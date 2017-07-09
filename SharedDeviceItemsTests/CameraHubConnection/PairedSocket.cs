@@ -1,14 +1,14 @@
 ﻿using System;
+using System.Dynamic;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using Hub.Networking;
 
 namespace SharedDeviceItemsTests.CameraHubConnection
 {
-    class MockSocket : ISocket
+    class PairedSocket : ISocket
     {
-        public byte[] SendData { get; set; }
-
         public byte[] RecieveData
         {
             get { return recieveData; }
@@ -23,13 +23,22 @@ namespace SharedDeviceItemsTests.CameraHubConnection
 
         public bool DisconnectMidTransmission { get; set; }
         public bool OverridePollFalse { get; set; }
+        public PairedSocket Socket {get; set;}
+
 
         private byte[] recieveData;
 
-        public MockSocket()
+        public PairedSocket()
         {
             Connected = true;
-            OverridePollFalse = false;
+            OverridePollFalse = true;
+        }
+        public PairedSocket(PairedSocket socket)
+        {
+            Connected = true;
+            OverridePollFalse = true;
+            Socket = socket;
+            socket.Socket = this;
         }
 
         public void Connect(IPEndPoint endPoint)
@@ -38,11 +47,20 @@ namespace SharedDeviceItemsTests.CameraHubConnection
 
         public void Send(byte[] data)
         {
-            SendData = data;
+            Socket.recieveData = data;
         }
 
         public int Receive(byte[] buffer)
         {
+            if(recieveData == null)
+            {
+                do
+                {
+                    Thread.Sleep(20);
+                } while(recieveData == null);
+            }
+
+
             int length = recieveData.Length - RecievePosition;
             if (length > buffer.Length)
             {

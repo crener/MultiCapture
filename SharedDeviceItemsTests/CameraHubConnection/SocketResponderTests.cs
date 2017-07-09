@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using SharedDeviceItems;
 using SharedDeviceItems.Networking.CameraHubConnection;
@@ -17,6 +14,7 @@ namespace SharedDeviceItemsTests.CameraHubConnection
         [TestCase(38)]
         [TestCase(101)]
         [TestCase(Constants.CameraBufferSize + 23)]
+        [TestCase(Constants.CameraBufferSize)]
         [TestCase(Constants.CameraBufferSize * 4 + 8)]
         public void RecieveDataSimple(int dataSize)
         {
@@ -46,10 +44,10 @@ namespace SharedDeviceItemsTests.CameraHubConnection
 
             try
             {
-                byte[] output = testclass.RecieveData();
+                testclass.RecieveData();
                 Assert.Fail("No exception was thrown");
             }
-            catch (SocketDisconnectedException soc)
+            catch (SocketDisconnectedException)
             {
                 Assert.Pass("Correct exception was thrown");
             }
@@ -70,10 +68,10 @@ namespace SharedDeviceItemsTests.CameraHubConnection
 
             try
             {
-                byte[] output = testclass.RecieveData();
+                testclass.RecieveData();
                 Assert.Fail("No exception was thrown");
             }
-            catch (SocketNotConnectedException soc)
+            catch (SocketNotConnectedException)
             {
                 Assert.Pass("Correct exception was thrown");
             }
@@ -86,15 +84,15 @@ namespace SharedDeviceItemsTests.CameraHubConnection
             SocketResponder testclass = new SocketResponder(mock);
 
             byte[] package;
-            byte[] input = BuildRandomRequest(1, out package);
+            BuildRandomRequest(1, out package);
             mock.RecieveData = package;
 
             try
             {
-                byte[] output = testclass.RecieveData();
+                testclass.RecieveData();
                 Assert.Fail("No exception was thrown");
             }
-            catch (InvalidDataException soc)
+            catch (InvalidDataException)
             {
                 Assert.Pass("Correct exception was thrown");
             }
@@ -113,10 +111,10 @@ namespace SharedDeviceItemsTests.CameraHubConnection
 
             try
             {
-                byte[] output = testclass.RecieveData();
+                testclass.RecieveData();
                 Assert.Fail("No exception was thrown");
             }
-            catch (InvalidDataException soc)
+            catch (InvalidDataException)
             {
                 Assert.Pass("Correct exception was thrown");
             }
@@ -126,6 +124,7 @@ namespace SharedDeviceItemsTests.CameraHubConnection
         [TestCase(38)]
         [TestCase(101)]
         [TestCase(Constants.CameraBufferSize + 23)]
+        [TestCase(Constants.CameraBufferSize)]
         [TestCase(Constants.CameraBufferSize * 4 + 8)]
         public void SendDataSimple(int dataSize)
         {
@@ -160,7 +159,7 @@ namespace SharedDeviceItemsTests.CameraHubConnection
                 testclass.SendResponse(package);
                 Assert.Fail("No exception was thrown");
             }
-            catch (SocketNotConnectedException soc)
+            catch (SocketNotConnectedException)
             {
                 Assert.Pass("Correct exception was thrown");
             }
@@ -199,10 +198,10 @@ namespace SharedDeviceItemsTests.CameraHubConnection
 
             try
             {
-                output = testclass.RecieveData();
+                testclass.RecieveData();
                 Assert.Fail("No exception was thrown");
             }
-            catch (ResponseNeededException soc)
+            catch (ResponseNeededException)
             {
                 Assert.Pass("Correct exception was thrown");
             }
@@ -228,9 +227,9 @@ namespace SharedDeviceItemsTests.CameraHubConnection
 
             try
             {
-                output = testclass.RecieveData();
+                testclass.RecieveData();
             }
-            catch (ResponseNeededException soc)
+            catch (ResponseNeededException)
             {
                 Assert.Fail("Response should not be needed");
             }
@@ -256,15 +255,15 @@ namespace SharedDeviceItemsTests.CameraHubConnection
 
             try
             {
-                output = testclass.RecieveData();
+                testclass.RecieveData();
             }
-            catch (ResponseNeededException soc)
+            catch (ResponseNeededException)
             {
                 Assert.Fail("Response should not be needed");
             }
         }
 
-        private byte[] BuildRandomRequest(int dataSize, out byte[] randomData)
+        public static byte[] BuildRandomRequest(int dataSize, out byte[] randomData)
         {
             int position = 0;
             byte[] input = new byte[dataSize + dataSize.ToString().Length + Constants.EndOfMessageBytes.Length];

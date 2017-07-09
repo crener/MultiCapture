@@ -1,10 +1,19 @@
 ﻿using System;
+using System.IO;
 using System.Text;
+using Hub.Networking;
 
 namespace SharedDeviceItems.Networking.CameraHubConnection
 {
-    class SocketRequester : IRequester
+    public class SocketRequester : IRequester
     {
+        private ISocket socket;
+
+        public SocketRequester(ISocket socket)
+        {
+            this.socket = socket;
+        }
+
         public byte[] Request(CameraRequest request)
         {
             return Request(Encoding.ASCII.GetBytes(((int)request).ToString()));
@@ -12,7 +21,22 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
 
         public byte[] Request(byte[] requestData)
         {
-            throw new NotImplementedException();
+            if(!socket.Connected) throw new SocketNotConnectedException();
+
+            //format the request data and send it to the camera
+            {
+                byte[] correct = InterconnectHelper.FormatSendData(requestData);
+
+                socket.Send(correct);
+            }
+
+            //recieve data and return the result
+            {
+                byte[] buffer = new byte[Constants.HubBufferSize];
+                int recieved = socket.Receive(buffer);
+
+                return InterconnectHelper.RecieveData(buffer, recieved, socket);
+            }
         }
     }
 }

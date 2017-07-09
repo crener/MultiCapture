@@ -7,11 +7,11 @@ namespace Hub.Networking
 {
     public class SynchronousNet : INetwork
     {
-        private const int bufferSize = 400000;
+        private const int byteDataSize = 10485760; //10MB
         private ISocket socket;
 
-        byte[] bytes = new byte[Constants.ByteArraySize],
-            buffer = new byte[bufferSize];
+        byte[] bytes = new byte[byteDataSize],
+            buffer = new byte[Constants.HubBufferSize];
         public SynchronousNet(ISocket socket)
         {
             this.socket = socket;
@@ -36,7 +36,7 @@ namespace Hub.Networking
                 socket.Send(requestData);
 
                 //these need to be initialised early encase there is a data length
-                bytes = new byte[Constants.ByteArraySize];
+                bytes = new byte[byteDataSize];
                 int totalData = 0;
 
                 //get data size info
@@ -51,13 +51,9 @@ namespace Hub.Networking
                     int indexData = ByteManipulation.SearchEndOfMessageStartIndex(buffer, recSize);
                     byte[] sizeData = new byte[indexData];
                     Array.Copy(buffer, 0, sizeData, 0, sizeData.Length);
-#if DEBUG
-                    string sizeStr = Encoding.ASCII.GetString(sizeData);
-                    if (!int.TryParse(sizeStr, out dataSize)) Console.WriteLine("Failed to extract image size");
-#else
+
                     if (!int.TryParse(Encoding.ASCII.GetString(sizeData), out dataSize)) 
                         Console.WriteLine("Failed to extract image size");
-#endif
                     else
                     {
                         int expectedSize = recSize - indexData - Constants.EndOfMessage.Length;
@@ -79,13 +75,7 @@ namespace Hub.Networking
                     if (pass) pass = !ByteManipulation.ContainsEom(bytes, totalData);
                 }
 
-#if DEBUG
-                byte[] preReturn = Helpers.Networking.TrimExcessByteData(bytes, totalData - 1);
-                string imageData = Encoding.ASCII.GetString(preReturn);
-                return preReturn;
-#else
                 return Helpers.Networking.TrimExcessByteData(bytes, totalData -1);
-#endif
             }
             catch (ArithmeticException e)
             {

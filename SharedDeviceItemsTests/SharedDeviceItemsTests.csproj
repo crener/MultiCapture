@@ -52,6 +52,8 @@
   </Choose>
   <ItemGroup>
     <Compile Include="CameraHubConnection\MockSocket.cs" />
+    <Compile Include="CameraHubConnection\PairedSocket.cs" />
+    <Compile Include="CameraHubConnection\SocketRequesterTests.cs" />
     <Compile Include="CameraHubConnection\SocketResponderTests.cs" />
     <Compile Include="CommandBuilders\CommandBuildRead.cs" />
     <Compile Include="Helpers\ByteHelpersTests.cs" />

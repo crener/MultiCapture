@@ -54,7 +54,7 @@ namespace Camera_Server
                         data = null;
                         Console.WriteLine("Connected!!");
 
-                        while (Connected(handler) && !stop)
+                        while (NetworkHelpers.Connected(handler) && !stop)
                         {
                             RequestProcess process = NewProcessor(handler);
                             bytes = new byte[Constants.CameraBufferSize];
@@ -110,19 +110,6 @@ namespace Camera_Server
             Console.WriteLine("\nPress ENTER to continue...");
             Console.Read();
 #endif
-        }
-
-        /// <summary>
-        /// test if the socket is connected to a device
-        /// </summary>
-        /// <param name="s">socket that needs to be tested</param>
-        /// <returns>true if connected to a client</returns>
-        private bool Connected(ISocket s)
-        {
-            if (s.Connected && s.Poll(1000, SelectMode.SelectRead) && s.Available == 0)
-                return false;
-
-            return true;
         }
 
         /// <summary>

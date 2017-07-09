@@ -12,7 +12,7 @@ namespace Hub.Networking
     public class StateObject
     {
         public ISocket WorkSocket = null;
-        public byte[] Buffer = new byte[Constants.ByteArraySize];
+        public byte[] Buffer = new byte[Constants.HubBufferSize];
 
         public int Saved = 0;
     }
