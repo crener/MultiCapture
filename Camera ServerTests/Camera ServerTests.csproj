@@ -54,6 +54,7 @@
     <Compile Include="CameraSettingsTests.cs" />
     <Compile Include="ListenerTest.cs" />
     <Compile Include="Mocks\MockCamera.cs" />
+    <Compile Include="Mocks\MockIResponder.cs" />
     <Compile Include="Mocks\MockRequestProcess.cs" />
     <Compile Include="Mocks\MockSocket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

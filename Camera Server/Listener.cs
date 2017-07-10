@@ -2,13 +2,13 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
 using Hub.Networking;
-using SharedDeviceItems;
+using SharedDeviceItems.Exceptions;
 using SharedDeviceItems.Helpers;
 using SharedDeviceItems.Networking;
 using SharedDeviceItems.Networking.CameraHubConnection;
 using Shell_Camera;
+// ReSharper disable VirtualMemberCallInConstructor
 
 #pragma warning disable 618
 
@@ -20,10 +20,7 @@ namespace Camera_Server
         protected bool stop { get; set; }
         protected ISocket listener;
 
-        /// <summary>
-        /// Listen and process incoming requests
-        /// </summary>
-        public void StartListening()
+        public Listener()
         {
             stop = false;
             IPEndPoint localEndPoint;
@@ -38,20 +35,30 @@ namespace Camera_Server
                 Console.WriteLine("Port\t\t= " + CameraSettings.GetSetting("port"));
             }
 
-            if (listener == null)
-                listener = new SocketWrapper(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            SetupSocket(localEndPoint);
+        }
 
+        protected virtual void SetupSocket(IPEndPoint localEndPoint)
+        {
             // Bind the socket to the local endpoint and listen for incoming connections.
+            if (listener == null) listener = new SocketWrapper(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+            listener.Bind(localEndPoint);
+            listener.Listen(0);
+        }
+
+        /// <summary>
+        /// Listen and process incoming requests
+        /// </summary>
+        public void StartListening()
+        {
             try
             {
-                listener.Bind(localEndPoint);
-                listener.Listen(0);
-
                 // Start listening for connections.
                 while (!stop)
                 {
                     lastRequest = null;
-                    IResponder responder = new SocketResponder();
+                    IResponder responder = NewResponder();
                     RequestProcess process = NewProcessor();
 
                     try
@@ -62,7 +69,7 @@ namespace Camera_Server
                         Console.WriteLine("Connected!!");
 
                         //respond to incoming requests
-                        while (responder.Connected() && !stop)
+                        while(responder.Connected() && !stop)
                         {
                             byte[] request = responder.RecieveData();
 
@@ -76,6 +83,10 @@ namespace Camera_Server
 
                             Console.WriteLine("Waiting for next request...");
                         }
+                    }
+                    catch(TestException)
+                    {
+                        break;
                     }
                     catch (Exception e)
                     {
@@ -91,14 +102,7 @@ namespace Camera_Server
                 }
 
             }
-#if DEBUG
-            catch (ThreadInterruptedException)
-            {
-                //ignore this as it only happens in tests
-            }
-#endif
             catch (Exception e)
-
             {
                 Console.WriteLine(e.ToString());
             }
@@ -110,13 +114,21 @@ namespace Camera_Server
         }
 
         /// <summary>
-        /// Layer of abstarction for creating a request process so that tests can pass in
-        /// a slightly more open version of the handeler
+        /// Layer of abstarction for creating a request process so that tests can pass in a slightly more open version of the processer
         /// </summary>
         /// <returns></returns>
         protected virtual RequestProcess NewProcessor()
         {
             return new RequestProcess(new ShellCamera("0"));
+        }
+
+        /// <summary>
+        /// Layer of abstarction for creating a responder so that tests can pass in a slightly more open version of the responder
+        /// </summary>
+        /// <returns></returns>
+        protected virtual IResponder NewResponder()
+        {
+            return new SocketResponder();
         }
     }
 }

@@ -1,86 +1,40 @@
-﻿using System;
-using System.Threading;
+﻿using System.Net;
 using Camera_Server;
 using Camera_ServerTests.Mocks;
-using Hub.Helpers;
 using Hub.Networking;
 using NUnit.Framework;
-using SharedDeviceItems;
+using SharedDeviceItems.Networking.CameraHubConnection;
 
 namespace CameraServer.Tests
 {
     [TestFixture]
     public class ListenerTest
     {
-        private Thread thread;
-        private TestListener listen;
-        private MockSocket socket;
-        private MockRequestProcess process;
-
-        [TearDown]
-        public void Shutdown()
-        {
-            //make sure the thread is dead
-            listen.Stop = true;
-            thread.Interrupt();
-            socket.Available = 0;
-            thread.Join();
-        }
-
-        [SetUp]
-        public void Setup()
-        {
-            socket = new MockSocket();
-        }
-
-        //causes test explorer to lock up so leaving it for now
         [Test]
-        public void RecieveDataTest()
+        public void RespondToRequest()
         {
-            byte[] data = new byte[Constants.CameraBufferSize];
-            byte[] request = new CommandBuilder().Request(CameraRequest.Alive).Build();
-            request.CopyTo(data, 0);
+            TestListener testcase = new TestListener();
+            MockRequestProcess mockProcess = new MockRequestProcess(new MockCamera());
+            testcase.Process = mockProcess;
+            MockIResponder responder = new MockIResponder();
+            testcase.Responder = responder;
 
-            socket.Connected = true;
-            socket.ReceiveData = data;
-            socket.SlowDown = true;
+            //setup responses
+            byte[] request = new byte[] { 0, 2, 3, 11, 12 };
+            responder.RecieveBytes = request;
+            byte[] response = new byte[] { 0, 222, 32, 66, 211 };
+            mockProcess.RequestResponse = response;
 
-            try
-            {
-                PrepairListener();
+            testcase.StartListening();
 
-                //wait for the thread to call the socket at least once
-                while(socket.RecieveQueryCount <= 0) Thread.Sleep(2);
-                Thread.Sleep(10);
-                listen.Stop = true;
-
-                Assert.IsTrue(socket.ReceiveCount > 0);
-                Assert.AreEqual(data, process.RequestProcessData);
-            }
-            finally
-            {
-                Shutdown();
-            }
-        }
-
-        private void PrepairListener()
-        {
-            socket.RecieveQueryCount = 0;
-            socket.SlowDown = false;
-            process = new MockRequestProcess(new MockCamera(), false);
-            listen = new TestListener(socket, process);
-
-            thread = new Thread(listen.StartListening);
-            thread.Name = "Testing Thread";
-            thread.Start();
-
-            //allow the test thread to sleep so that the test thread is ready
-            Thread.Sleep(10);
+            Assert.AreEqual(request, mockProcess.IncomingRequest);
+            Assert.AreEqual(response, responder.SendBytes);
         }
 
         private class TestListener : Listener
         {
-            private RequestProcess process;
+            public RequestProcess Process { get; set; }
+            public IResponder Responder { get; set; }
 
             public TestListener() { }
 
@@ -92,19 +46,28 @@ namespace CameraServer.Tests
             public TestListener(ISocket socket, RequestProcess process)
             {
                 if (socket != null) base.listener = socket;
-                this.process = process;
+                this.Process = process;
             }
 
             public bool Stop
             {
-                get { return base.stop; }
-                set { base.stop = value; }
+                get { return stop; }
+                set { stop = value; }
+            }
+
+            protected override void SetupSocket(IPEndPoint localEndPoint)
+            {
+                listener = new MockSocket();
             }
 
             protected override RequestProcess NewProcessor()
             {
-                if(process != null) return process;
-                return new MockRequestProcess(new MockCamera());
+                return Process ?? new MockRequestProcess(new MockCamera());
+            }
+
+            protected override IResponder NewResponder()
+            {
+                return Responder ?? base.NewResponder();
             }
         }
     }

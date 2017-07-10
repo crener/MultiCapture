@@ -1,12 +1,15 @@
 ﻿using System.Text;
 using Camera_Server;
-using Hub.Networking;
 using SharedDeviceItems.Interface;
 
 namespace Camera_ServerTests.Mocks
 {
     class MockRequestProcess : RequestProcess
     {
+        public byte[] IncomingRequest { get; set; }
+        public byte[] RequestResponse { get; set; }
+
+
         public MockRequestProcess(ICamera client) : base(client) { }
 
         public MockRequestProcess(ICamera client, ICamera camera) : base(client)
@@ -21,12 +24,9 @@ namespace Camera_ServerTests.Mocks
 
         public override byte[] ProcessRequest(byte[] message)
         {
-            if (message.Length > 0) RequestProcessData = message;
-            return base.ProcessRequest(message);
+            IncomingRequest = message;
+            return RequestResponse ?? base.ProcessRequest(message);
         }
-
-
-        public byte[] RequestProcessData { get; set; }
 
         private class IgnoreCamera : ICamera
         {
