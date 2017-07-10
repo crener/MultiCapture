@@ -9,7 +9,7 @@ using CommandBuilder = Hub.Helpers.CommandBuilder;
 
 namespace CameraServer.Tests
 {
-    [TestFixture]
+    /*[TestFixture]
     class RequestProcessTest
     {
         private MockSocket socket = new MockSocket();
@@ -199,5 +199,5 @@ namespace CameraServer.Tests
         }
 
         //todo make a mixed test. Take the output from this and put it into the mock socket for the hub code so that it gets actual data in a test enviroment
-    }
+    }*/
 }

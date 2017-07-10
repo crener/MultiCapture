@@ -3,7 +3,6 @@ using System.Net.Sockets;
 using System.Threading;
 using Camera_Server;
 using Hub.Helpers;
-using Hub.Helpers.Wrapper;
 using NUnit.Framework;
 using SharedDeviceItems;
 using SharedDeviceItems.Helpers;

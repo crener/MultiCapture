@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using Hub.Networking;
 
-namespace Hub.Helpers.Wrapper
+namespace SharedDeviceItems.Networking
 {
     /// <summary>
     /// wrapper for the standard C# socket

@@ -1,24 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Hub.Networking;
 using SharedDeviceItems;
 using SharedDeviceItems.Helpers;
 using SharedDeviceItems.Interface;
-using Shell_Camera;
 
 namespace Camera_Server
 {
     public class RequestProcess
     {
-        protected ICamera camera = new ShellCamera("0");
-        private ISocket client;
+        protected ICamera camera;
         private static Dictionary<string, CameraRequest> requestLookup = new Dictionary<string, CameraRequest>();
-        protected string imageName = "0";
 
-        public RequestProcess(ISocket client)
+        public RequestProcess(ICamera newCamera)
         {
-            this.client = client;
+            camera = newCamera;
             camera.SetCameraName(CameraSettings.GetSetting("name"));
             camera.SetResolution(3280, 2464);
 
@@ -28,132 +24,67 @@ namespace Camera_Server
                 CameraRequest[] enums = (CameraRequest[])Enum.GetValues(typeof(CameraRequest));
                 foreach (CameraRequest value in enums)
                 {
-                    Console.WriteLine("Key = " + "" + (int)value + ", value = " + value);
+                    Console.WriteLine("Key = " + (int)value + ", value = " + value);
                     requestLookup.Add("" + (int)value, value);
                 }
             }
         }
 
-        public virtual void ProcessRequest(byte[] message)
+        public virtual byte[] ProcessRequest(byte[] message)
         {
             CommandReader requestMessage = new CommandReader(message);
-            ProcessRequest(requestMessage);
+            return ProcessRequest(requestMessage);
         }
 
-        public void ProcessRequest(string message)
+        public byte[] ProcessRequest(string message)
         {
             CommandReader requestMessage = new CommandReader(message);
-            ProcessRequest(requestMessage);
+            return ProcessRequest(requestMessage);
         }
 
-        private void ProcessRequest(CommandReader requestMessage)
+        private byte[] ProcessRequest(CommandReader requestMessage)
         {
-            if (requestMessage.Request == CameraRequest.Alive)
-            {
-                AliveRequest(client);
-                return;
-            }
-            else if (requestMessage.Request == CameraRequest.SendTestImage)
-            {
-                InternalProcess(CameraRequest.SendTestImage);
-                return;
-            }
-
-            if (requestMessage.Parameters.ContainsKey("id"))
-            {
-                imageName = requestMessage.Parameters["id"];
-                Console.WriteLine("ImageName: " + imageName);
-            }
-
-            if (requestMessage.Request == CameraRequest.SetProporties)
-            {
-                if(requestMessage.Parameters.ContainsKey("name"))
-                {
-                    CameraSettings.AddSetting("name", requestMessage.Parameters["name"]);
-                    camera.SetCameraName(requestMessage.Parameters["name"]);
-                }
-                AliveRequest(client);
-                return;
-            }
-
-            InternalProcess(requestMessage.Request);
-        }
-
-        private void InternalProcess(CameraRequest request)
-        {
-            Console.WriteLine("Executing request: " + request);
-            byte[] messageData;
-
-            switch (request)
+            switch(requestMessage.Request)
             {
                 case CameraRequest.Alive:
-                    AliveRequest(client);
-                    return;
+                    return Constants.SuccessStringBytes;
+                //case CameraRequest.SendCustomResImage:
                 case CameraRequest.SendFullResImage:
-                    messageData = camera.CaptureImageByte(imageName);
-                    SendResponse(client, messageData, false);
-                    return;
-#if DEBUG
+                    return ProcessCaptureRequest(requestMessage);
                 case CameraRequest.SendTestImage:
-                    //For testing, send a static image saved on the device
-                    messageData = ByteHelpers.FileToBytes(Constants.DefaultHubSaveLocation() + "test.jpg");
-                    SendResponse(client, messageData, false);
-                    return;
-#endif
+                    return ByteHelpers.FileToBytes(Constants.DefaultHubSaveLocation() + "test.jpg");
                 case CameraRequest.SetProporties:
-                    AliveRequest(client);
-                    return;
+                    return ProcessSetProporties(requestMessage);
                 default:
-                    Console.WriteLine("Request Processing failed");
-                    Console.WriteLine("\tRequest Name: " + request);
-                    break;
+                    return Constants.FailStringBytes;
+            }
+        }
+
+        private byte[] ProcessSetProporties(CommandReader command)
+        {
+            if(command.Parameters.ContainsKey(Constants.CameraSettingName))
+            {
+                CameraSettings.AddSetting(Constants.CameraSettingName, command.Parameters[Constants.CameraSettingName]);
+                camera.SetCameraName(command.Parameters[Constants.CameraSettingName]);
             }
 
-            FailReply(client);
+            return Constants.SuccessStringBytes;
         }
 
-        /// <summary>
-        /// quick method for adding end of message string to the end of a data transmission
-        /// </summary>
-        /// <param name="data">the data message</param>
-        private static byte[] EndOfMessage(byte[] data)
+        private byte[] ProcessCaptureRequest(CommandReader command)
         {
-            byte[] message = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
-            byte[] outData = new byte[data.Length + message.Length];
+            if(!command.Parameters.ContainsKey(Constants.CameraSettingImageName)) return Constants.FailStringBytes;
 
-            data.CopyTo(outData, 0);
-            message.CopyTo(outData, data.Length);
+            //todo extract image size as a parameter rather than setting statically in the constructor and set as capture parameter
+            string imageName = command.Parameters["id"];
+            Console.WriteLine("ImageName: " + imageName);
 
-            return outData;
-        }
+            if(command.Request == CameraRequest.SendFullResImage)
+            {
+                return camera.CaptureImageByte(imageName);
+            }
 
-        /// <summary>
-        /// wrapper for sending bytes to get cleaner code 
-        /// </summary>
-        /// <param name="client">Socket that data will be sent too</param>
-        /// <param name="response">The data that will be sent</param>
-        /// <param name="needsEnd">true if end must be added to response</param>
-        private static void SendResponse(ISocket client, byte[] response, bool needsEnd = true)
-        {
-            Console.WriteLine("Data size: " + response.Length);
-            client.Send(EndOfMessage(Encoding.ASCII.GetBytes(response.Length.ToString())));
-            client.Send(needsEnd ? EndOfMessage(response) : response);
-        }
-
-        /// <summary>
-        /// wrapper for the alive request to be handled
-        /// </summary>
-        /// <param name="client"></param>
-        private static void AliveRequest(ISocket client)
-        {
-            byte[] msg = Encoding.ASCII.GetBytes(Constants.SuccessString + Constants.EndOfMessage);
-            client.Send(msg);
-        }
-
-        private static void FailReply(ISocket client)
-        {
-            byte[] msg = Encoding.ASCII.GetBytes(Constants.FailString + Constants.EndOfMessage);
-            client.Send(msg);
+            return Constants.FailStringBytes;
         }
     }
 }

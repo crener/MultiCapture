@@ -5,8 +5,8 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Hub.Helpers;
-using Hub.Helpers.Wrapper;
 using SharedDeviceItems;
+using SharedDeviceItems.Networking;
 using static Hub.Helpers.CameraHelper;
 
 [assembly: InternalsVisibleTo("Hub ClientTests")]

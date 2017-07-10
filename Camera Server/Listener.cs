@@ -3,72 +3,77 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using Hub.Helpers.Wrapper;
 using Hub.Networking;
 using SharedDeviceItems;
 using SharedDeviceItems.Helpers;
+using SharedDeviceItems.Networking;
+using SharedDeviceItems.Networking.CameraHubConnection;
+using Shell_Camera;
+
 #pragma warning disable 618
 
 namespace Camera_Server
 {
     public class Listener
     {
-        private static string data;
+        private static string lastRequest;
         protected bool stop { get; set; }
         protected ISocket listener;
 
+        /// <summary>
+        /// Listen and process incoming requests
+        /// </summary>
         public void StartListening()
         {
-            // Data buffer for incoming data.
-            byte[] bytes = new byte[Constants.CameraBufferSize];
             stop = false;
+            IPEndPoint localEndPoint;
 
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-            IPAddress ipAddress = NetworkHelpers.GrabIpv4(ipHostInfo);
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, int.Parse(CameraSettings.GetSetting("port", "11003")));
+            {
+                IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+                IPAddress ipAddress = NetworkHelpers.GrabIpv4(ipHostInfo);
+                localEndPoint = new IPEndPoint(ipAddress, int.Parse(CameraSettings.GetSetting("port", "11003")));
 
-            Console.WriteLine("Camera Name\t= " + CameraSettings.GetSetting("name"));
-            Console.WriteLine("IP address\t= " + ipAddress);
-            Console.WriteLine("Port\t\t= " + CameraSettings.GetSetting("port"));
+                Console.WriteLine("Camera Name\t= " + CameraSettings.GetSetting("name"));
+                Console.WriteLine("IP address\t= " + ipAddress);
+                Console.WriteLine("Port\t\t= " + CameraSettings.GetSetting("port"));
+            }
 
-            // Create a TCP/IP socket.
-            if (listener == null) listener =
-                    new SocketWrapper(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            ISocket handler = null;
+            if (listener == null)
+                listener = new SocketWrapper(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-            // Bind the socket to the local endpoint and 
-            // listen for incoming connections.
+            // Bind the socket to the local endpoint and listen for incoming connections.
             try
             {
                 listener.Bind(localEndPoint);
-                listener.Listen(10);
+                listener.Listen(0);
 
                 // Start listening for connections.
                 while (!stop)
                 {
+                    lastRequest = null;
+                    IResponder responder = new SocketResponder();
+                    RequestProcess process = NewProcessor();
+
                     try
                     {
+                        //Connect to the hub
                         Console.WriteLine("Waiting for a connection...");
-                        // Thread is suspended while waiting for an incoming connection.
-                        handler = listener.Accept();
-                        data = null;
+                        responder.Connect(listener);
                         Console.WriteLine("Connected!!");
 
-                        while (NetworkHelpers.Connected(handler) && !stop)
+                        //respond to incoming requests
+                        while (responder.Connected() && !stop)
                         {
-                            RequestProcess process = NewProcessor(handler);
-                            bytes = new byte[Constants.CameraBufferSize];
-                            int bytesRec = handler.Receive(bytes);
-                            data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                            if (data.IndexOf(Constants.EndOfMessage) > -1)
-                            {
-                                //process data
-                                process.ProcessRequest(bytes);
+                            byte[] request = responder.RecieveData();
 
-                                // Show the data on the console.
-                                Console.WriteLine("Data received : {0}", data);
-                                data = "";
-                            }
+                            lastRequest = Encoding.ASCII.GetString(request);
+                            Console.WriteLine("Request Recieved: {0}", lastRequest);
+
+                            byte[] response = process.ProcessRequest(request);
+
+                            Console.WriteLine("Data size: " + response.Length);
+                            responder.SendResponse(response);
+
                             Console.WriteLine("Waiting for next request...");
                         }
                     }
@@ -79,8 +84,8 @@ namespace Camera_Server
 #if DEBUG
                         Console.WriteLine("\tstack trace:" + e.StackTrace);
 #endif
-                        if(data == null) Console.WriteLine("\tlast request data is null");
-                        else if (data.Length > 0) Console.WriteLine("\tlast request data: " + data);
+                        if (lastRequest == null) Console.WriteLine("\tlast request data is null");
+                        else if (lastRequest.Length > 0) Console.WriteLine("\tlast request data: " + lastRequest);
                         else Console.WriteLine("\tlast request data: <Empty string>");
                     }
                 }
@@ -97,17 +102,9 @@ namespace Camera_Server
             {
                 Console.WriteLine(e.ToString());
             }
-            finally
-            {
-                if (handler != null)
-                {
-                    handler.Shutdown(SocketShutdown.Both);
-                    handler.Close();
-                }
-            }
 
 #if DEBUG
-            Console.WriteLine("\nPress ENTER to continue...");
+            Console.WriteLine("SHUTDOWN");
             Console.Read();
 #endif
         }
@@ -116,11 +113,10 @@ namespace Camera_Server
         /// Layer of abstarction for creating a request process so that tests can pass in
         /// a slightly more open version of the handeler
         /// </summary>
-        /// <param name="handler"></param>
         /// <returns></returns>
-        protected virtual RequestProcess NewProcessor(ISocket handler)
+        protected virtual RequestProcess NewProcessor()
         {
-            return new RequestProcess(handler);
+            return new RequestProcess(new ShellCamera("0"));
         }
     }
 }

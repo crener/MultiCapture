@@ -223,7 +223,7 @@ namespace SharedDeviceItemsTests.CameraHubConnection
             Assert.AreEqual(package, output);
             mock.RecieveData = input;//reset sending position
 
-            testclass.Connect();
+            testclass.Connect(mock);
 
             try
             {

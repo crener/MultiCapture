@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Net.Sockets;
-using System.Text;
-using Hub.Networking;
+﻿using Hub.Networking;
 
 namespace SharedDeviceItems.Networking.CameraHubConnection
 {
@@ -12,14 +8,17 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
         private byte[] buffer = new byte[Constants.CameraBufferSize];
         private bool waitingForResponse = false;
 
+        public SocketResponder()
+        {
+        }
         public SocketResponder(ISocket socket)
         {
             this.socket = socket;
         }
 
-        public void Connect()
+        public void Connect(ISocket listeningSocket)
         {
-            socket.Accept();
+            socket = listeningSocket.Accept();
             waitingForResponse = false;
         }
 
@@ -58,6 +57,7 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
 
         public bool Connected()
         {
+            if(socket == null) return false;
             return Helpers.NetworkHelpers.Connected(socket);
         }
     }

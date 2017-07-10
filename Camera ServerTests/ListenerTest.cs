@@ -67,7 +67,7 @@ namespace CameraServer.Tests
         {
             socket.RecieveQueryCount = 0;
             socket.SlowDown = false;
-            process = new MockRequestProcess(socket, false);
+            process = new MockRequestProcess(new MockCamera(), false);
             listen = new TestListener(socket, process);
 
             thread = new Thread(listen.StartListening);
@@ -101,10 +101,10 @@ namespace CameraServer.Tests
                 set { base.stop = value; }
             }
 
-            protected override RequestProcess NewProcessor(ISocket handler)
+            protected override RequestProcess NewProcessor()
             {
                 if(process != null) return process;
-                return new MockRequestProcess(handler);
+                return new MockRequestProcess(new MockCamera());
             }
         }
     }

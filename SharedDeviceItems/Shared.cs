@@ -21,6 +21,8 @@ namespace SharedDeviceItems
         public const string SuccessString = "SUCCESS";
 
         public static readonly byte[] EndOfMessageBytes = Encoding.ASCII.GetBytes(EndOfMessage);
+        public static readonly byte[] FailStringBytes = Encoding.ASCII.GetBytes(FailString);
+        public static readonly byte[] SuccessStringBytes = Encoding.ASCII.GetBytes(SuccessString);
 
         public const int HubBufferSize = 400000;
         public const int CameraBufferSize = 128;
@@ -29,8 +31,9 @@ namespace SharedDeviceItems
         public const string ParamKeyValueSeparator = "=";
         #endregion
 
-        #region Project file settings
-        public const string ProjectFileExtention = "XML";
+        #region camera setting transfer codes
+        public const string CameraSettingName = "name";
+        public const string CameraSettingImageName = "id";
         #endregion
 
         public static string DefaultHubSaveLocation()

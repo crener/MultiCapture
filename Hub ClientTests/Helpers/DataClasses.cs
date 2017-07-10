@@ -2,9 +2,9 @@
 using System.Net;
 using System.Net.Sockets;
 using NUnit.Framework;
-using Hub.Helpers.Wrapper;
 using Hub.Networking;
 using SharedDeviceItems.Helpers;
+using SharedDeviceItems.Networking;
 
 #pragma warning disable 618
 

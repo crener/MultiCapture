@@ -2,8 +2,8 @@
 using System.Net.Sockets;
 using NUnit.Framework;
 using System.Text;
-using Hub.Helpers.Wrapper;
 using SharedDeviceItems;
+using SharedDeviceItems.Networking;
 
 namespace Hub.Helpers.Tests
 {

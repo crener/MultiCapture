@@ -1,11 +1,13 @@
-﻿namespace SharedDeviceItems.Networking.CameraHubConnection
+﻿using Hub.Networking;
+
+namespace SharedDeviceItems.Networking.CameraHubConnection
 {
-    interface IResponder
+    public interface IResponder
     {
         /// <summary>
         /// Blocking call to make a TCP connection to an incomming request
         /// </summary>
-        void Connect();
+        void Connect(ISocket listeningSocket);
 
         /// <summary>
         /// Blocking method which returns byte data for a request once it becomes avaliable

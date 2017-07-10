@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using Hub.Helpers;
-using Hub.Helpers.Interface;
-using Hub.Helpers.Wrapper;
-using Hub.Util;
 using SharedDeviceItems;
+using SharedDeviceItems.Networking;
 
 namespace Hub.Threaded
 {
