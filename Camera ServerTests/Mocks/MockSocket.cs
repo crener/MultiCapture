@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using System.Threading;
 using Hub.Networking;
 
-namespace Camera_ServerTests.Mocks
+namespace CameraServerTests.Mocks
 {
     class MockSocket : ISocket
     {

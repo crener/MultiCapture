@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using Camera_Server;
+using CameraServer;
 using NUnit.Framework;
 
 namespace CameraServer.Tests

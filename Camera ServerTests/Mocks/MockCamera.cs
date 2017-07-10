@@ -2,7 +2,7 @@
 using SharedDeviceItems.Interface;
 using SharedDeviceItems.Helpers;
 
-namespace Camera_ServerTests.Mocks
+namespace CameraServerTests.Mocks
 {
     class MockCamera : ICamera
     {

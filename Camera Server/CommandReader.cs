@@ -4,7 +4,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using SharedDeviceItems;
 
-namespace Camera_Server
+namespace CameraServer
 {
     /// <summary>
     /// Abstracts the extraction of prameters and camera request from the raw byte data

@@ -6,7 +6,7 @@
     <ProjectGuid>{D41B4D76-9113-4A50-B492-1D274AC17E56}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Camera_ServerTests</RootNamespace>
+    <RootNamespace>CameraServerTests</RootNamespace>
     <AssemblyName>Camera ServerTests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

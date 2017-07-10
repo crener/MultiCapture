@@ -1,8 +1,8 @@
 ﻿using System.Text;
-using Camera_Server;
+using CameraServer;
 using SharedDeviceItems.Interface;
 
-namespace Camera_ServerTests.Mocks
+namespace CameraServerTests.Mocks
 {
     class MockRequestProcess : RequestProcess
     {

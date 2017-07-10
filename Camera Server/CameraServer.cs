@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Camera_Server
+namespace CameraServer
 {
     public static class SynchronousSocketListener
     {

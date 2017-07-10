@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Hub.Networking;
 using SharedDeviceItems;
 using SharedDeviceItems.Helpers;
 using SharedDeviceItems.Interface;
 
-namespace Camera_Server
+namespace CameraServer
 {
     public class RequestProcess
     {

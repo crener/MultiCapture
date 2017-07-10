@@ -8,7 +8,7 @@ using NUnit.Framework.Internal;
 using SharedDeviceItems.Exceptions;
 using SharedDeviceItems.Networking.CameraHubConnection;
 
-namespace Camera_ServerTests.Mocks
+namespace CameraServerTests.Mocks
 {
     class MockIResponder : IResponder
     {

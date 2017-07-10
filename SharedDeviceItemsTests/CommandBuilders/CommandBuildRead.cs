@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Camera_Server;
+using CameraServer;
 using NUnit.Framework;
 using Hub.Helpers;
 using SharedDeviceItems;

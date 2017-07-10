@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using Camera_Server;
+using CameraServer;
 using Hub.Helpers;
 using NUnit.Framework;
 using SharedDeviceItems;

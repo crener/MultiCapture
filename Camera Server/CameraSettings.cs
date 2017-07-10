@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace Camera_Server
+namespace CameraServer
 {
     public static class CameraSettings
     {

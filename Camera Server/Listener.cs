@@ -12,7 +12,7 @@ using Shell_Camera;
 
 #pragma warning disable 618
 
-namespace Camera_Server
+namespace CameraServer
 {
     public class Listener
     {

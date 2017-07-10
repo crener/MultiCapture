@@ -1,6 +1,6 @@
 ﻿using System.Net;
-using Camera_Server;
-using Camera_ServerTests.Mocks;
+using CameraServer;
+using CameraServerTests.Mocks;
 using Hub.Networking;
 using NUnit.Framework;
 using SharedDeviceItems.Networking.CameraHubConnection;

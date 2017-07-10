@@ -7,7 +7,7 @@
     <ProjectGuid>{93CAA98A-A566-4849-8D8C-26E91B6B85B3}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Camera_Server</RootNamespace>
+    <RootNamespace>CameraServer</RootNamespace>
     <AssemblyName>Camera Server</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
