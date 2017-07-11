@@ -57,5 +57,41 @@ namespace SharedDeviceItems.Helpers
 
             return -1;
         }
+
+
+        /// <summary>
+        /// Check if the end of message string is inside the data starting from the front
+        /// SearchEndOfMessageIndex should be used if EOM is expected to be near the end of the data
+        /// </summary>
+        /// <param before="data">the data array to parse</param>
+        /// <param before="size">amount of data populated with valid data (starting from 0)</param>
+        /// <returns>first byte location of the end of message</returns>
+        public static int SearchEOMStartIndex(byte[] data, int size)
+        {
+            if (size > data.Length) size = data.Length;
+
+            for (int i = 0; i < size; i++)
+            {
+                if (data[i] == Constants.EndOfMessageBytes[0])
+                {
+                    if (data.Length < i + Constants.EndOfMessageBytes.Length) break;
+                    int i2 = i;
+                    bool valid = true;
+                    //last element has been found search for the lest of them
+                    for (int j = 1; j < Constants.EndOfMessageBytes.Length; j++)
+                    {
+                        if (Constants.EndOfMessageBytes[j] != data[i2 + j])
+                        {
+                            valid = false;
+                            break;
+                        }
+                    }
+
+                    if (valid) return i2;
+                }
+            }
+
+            return -1;
+        }
     }
 }

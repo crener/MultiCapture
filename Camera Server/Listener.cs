@@ -43,7 +43,8 @@ namespace CameraServer
         protected virtual void SetupSocket(IPEndPoint localEndPoint)
         {
             // Bind the socket to the local endpoint and listen for incoming connections.
-            if (listener == null) listener = new SocketWrapper(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            if (listener == null)
+                listener = new SocketWrapper(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             listener.Bind(localEndPoint);
             listener.Listen(0);
@@ -54,61 +55,56 @@ namespace CameraServer
         /// </summary>
         public void StartListening()
         {
-            try
+            // Start listening for connections.
+            while (!stop)
             {
-                // Start listening for connections.
-                while (!stop)
+                lastRequest = null;
+                IResponder responder = NewResponder();
+                RequestProcess process = NewProcessor();
+
+                try
                 {
-                    lastRequest = null;
-                    IResponder responder = NewResponder();
-                    RequestProcess process = NewProcessor();
+                    //Connect to the hub
+                    Console.WriteLine("Waiting for a connection...");
+                    responder.Connect(listener);
+                    Console.WriteLine("Connected!!");
 
-                    try
+                    //respond to incoming requests
+                    while (responder.Connected() && !stop)
                     {
-                        //Connect to the hub
-                        Console.WriteLine("Waiting for a connection...");
-                        responder.Connect(listener);
-                        Console.WriteLine("Connected!!");
+                        byte[] request = responder.RecieveData();
 
-                        //respond to incoming requests
-                        while(responder.Connected() && !stop)
+                        lastRequest = Encoding.ASCII.GetString(request);
+                        Console.WriteLine("Request Recieved: " + lastRequest);
+                        Console.WriteLine("Request Size: " + request.Length);
+
+                        for (int i = 0; i < 10 && i >= request.Length; i++)
                         {
-                            byte[] request = responder.RecieveData();
-
-                            lastRequest = Encoding.ASCII.GetString(request);
-                            Console.WriteLine("Request Recieved: " + lastRequest);
-
-                            byte[] response = process.ProcessRequest(request);
-
-                            Console.WriteLine("Response size: " + response.Length);
-                            responder.SendResponse(response);
-
-                            Console.WriteLine("Waiting for next request...");
+                            Console.Write(i + " - " + request[i] + " - " + Encoding.ASCII.GetString(request, i, 1));
                         }
-                    }
-                    catch(TestException)
-                    {
-                        break;
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("Exception thrown");
-                        Console.WriteLine("\tmessage: " + e.Message);
-#if DEBUG
-                        Console.WriteLine("\tstack trace:" + e.StackTrace);
-#endif
-                        if (lastRequest == null) Console.WriteLine("\tlast request data is null");
-                        else if (lastRequest.Length > 0) Console.WriteLine("\tlast request data: " + lastRequest);
-                        else Console.WriteLine("\tlast request data: <Empty string>");
+
+                        byte[] response = process.ProcessRequest(request);
+                        Console.WriteLine("Response size: " + response.Length);
+                        responder.SendResponse(response);
+                        Console.WriteLine("Waiting for next request...");
                     }
                 }
-
+                catch (TestException)
+                {
+                    break;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Exception thrown");
+                    Console.WriteLine("\tmessage: " + e.Message);
+#if DEBUG
+                    Console.WriteLine("\tstack trace:" + e.StackTrace);
+#endif
+                    if (lastRequest == null) Console.WriteLine("\tlast request data is null");
+                    else if (lastRequest.Length > 0) Console.WriteLine("\tlast request data: " + lastRequest);
+                    else Console.WriteLine("\tlast request data: <Empty string>");
+                }
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-
 #if DEBUG
             Console.WriteLine("SHUTDOWN");
             Console.Read();

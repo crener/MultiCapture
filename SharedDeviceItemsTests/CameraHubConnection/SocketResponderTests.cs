@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using Hub.Helpers;
 using NUnit.Framework;
 using SharedDeviceItems;
 using SharedDeviceItems.Networking.CameraHubConnection;
@@ -23,6 +24,24 @@ namespace SharedDeviceItemsTests.CameraHubConnection
 
             byte[] package;
             byte[] input = BuildRandomRequest(dataSize, out package);
+            mock.RecieveData = input;
+
+            byte[] output = testclass.RecieveData();
+
+            Assert.AreEqual(input.Length, mock.RecievePosition);
+            Assert.AreEqual(package, output);
+        }
+
+        [Test]
+        public void RecieveCommand()
+        {
+            MockSocket mock = new MockSocket();
+            SocketResponder testclass = new SocketResponder(mock);
+
+            byte[] package = new CommandBuilder(CameraRequest.SendFullResImage)
+                .AddParam(Constants.CameraCaptureImageName, "test")
+                .Build();
+            byte[] input = InterconnectHelper.FormatSendData(package);
             mock.RecieveData = input;
 
             byte[] output = testclass.RecieveData();

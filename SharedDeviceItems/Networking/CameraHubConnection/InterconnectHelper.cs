@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Hub.Networking;
 
+    [assembly: InternalsVisibleTo("SharedDeviceItemsTests")]
 namespace SharedDeviceItems.Networking.CameraHubConnection
 {
     internal static class InterconnectHelper
@@ -38,7 +40,7 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
         public static byte[] RecieveData(byte[] buffer, int recieved, ISocket socket)
         {
             //figure out if that was all the data
-            int end = Helpers.ByteHelpers.SearchEomIndex(buffer, recieved);
+            int end = Helpers.ByteHelpers.SearchEOMStartIndex(buffer, recieved);
             if (end < 0) throw new InvalidDataException("Recieved data does not have a size specification");
 
             int length;

@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System.Text;
 using SharedDeviceItems;
+using SharedDeviceItems.Helpers;
 
 namespace Hub.Helpers.Tests
 {
@@ -108,8 +109,8 @@ namespace Hub.Helpers.Tests
             endOfMessage.CopyTo(testData, garbageData.Length);
 
             Assert.True(ByteManipulation.ContainsEom(testData, testData.Length));
-            Assert.False(SharedDeviceItems.Helpers.ByteHelpers.SearchEomIndex(testData, testData.Length) > 10);
-            Assert.False(ByteManipulation.SearchEndOfMessageStartIndex(testData, testData.Length) > 10);
+            Assert.False(ByteHelpers.SearchEomIndex(testData, testData.Length) > 10);
+            Assert.False(ByteHelpers.SearchEOMStartIndex(testData, testData.Length) > 10);
         }
 
         /// <summary>
@@ -121,7 +122,7 @@ namespace Hub.Helpers.Tests
         {
             byte[] garbageData = { 12, 233, 67, 255, 186, 243, 14, 15, 241, 178 };
             byte[] endOfMessage = Encoding.ASCII.GetBytes(Constants.EndOfMessage);
-            byte[] extra = {23,23,23,23,23,23};
+            byte[] extra = { 23, 23, 23, 23, 23, 23 };
 
             byte[] testData = new byte[garbageData.Length + endOfMessage.Length + extra.Length];
             garbageData.CopyTo(testData, 0);
@@ -129,8 +130,8 @@ namespace Hub.Helpers.Tests
             extra.CopyTo(testData, garbageData.Length + endOfMessage.Length);
 
             Assert.True(ByteManipulation.ContainsEom(testData, testData.Length));
-            Assert.False(SharedDeviceItems.Helpers.ByteHelpers.SearchEomIndex(testData, testData.Length) > 10);
-            Assert.False(ByteManipulation.SearchEndOfMessageStartIndex(testData, testData.Length) > 10);
+            Assert.False(ByteHelpers.SearchEomIndex(testData, testData.Length) > 10);
+            Assert.False(ByteHelpers.SearchEOMStartIndex(testData, testData.Length) > 10);
         }
 
         /// <summary>
@@ -152,8 +153,8 @@ namespace Hub.Helpers.Tests
             partialMessage.CopyTo(testData, garbageData.Length + endOfMessage.Length + extra.Length);
 
             Assert.True(ByteManipulation.ContainsEom(testData, testData.Length));
-            Assert.False(SharedDeviceItems.Helpers.ByteHelpers.SearchEomIndex(testData, testData.Length) > 10 );
-            Assert.False(ByteManipulation.SearchEndOfMessageStartIndex(testData, testData.Length) > 10 );
+            Assert.False(ByteHelpers.SearchEomIndex(testData, testData.Length) > 10);
+            Assert.False(ByteHelpers.SearchEOMStartIndex(testData, testData.Length) > 10);
         }
 
         /// <summary>
@@ -170,8 +171,8 @@ namespace Hub.Helpers.Tests
             endOfMessage.CopyTo(testData, garbageData.Length);
 
             Assert.False(ByteManipulation.ContainsEom(testData, testData.Length));
-            Assert.True(SharedDeviceItems.Helpers.ByteHelpers.SearchEomIndex(testData, testData.Length) == -1);
-            Assert.True(ByteManipulation.SearchEndOfMessageStartIndex(testData, testData.Length) == -1);
+            Assert.True(ByteHelpers.SearchEomIndex(testData, testData.Length) == -1);
+            Assert.True(ByteHelpers.SearchEOMStartIndex(testData, testData.Length) == -1);
         }
 
         /// <summary>
@@ -191,8 +192,8 @@ namespace Hub.Helpers.Tests
             extra.CopyTo(testData, garbageData.Length + endOfMessage.Length);
 
             Assert.False(ByteManipulation.ContainsEom(testData, testData.Length));
-            Assert.True(SharedDeviceItems.Helpers.ByteHelpers.SearchEomIndex(testData, testData.Length) == -1);
-            Assert.True(ByteManipulation.SearchEndOfMessageStartIndex(testData, testData.Length) == -1);
+            Assert.True(ByteHelpers.SearchEomIndex(testData, testData.Length) == -1);
+            Assert.True(ByteHelpers.SearchEOMStartIndex(testData, testData.Length) == -1);
         }
 
         [Test]
@@ -201,18 +202,18 @@ namespace Hub.Helpers.Tests
             byte[] testData = new byte[0];
 
             Assert.False(ByteManipulation.ContainsEom(testData, testData.Length));
-            Assert.True(SharedDeviceItems.Helpers.ByteHelpers.SearchEomIndex(testData, testData.Length) == -1);
-            Assert.True(ByteManipulation.SearchEndOfMessageStartIndex(testData, testData.Length) == -1);
+            Assert.True(ByteHelpers.SearchEomIndex(testData, testData.Length) == -1);
+            Assert.True(ByteHelpers.SearchEOMStartIndex(testData, testData.Length) == -1);
         }
 
         [Test]
         public void LengthGreaterThanData()
         {
-            byte[] data = Encoding.ASCII.GetBytes( "random words and stuff" + Constants.EndOfMessage);
+            byte[] data = Encoding.ASCII.GetBytes("random words and stuff" + Constants.EndOfMessage);
 
             Assert.IsTrue(ByteManipulation.ContainsEom(data, data.Length + 3));
-            Assert.AreEqual(22, SharedDeviceItems.Helpers.ByteHelpers.SearchEomIndex(data, data.Length + 3));
-            Assert.AreEqual(22, ByteManipulation.SearchEndOfMessageStartIndex(data, data.Length + 3));
+            Assert.AreEqual(22, ByteHelpers.SearchEomIndex(data, data.Length + 3));
+            Assert.AreEqual(22, ByteHelpers.SearchEOMStartIndex(data, data.Length + 3));
         }
     }
 }

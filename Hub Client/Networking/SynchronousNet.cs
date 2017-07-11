@@ -2,6 +2,7 @@
 using System.Text;
 using Hub.Helpers;
 using SharedDeviceItems;
+using SharedDeviceItems.Helpers;
 
 namespace Hub.Networking
 {
@@ -49,7 +50,7 @@ namespace Hub.Networking
                     byte[] raw = new byte[recSize - Constants.EndOfMessage.Length];
                     Array.Copy(buffer, 0, raw, 0, raw.Length);
 
-                    int indexData = ByteManipulation.SearchEndOfMessageStartIndex(buffer, recSize);
+                    int indexData = ByteHelpers.SearchEOMStartIndex(buffer, recSize);
                     byte[] sizeData = new byte[indexData];
                     Array.Copy(buffer, 0, sizeData, 0, sizeData.Length);
 
