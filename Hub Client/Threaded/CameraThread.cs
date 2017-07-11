@@ -6,6 +6,7 @@ using System.Threading;
 using SharedDeviceItems;
 using Hub.Helpers;
 using Hub.Networking;
+using SharedDeviceItems.Networking.CameraHubConnection;
 
 namespace Hub.Threaded
 {
@@ -17,26 +18,25 @@ namespace Hub.Threaded
         public CameraRequest Request { get { return request; } set { request = value; } }
         private volatile CameraRequest request = CameraRequest.Alive;
 
-        public string SavePath { get { return savePath; } set { savePath = value; } }
-        public volatile string savePath;
+        public string SavePath { get; set; }
 
         public string ImageSetName { get; set; }
 
         private CameraSocket config;
-        private INetwork connection;
+        private IRequester connection;
 
         public CameraThread(CameraSocket socket)
         {
             config = socket;
-            connection = new SynchronousNet(socket.DataSocket);
-            savePath = Constants.DefaultHubSaveLocation();
+            connection = new SocketRequester(socket.DataSocket);
+            SavePath = Constants.DefaultHubSaveLocation();
         }
 
         public CameraThread(CameraSocket socket, string saveLocation)
         {
             config = socket;
-            connection = new SynchronousNet(socket.DataSocket);
-            savePath = saveLocation;
+            connection = new SocketRequester(socket.DataSocket);
+            SavePath = saveLocation;
         }
 
         public void Start()
@@ -86,7 +86,7 @@ namespace Hub.Threaded
         private void ProcessRequest(CameraRequest camRequest)
         {
             //start asking the camera for a new image
-            byte[] data = connection.MakeRequest(PropertyRequest(camRequest));
+            byte[] data = connection.Request(PropertyRequest(camRequest));
 
             //extract image data
             string imageName;
@@ -102,7 +102,7 @@ namespace Hub.Threaded
                 return;
             }
 
-            SaveData(imageData, savePath + Path.DirectorySeparatorChar + imageName);
+            SaveData(imageData, SavePath + Path.DirectorySeparatorChar + imageName);
 
             Console.WriteLine("Camera " + config.Config.Id + " image saved");
         }
@@ -139,7 +139,7 @@ namespace Hub.Threaded
             builder.AddParam("name", config.Config.CamFileIdentity);
             builder.AddParam("id", "0");
 
-            connection.MakeRequest(builder.Build());
+            connection.Request(builder.Build());
         }
 
         /// <summary>

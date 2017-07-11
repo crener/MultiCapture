@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Hub.Helpers;
 using Hub.Networking;
 using SharedDeviceItems;
+using SharedDeviceItems.Networking.CameraHubConnection;
 using static Hub.Helpers.CameraHelper;
 
 namespace Hub.Threaded
@@ -15,19 +16,19 @@ namespace Hub.Threaded
         public string ImageSetName { get; set; }
         public string SavePath { get; set; }
         private CameraSocket config;
-        private INetwork connection;
+        private IRequester connection;
 
         public CameraTask(CameraSocket socket)
         {
             config = socket;
-            connection = new SynchronousNet(socket.DataSocket);
+            connection = new SocketRequester(socket.DataSocket);
             SavePath = Constants.DefaultHubSaveLocation();
         }
 
         public CameraTask(CameraSocket socket, string saveLocation)
         {
             config = socket;
-            connection = new SynchronousNet(socket.DataSocket);
+            connection = new SocketRequester(socket.DataSocket);
             SavePath = saveLocation;
         }
 
@@ -39,7 +40,7 @@ namespace Hub.Threaded
         private void InternalRequestProcess(CameraRequest request)
         {
             //start asking the camera for a new image
-            byte[] data = connection.MakeRequest(BuildExternalCommand(request));
+            byte[] data = connection.Request(BuildExternalCommand(request));
 
             //extract image data
             string imageName;
