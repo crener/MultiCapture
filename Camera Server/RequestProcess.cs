@@ -72,10 +72,10 @@ namespace CameraServer
 
         private byte[] ProcessCaptureRequest(CommandReader command)
         {
-            if(!command.Parameters.ContainsKey(Constants.CameraSettingImageName)) return Constants.FailStringBytes;
+            if(!command.Parameters.ContainsKey(Constants.CameraCaptureImageName)) return Constants.FailStringBytes;
 
             //todo extract image size as a parameter rather than setting statically in the constructor and set as capture parameter
-            string imageName = command.Parameters["id"];
+            string imageName = command.Parameters[Constants.CameraCaptureImageName];
             Console.WriteLine("ImageName: " + imageName);
 
             if(command.Request == CameraRequest.SendFullResImage)

@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using CameraServer;
 using CameraServerTests.Mocks;
 using Hub.Networking;
 using NUnit.Framework;

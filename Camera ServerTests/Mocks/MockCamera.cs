@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using SharedDeviceItems.Interface;
 using SharedDeviceItems.Helpers;
 
@@ -6,50 +7,50 @@ namespace CameraServerTests.Mocks
 {
     class MockCamera : ICamera
     {
-        public string directory { get; set; }
-        public string name { get; set; }
-        public string identifier { get; set; }
-        public byte[] cameraData { get; set; }
-        public int imageX { get; set; }
-        public int imageY { get; set; }
-        public string lastPath { get; set; }
+        public string Directory { get; set; }
+        public string Name { get; set; }
+        public string Identifier { get; set; }
+        public byte[] CameraData { get; set; }
+        public int ImageX { get; set; }
+        public int ImageY { get; set; }
+        public string LastPath { get; set; }
+
 
         public void SetDirectory(string location)
         {
-            directory = location;
+            Directory = location;
         }
 
         public void SetCameraName(string name)
         {
-            this.name = name;
+            this.Name = name;
         }
 
         public string CaptureImage(string identifier)
         {
-            this.identifier = identifier;
-            string path = directory + name + this.identifier + ".jpg";
+            throw new NotImplementedException();
+
+            this.Identifier = identifier;
+            string path = Directory + Name + this.Identifier + ".jpg";
 
             using (FileStream writer = new FileStream(path, FileMode.Create))
             {
-                writer.Write(cameraData, 0, cameraData.Length);
+                writer.Write(CameraData, 0, CameraData.Length);
             }
 
-            lastPath = path;
+            LastPath = path;
             return path;
         }
 
         public void SetResolution(int x, int y)
         {
-            imageX = x;
-            imageY = y;
+            ImageX = x;
+            ImageY = y;
         }
 
         public byte[] CaptureImageByte(string identifier)
         {
-            string imageLocation = CaptureImage(identifier);
-            byte[] data = ByteHelpers.FileToBytes(imageLocation);
-            if (File.Exists(imageLocation)) File.Delete(imageLocation);
-            return data;
+            return CameraData;
         }
     }
 }

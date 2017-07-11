@@ -33,7 +33,7 @@ namespace SharedDeviceItems
 
         #region camera setting transfer codes
         public const string CameraSettingName = "name";
-        public const string CameraSettingImageName = "id";
+        public const string CameraCaptureImageName = "id";
         #endregion
 
         public static string DefaultHubSaveLocation()

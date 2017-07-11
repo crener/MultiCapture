@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Hub.Networking;
-using NUnit.Framework.Internal;
 using SharedDeviceItems.Exceptions;
 using SharedDeviceItems.Networking.CameraHubConnection;
 
