@@ -5,6 +5,7 @@ using Hub.Helpers.Interface;
 using Hub.Util;
 using NUnit.Framework;
 using SharedDeviceItems;
+#pragma warning disable 618
 
 namespace Hub.Threaded
 {

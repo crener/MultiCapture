@@ -11,12 +11,9 @@ namespace Hub.Helpers
     {
         private string command = "";
 
-        static CommandBuilder() { }
-
-        public CommandBuilder Request(CameraRequest request)
+        public CommandBuilder(CameraRequest request)
         {
             command += (int)request;
-            return this;
         }
 
         public CommandBuilder AddParam(string key, string value)

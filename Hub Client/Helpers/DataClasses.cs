@@ -25,7 +25,7 @@ namespace Hub.Helpers
             {
                 //check if the camera is active
                 DataSocket.Connect(new IPEndPoint(Config.Address, Config.Port));
-                DataSocket.Send(Encoding.ASCII.GetBytes((int)CameraRequest.Alive + Constants.EndOfMessage));
+                DataSocket.Send(new CommandBuilder(CameraRequest.Alive).Build());
 
                 //grab data
                 byte[] receiveData = new byte[1000];
@@ -40,8 +40,7 @@ namespace Hub.Helpers
                 }
                 else
                 {
-                    Console.WriteLine("Camera response = {0}",
-                        Encoding.ASCII.GetString(receiveData, 0, bytesRec - Constants.EndOfMessage.Length));
+                    Console.WriteLine("Camera response = {0}", Encoding.ASCII.GetString(receiveData, 0, bytesRec));
                 }
             }
 #if DEBUG

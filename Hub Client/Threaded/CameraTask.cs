@@ -63,7 +63,7 @@ namespace Hub.Threaded
 
         private byte[] BuildExternalCommand(CameraRequest request)
         {
-            CommandBuilder builder = new CommandBuilder().Request(request);
+            CommandBuilder builder = new CommandBuilder(request);
 
             if (!SavesImage(request)) return builder.Build();
 

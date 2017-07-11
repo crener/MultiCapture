@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Text;
-using Hub.Helpers;
 using NUnit.Framework;
 using Hub_ClientTests.Networking;
 using SharedDeviceItems;
+#pragma warning disable 618
 
 namespace Hub.Networking
 {

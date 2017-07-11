@@ -120,7 +120,7 @@ namespace Hub.Threaded
 
         private byte[] PropertyRequest(CameraRequest camRequest)
         {
-            CommandBuilder builder = new CommandBuilder().Request(camRequest);
+            CommandBuilder builder = new CommandBuilder(camRequest);
 
             if (camRequest == CameraRequest.Alive || camRequest == CameraRequest.SendTestImage)
                 return builder.Build();
@@ -135,7 +135,7 @@ namespace Hub.Threaded
         /// </summary>
         private void SetCameraProperties()
         {
-            CommandBuilder builder = new CommandBuilder().Request(CameraRequest.SetProporties);
+            CommandBuilder builder = new CommandBuilder(CameraRequest.SetProporties);
             builder.AddParam("name", config.Config.CamFileIdentity);
             builder.AddParam("id", "0");
 

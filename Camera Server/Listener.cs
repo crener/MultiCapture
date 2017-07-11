@@ -32,7 +32,9 @@ namespace CameraServer
 
                 Console.WriteLine("Camera Name\t= " + CameraSettings.GetSetting("name"));
                 Console.WriteLine("IP address\t= " + ipAddress);
+                Console.WriteLine("IP long address\t= " + ipAddress.Address);
                 Console.WriteLine("Port\t\t= " + CameraSettings.GetSetting("port"));
+                Console.WriteLine();
             }
 
             SetupSocket(localEndPoint);
@@ -74,11 +76,11 @@ namespace CameraServer
                             byte[] request = responder.RecieveData();
 
                             lastRequest = Encoding.ASCII.GetString(request);
-                            Console.WriteLine("Request Recieved: {0}", lastRequest);
+                            Console.WriteLine("Request Recieved: " + lastRequest);
 
                             byte[] response = process.ProcessRequest(request);
 
-                            Console.WriteLine("Data size: " + response.Length);
+                            Console.WriteLine("Response size: " + response.Length);
                             responder.SendResponse(response);
 
                             Console.WriteLine("Waiting for next request...");

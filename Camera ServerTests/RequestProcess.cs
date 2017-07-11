@@ -15,7 +15,7 @@ namespace CameraServer.Tests
             MockCamera cam = new MockCamera();
             RequestProcess test = new RequestProcess(cam);
 
-            byte[] command = new CommandBuilder().Request(CameraRequest.Alive).Build();
+            byte[] command = new CommandBuilder(CameraRequest.Alive).Build();
 
             //test a response with byte data
             byte[] response = test.ProcessRequest(command);
@@ -32,7 +32,7 @@ namespace CameraServer.Tests
             MockCamera cam = new MockCamera();
             RequestProcess test = new RequestProcess(cam);
 
-            byte[] command = new CommandBuilder().Request(CameraRequest.Unknown).Build();
+            byte[] command = new CommandBuilder(CameraRequest.Unknown).Build();
 
             //test a response with byte data
             byte[] response = test.ProcessRequest(command);
@@ -50,8 +50,7 @@ namespace CameraServer.Tests
             cam.CameraData = new byte[] { 22, 22, 22, 44, 11, 88, 11, 223, 112 };
             RequestProcess test = new RequestProcess(cam);
 
-            byte[] command = new CommandBuilder()
-                .Request(CameraRequest.SendFullResImage)
+            byte[] command = new CommandBuilder(CameraRequest.SendFullResImage)
                 .Build();
 
             byte[] response = test.ProcessRequest(command);
@@ -65,8 +64,7 @@ namespace CameraServer.Tests
             cam.CameraData = new byte[] { 22, 22, 22, 44, 11, 88, 11, 223, 112 };
             RequestProcess test = new RequestProcess(cam);
 
-            byte[] command = new CommandBuilder()
-                .Request(CameraRequest.SendFullResImage)
+            byte[] command = new CommandBuilder(CameraRequest.SendFullResImage)
                 .AddParam(Constants.CameraCaptureImageName, "testImage")
                 .Build();
 
@@ -81,8 +79,7 @@ namespace CameraServer.Tests
             cam.CameraData = new byte[] { 22, 22, 22, 44, 11, 88, 11, 223, 112 };
             RequestProcess test = new RequestProcess(cam);
 
-            byte[] command = new CommandBuilder()
-                .Request(CameraRequest.SetProporties)
+            byte[] command = new CommandBuilder(CameraRequest.SetProporties)
                 .AddParam(Constants.CameraSettingName, "TestCamera")
                 .Build();
 

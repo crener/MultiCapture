@@ -19,7 +19,7 @@ namespace SharedDeviceItemsTests.CommandBuilders
             param.Add("camera", "yerp");
             param.Add("trumpet", "yellow");
 
-            CommandBuilder builder = new CommandBuilder().Request(CameraRequest.SendFullResImage);
+            CommandBuilder builder = new CommandBuilder(CameraRequest.SendFullResImage);
 
             foreach (var parm in param) builder.AddParam(parm.Key, parm.Value);
 
@@ -54,7 +54,7 @@ namespace SharedDeviceItemsTests.CommandBuilders
         [TestCase(Constants.ParamKeyValueSeparator)]
         public void BuilderParamException(string constant)
         {
-            CommandBuilder test = new CommandBuilder().AddParam("legal", "entry");
+            CommandBuilder test = new CommandBuilder(CameraRequest.Alive).AddParam("legal", "entry");
             try
             {
                 test.AddParam("thing" + constant + "more", "value");
@@ -79,7 +79,7 @@ namespace SharedDeviceItemsTests.CommandBuilders
         [Test]
         public void StandardPicRequest()
         {
-            CommandBuilder builder = new CommandBuilder().Request(CameraRequest.SendFullResImage);
+            CommandBuilder builder = new CommandBuilder(CameraRequest.SendFullResImage);
             builder.AddParam("id", "0");
 
             byte[] request = builder.Build();
@@ -103,7 +103,7 @@ namespace SharedDeviceItemsTests.CommandBuilders
         [Test]
         public void StandardPicRequestWithEmpty()
         {
-            byte[] request = new CommandBuilder().Request(CameraRequest.SendFullResImage).Build();
+            byte[] request = new CommandBuilder(CameraRequest.SendFullResImage).Build();
             byte[] rawRequest = new byte[request.Length + 12];
             request.CopyTo(rawRequest, 0);
 
@@ -121,7 +121,7 @@ namespace SharedDeviceItemsTests.CommandBuilders
         [Test]
         public void StandardPicRequestWithPartial()
         {
-            byte[] request = new CommandBuilder().Request(CameraRequest.SendFullResImage).AddParam("thing", "xtbb").Build();
+            byte[] request = new CommandBuilder(CameraRequest.SendFullResImage).AddParam("thing", "xtbb").Build();
             byte[] rawRequest = new byte[request.Length + 12];
             request.CopyTo(rawRequest, 0);
 
@@ -139,7 +139,7 @@ namespace SharedDeviceItemsTests.CommandBuilders
         [Test]
         public void StandardPicRequestWithoutEndMssg()
         {
-            byte[] request = new CommandBuilder().Request(CameraRequest.SendFullResImage).AddParam("thing", "xtbb").Build();
+            byte[] request = new CommandBuilder(CameraRequest.SendFullResImage).AddParam("thing", "xtbb").Build();
             byte[] rawRequest = new byte[request.Length - Constants.EndOfMessage.Length];
             Array.Copy(request, rawRequest, rawRequest.Length);
 
@@ -157,7 +157,7 @@ namespace SharedDeviceItemsTests.CommandBuilders
         [Test]
         public void SimpleRequest()
         {
-            byte[] request = new CommandBuilder().Request(CameraRequest.Alive).Build();
+            byte[] request = new CommandBuilder(CameraRequest.Alive).Build();
             CommandReader reader = new CommandReader(request);
 
             Assert.AreEqual(reader.Request, CameraRequest.Alive);

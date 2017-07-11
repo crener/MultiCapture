@@ -30,7 +30,7 @@ namespace CameraServerTests.Mocks
         {
             throw new NotImplementedException();
 
-            this.Identifier = identifier;
+            /*this.Identifier = identifier;
             string path = Directory + Name + this.Identifier + ".jpg";
 
             using (FileStream writer = new FileStream(path, FileMode.Create))
@@ -39,7 +39,7 @@ namespace CameraServerTests.Mocks
             }
 
             LastPath = path;
-            return path;
+            return path;*/
         }
 
         public void SetResolution(int x, int y)
