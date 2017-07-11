@@ -72,20 +72,19 @@ namespace CameraServer
                     //respond to incoming requests
                     while (responder.Connected() && !stop)
                     {
+                        //collect request
                         byte[] request = responder.RecieveData();
 
                         lastRequest = Encoding.ASCII.GetString(request);
                         Console.WriteLine("Request Recieved: " + lastRequest);
                         Console.WriteLine("Request Size: " + request.Length);
 
-                        for (int i = 0; i < 10 && i >= request.Length; i++)
-                        {
-                            Console.Write(i + " - " + request[i] + " - " + Encoding.ASCII.GetString(request, i, 1));
-                        }
-
+                        //process and send next request
                         byte[] response = process.ProcessRequest(request);
                         Console.WriteLine("Response size: " + response.Length);
+
                         responder.SendResponse(response);
+
                         Console.WriteLine("Waiting for next request...");
                     }
                 }
