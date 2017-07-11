@@ -4,6 +4,9 @@ using SharedDeviceItems;
 
 namespace Hub.Threaded
 {
+    /// <summary>
+    /// Manager for an individule camera to manage data and state. Uses raw tasks to achieve multithreading
+    /// </summary>
     internal interface ICameraTask : IDisposable
     {
         Task ProcessRequest(CameraRequest request);

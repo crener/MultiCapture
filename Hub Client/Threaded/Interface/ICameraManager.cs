@@ -3,6 +3,9 @@ using SharedDeviceItems;
 
 namespace Hub.Helpers.Interface
 {
+    /// <summary>
+    /// Implments a amanger for cameras so that image events can be syncrenized accross multiple cameras of differing types (local and remote)
+    /// </summary>
     public interface ICameraManager
     {
         string SavePath { get; set; }

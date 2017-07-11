@@ -5,6 +5,7 @@ using SharedDeviceItems;
 
 namespace Hub.Networking
 {
+    [Obsolete("Use the IRequester interface implementations instead", false)]
     public class SynchronousNet : INetwork
     {
         private const int byteDataSize = 10485760; //10MB

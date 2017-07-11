@@ -9,6 +9,7 @@ using SharedDeviceItems.Networking;
 
 namespace Hub.Threaded
 {
+    [Obsolete("Use the TaskManager Instead", false)]
     class ThreadManager : GenericManager
     {
         private Thread[] cameraThreads;

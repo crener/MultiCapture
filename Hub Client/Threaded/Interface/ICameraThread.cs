@@ -2,6 +2,9 @@
 
 namespace Hub.Threaded
 {
+    /// <summary>
+    /// Manager for an individule camera to manage data and state. Uses raw threads to achieve multithreading
+    /// </summary>
     public interface ICameraThread
     {
         string ImageSetName { get; set; }
