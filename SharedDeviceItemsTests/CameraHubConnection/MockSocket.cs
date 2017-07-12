@@ -23,6 +23,7 @@ namespace SharedDeviceItemsTests.CameraHubConnection
 
         public bool DisconnectMidTransmission { get; set; }
         public bool OverridePollFalse { get; set; }
+        public bool Closed { get; set; }
 
         private byte[] recieveData;
 
@@ -66,7 +67,7 @@ namespace SharedDeviceItemsTests.CameraHubConnection
 
         public void Close()
         {
-            throw new NotImplementedException();
+            Closed = true;
         }
 
         public bool Connected { get; set; }

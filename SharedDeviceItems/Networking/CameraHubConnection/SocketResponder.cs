@@ -5,7 +5,7 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
     public class SocketResponder : IResponder
     {
         private ISocket socket;
-        private byte[] buffer = new byte[Constants.CameraBufferSize];
+        private byte[] buffer = new byte[Constants.HubBufferSize];
         private bool waitingForResponse = false;
 
         public SocketResponder()
@@ -20,6 +20,12 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
         {
             socket = listeningSocket.Accept();
             waitingForResponse = false;
+        }
+
+        public void Disconnect()
+        {
+            if (!Connected()) throw new SocketNotConnectedException();
+            socket.Close();
         }
 
         public byte[] RecieveData()

@@ -80,8 +80,20 @@ namespace CameraServer
                         Console.WriteLine("Request Size: " + request.Length);
 
                         //process and send next request
-                        byte[] response = process.ProcessRequest(request);
-                        Console.WriteLine("Response size: " + response.Length);
+                            byte[] response;
+                        try
+                        {
+                            response = process.ProcessRequest(request);
+                            Console.WriteLine("Response size: " + response.Length);
+                        }
+                        catch(Exception)
+                        {
+                            //disconnect because of an error
+                            responder.Disconnect();
+                            Console.WriteLine("Disonnected due to exception during processing");
+                            Console.WriteLine();
+                            throw;
+                        }
 
                         responder.SendResponse(response);
 

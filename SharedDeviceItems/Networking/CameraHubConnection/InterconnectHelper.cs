@@ -41,7 +41,7 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
         {
             //figure out if that was all the data
             int end = Helpers.ByteHelpers.SearchEOMStartIndex(buffer, recieved);
-            if (end < 0) throw new InvalidDataException("Recieved data does not have a size specification");
+            if (end < 0 || end == recieved) throw new InvalidDataException("Recieved data does not have a size specification");
 
             int length;
 
@@ -50,11 +50,13 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
 
             byte[] output = new byte[length];
 
-            if (length > buffer.Length - end - Constants.EndOfMessageBytes.Length)
+            int throwAwayData = end + Constants.EndOfMessageBytes.Length;
+            int filled = recieved - throwAwayData;
+
+            if (length > buffer.Length - end - Constants.EndOfMessageBytes.Length || filled < length )
             {
                 //the data must be collected over multiple recieves
-                int throwAwayData = end + Constants.EndOfMessageBytes.Length;
-                int filled = buffer.Length - throwAwayData;
+                
                 Array.Copy(buffer, throwAwayData, output, 0, filled);
 
                 while (filled < length)

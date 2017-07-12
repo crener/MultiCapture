@@ -37,10 +37,26 @@ namespace Hub.Threaded
             return new Task(() => InternalRequestProcess(request));
         }
 
+        //todo figure out how to tell the manager that the current camera has disconnected so that it will no longer be queried for responses
         private void InternalRequestProcess(CameraRequest request)
         {
             //start asking the camera for a new image
-            byte[] data = connection.Request(BuildExternalCommand(request));
+            byte[] data;
+
+            try
+            {
+                data = connection.Request(BuildExternalCommand(request));
+            }
+            catch(InvalidDataException)
+            {
+                //The data from the socket is incorrect.
+                int bytes = connection.ClearSocket();
+                Console.WriteLine("Camera " + config.Config.Id + " failed sending its image");
+#if DEBUG
+                Console.WriteLine("\tFlushed " + bytes + " of data"); 
+#endif
+                return;
+            }
 
             //extract image data
             string imageName;

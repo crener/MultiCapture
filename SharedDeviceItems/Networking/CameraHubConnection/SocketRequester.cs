@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text;
+﻿using System.Text;
 using Hub.Networking;
 
 namespace SharedDeviceItems.Networking.CameraHubConnection
@@ -26,7 +24,6 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
             //format the request data and send it to the camera
             {
                 byte[] correct = InterconnectHelper.FormatSendData(requestData);
-
                 socket.Send(correct);
             }
 
@@ -37,6 +34,16 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
 
                 return InterconnectHelper.RecieveData(buffer, recieved, socket);
             }
+        }
+
+        public int ClearSocket()
+        {
+            int count = 0;
+
+            byte[] throwAway = new byte[8000];
+            while (socket.Available > 0) count += socket.Receive(throwAway);
+
+            return count;
         }
     }
 }

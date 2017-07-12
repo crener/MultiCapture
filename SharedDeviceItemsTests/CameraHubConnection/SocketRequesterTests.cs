@@ -66,6 +66,29 @@ namespace SharedDeviceItemsTests.CameraHubConnection
             Assert.AreEqual(Encoding.ASCII.GetBytes(((int)request).ToString()), recieved[1]);
         }
 
+        [Test]
+        public void LowInitialRecieveSize()
+        {
+            PairedSocket requesterSocket = new PairedSocket();
+            PairedSocket responderSocket = new PairedSocket(requesterSocket);
+            responderSocket.SubDivideRecieveData = Constants.HubBufferSize / 3;
+            SocketRequester testclass = new SocketRequester(responderSocket);
+
+            byte[] responseData;
+            byte[] input = SocketResponderTests.BuildRandomRequest(Constants.HubBufferSize - 70, out responseData);
+            byte[] requestData = new byte[Constants.HubBufferSize - 70];
+            new Random().NextBytes(requestData);
+
+            Task<List<byte[]>> responder = ResponseAction(responseData, requesterSocket, responderSocket);
+            byte[] response = testclass.Request(CameraRequest.Alive);
+            responder.Wait();
+            List<byte[]> recieved = responder.Result;
+
+            Assert.AreEqual(responseData, response);
+
+            Assert.AreEqual(input, responderSocket.RecieveData);
+        }
+
         async Task<List<byte[]>> ResponseAction(byte[] data, PairedSocket requesterSocket, PairedSocket responderSocket)
         {
             SocketResponder responder = new SocketResponder(requesterSocket);

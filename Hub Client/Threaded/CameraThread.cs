@@ -10,6 +10,7 @@ using SharedDeviceItems.Networking.CameraHubConnection;
 
 namespace Hub.Threaded
 {
+    [Obsolete("Use the CameraTask with the TaskManager instead of this")]
     internal class CameraThread : ICameraThread
     {
         public bool Finish { get { return finish; } set { finish = value; } }

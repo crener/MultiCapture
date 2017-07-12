@@ -57,7 +57,7 @@ namespace SharedDeviceItemsTests.CameraHubConnection
             SocketResponder testclass = new SocketResponder(mock);
 
             byte[] package;
-            byte[] input = BuildRandomRequest(200, out package);
+            byte[] input = BuildRandomRequest(Constants.HubBufferSize * 2 - 80, out package);
             mock.RecieveData = input;
             mock.DisconnectMidTransmission = true;
 
@@ -93,6 +93,37 @@ namespace SharedDeviceItemsTests.CameraHubConnection
             catch (SocketNotConnectedException)
             {
                 Assert.Pass("Correct exception was thrown");
+            }
+        }
+
+        [Test]
+        public void RecieveDisconnect()
+        {
+            MockSocket mock = new MockSocket();
+            mock.Connected = true;
+            mock.OverridePollFalse = true;
+            SocketResponder testclass = new SocketResponder(mock);
+
+            testclass.Disconnect();
+
+            Assert.IsTrue(mock.Closed);
+        }
+
+        [Test]
+        public void RecieveDisconnectException()
+        {
+            MockSocket mock = new MockSocket();
+            mock.Connected = false;
+            SocketResponder testclass = new SocketResponder(mock);
+
+            try
+            {
+                testclass.Disconnect();
+                Assert.Fail("exception should have been thrown");
+            }
+            catch(SocketNotConnectedException)
+            {
+                Assert.Pass();
             }
         }
 
@@ -159,8 +190,6 @@ namespace SharedDeviceItemsTests.CameraHubConnection
             Assert.AreEqual(input.Length, mock.SendData.Length);
             Assert.AreEqual(input, mock.SendData);
         }
-
-
 
         [Test]
         public void SendNotConnected()

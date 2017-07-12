@@ -20,6 +20,11 @@ namespace CameraServerTests.Mocks
         {
         }
 
+        public void Disconnect()
+        {
+            throw new NotImplementedException();
+        }
+
         public byte[] RecieveData()
         {
             --ThrowExceptionAfterRecieve;

@@ -10,6 +10,11 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
         void Connect(ISocket listeningSocket);
 
         /// <summary>
+        /// Disconnect the current socket
+        /// </summary>
+        void Disconnect();
+
+        /// <summary>
         /// Blocking method which returns byte data for a request once it becomes avaliable
         /// </summary>
         /// <returns>data sent from an ISender</returns>

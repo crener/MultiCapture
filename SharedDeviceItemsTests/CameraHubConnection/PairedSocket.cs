@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Dynamic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -23,7 +22,8 @@ namespace SharedDeviceItemsTests.CameraHubConnection
 
         public bool DisconnectMidTransmission { get; set; }
         public bool OverridePollFalse { get; set; }
-        public PairedSocket Socket {get; set;}
+        public PairedSocket Socket { get; set; }
+        public int SubDivideRecieveData { get; set; }
 
 
         private byte[] recieveData;
@@ -32,6 +32,7 @@ namespace SharedDeviceItemsTests.CameraHubConnection
         {
             Connected = true;
             OverridePollFalse = true;
+            SubDivideRecieveData = -1;
         }
         public PairedSocket(PairedSocket socket)
         {
@@ -39,6 +40,7 @@ namespace SharedDeviceItemsTests.CameraHubConnection
             OverridePollFalse = true;
             Socket = socket;
             socket.Socket = this;
+            SubDivideRecieveData = -1;
         }
 
         public void Connect(IPEndPoint endPoint)
@@ -52,16 +54,26 @@ namespace SharedDeviceItemsTests.CameraHubConnection
 
         public int Receive(byte[] buffer)
         {
-            if(recieveData == null)
+            if (recieveData == null)
             {
                 do
                 {
                     Thread.Sleep(20);
-                } while(recieveData == null);
+                } while (recieveData == null);
             }
 
+            int length;
+            if (SubDivideRecieveData != -1)
+            {
+                length = SubDivideRecieveData > recieveData.Length - RecievePosition
+                    ? recieveData.Length - RecievePosition
+                    : SubDivideRecieveData;
+            }
+            else
+            {
+                length = recieveData.Length - RecievePosition;
+            }
 
-            int length = recieveData.Length - RecievePosition;
             if (length > buffer.Length)
             {
                 //send small chunk
@@ -93,14 +105,14 @@ namespace SharedDeviceItemsTests.CameraHubConnection
         {
             get
             {
-                if(recieveData == null || !Connected) return 0;
+                if (recieveData == null || !Connected) return 0;
                 return recieveData.Length - RecievePosition;
             }
         }
 
         public bool Poll(int timout, SelectMode mode)
         {
-            if(OverridePollFalse) return false;
+            if (OverridePollFalse) return false;
             return Connected;
         }
 
