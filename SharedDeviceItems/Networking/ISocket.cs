@@ -9,6 +9,8 @@ namespace Hub.Networking
     /// </summary>
     public interface ISocket
     {
+        int ReceiveBufferSize { get; set; }
+        int ReceiveTimeout { get; set; }
         void Connect(IPEndPoint endPoint);
         void Send(byte[] data);
         int Receive(byte[] buffer);

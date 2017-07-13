@@ -12,6 +12,16 @@ namespace SharedDeviceItems.Networking
     {
         private Socket socket;
 
+        public int ReceiveBufferSize {
+            get { return socket.ReceiveBufferSize; }
+            set { socket.ReceiveBufferSize = value; }
+        }
+        public int ReceiveTimeout
+        {
+            get { return socket.ReceiveTimeout; }
+            set { socket.ReceiveTimeout = value; }
+        }
+
         public SocketWrapper(AddressFamily family, SocketType type, ProtocolType protocol)
         {
             socket = new Socket(family, type, protocol);

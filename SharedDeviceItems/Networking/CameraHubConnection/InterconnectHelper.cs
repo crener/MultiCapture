@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Hub.Networking;
 
-    [assembly: InternalsVisibleTo("SharedDeviceItemsTests")]
+[assembly: InternalsVisibleTo("SharedDeviceItemsTests")]
 namespace SharedDeviceItems.Networking.CameraHubConnection
 {
     internal static class InterconnectHelper
@@ -18,22 +18,20 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
         {
             byte[] formatted =
                 new byte[send.Length + send.Length.ToString().Length + Constants.EndOfMessageBytes.Length];
-            {
-                int position = 0;
-                byte[] temp = Encoding.ASCII.GetBytes(send.Length.ToString());
+            int position = 0;
+            byte[] temp = Encoding.ASCII.GetBytes(send.Length.ToString());
 
-                Array.Copy(temp, 0, formatted, position, temp.Length);
-                position += temp.Length;
+            Array.Copy(temp, 0, formatted, position, temp.Length);
+            position += temp.Length;
 
-                temp = Constants.EndOfMessageBytes;
+            temp = Constants.EndOfMessageBytes;
 
-                Array.Copy(temp, 0, formatted, position, temp.Length);
-                position += temp.Length;
+            Array.Copy(temp, 0, formatted, position, temp.Length);
+            position += temp.Length;
 
-                Array.Copy(send, 0, formatted, position, send.Length);
+            Array.Copy(send, 0, formatted, position, send.Length);
 
-                return formatted;
-            }
+            return formatted;
         }
 
 
@@ -53,10 +51,10 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
             int throwAwayData = end + Constants.EndOfMessageBytes.Length;
             int filled = recieved - throwAwayData;
 
-            if (length > buffer.Length - end - Constants.EndOfMessageBytes.Length || filled < length )
+            if (length > buffer.Length - end - Constants.EndOfMessageBytes.Length || filled < length)
             {
                 //the data must be collected over multiple recieves
-                
+
                 Array.Copy(buffer, throwAwayData, output, 0, filled);
 
                 while (filled < length)

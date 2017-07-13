@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 using Hub.Networking;
 
 namespace SharedDeviceItemsTests.CameraHubConnection
@@ -13,8 +14,8 @@ namespace SharedDeviceItemsTests.CameraHubConnection
             get { return recieveData; }
             set
             {
-                recieveData = value;
                 RecievePosition = 0;
+                recieveData = value;
             }
         }
 
@@ -43,23 +44,27 @@ namespace SharedDeviceItemsTests.CameraHubConnection
             SubDivideRecieveData = -1;
         }
 
+        public int ReceiveBufferSize { get; set; }
+        public int ReceiveTimeout { get; set; }
+
         public void Connect(IPEndPoint endPoint)
         {
         }
 
         public void Send(byte[] data)
         {
-            Socket.recieveData = data;
+            Socket.RecieveData = data;
         }
 
         public int Receive(byte[] buffer)
         {
-            if (recieveData == null)
+            if (recieveData == null || recieveData.Length == RecievePosition)
             {
                 do
                 {
-                    Thread.Sleep(20);
-                } while (recieveData == null);
+                    //Thread.Sleep(20);
+                    Task.Delay(20);
+                } while (recieveData == null || recieveData.Length <= RecievePosition);
             }
 
             int length;
@@ -69,16 +74,11 @@ namespace SharedDeviceItemsTests.CameraHubConnection
                     ? recieveData.Length - RecievePosition
                     : SubDivideRecieveData;
             }
-            else
-            {
-                length = recieveData.Length - RecievePosition;
-            }
+            else length = recieveData.Length - RecievePosition;
 
+            //send small chunk
             if (length > buffer.Length)
-            {
-                //send small chunk
                 length = buffer.Length;
-            }
 
             if (length == 0) throw new Exception("Tried to read data when there was none avaliable");
             if (DisconnectMidTransmission) Connected = false;

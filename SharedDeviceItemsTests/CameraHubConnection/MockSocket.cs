@@ -33,6 +33,9 @@ namespace SharedDeviceItemsTests.CameraHubConnection
             OverridePollFalse = false;
         }
 
+        public int ReceiveBufferSize { get; set; }
+        public int ReceiveTimeout { get; set; }
+
         public void Connect(IPEndPoint endPoint)
         {
         }

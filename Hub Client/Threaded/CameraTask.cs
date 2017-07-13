@@ -18,16 +18,11 @@ namespace Hub.Threaded
         private CameraSocket config;
         private IRequester connection;
 
-        public CameraTask(CameraSocket socket)
-        {
-            config = socket;
-            connection = new SocketRequester(socket.DataSocket);
-            SavePath = Constants.DefaultHubSaveLocation();
-        }
-
         public CameraTask(CameraSocket socket, string saveLocation)
         {
             config = socket;
+            socket.DataSocket.ReceiveBufferSize = Constants.CameraBufferSize * 2;
+            socket.DataSocket.ReceiveTimeout = 5000;
             connection = new SocketRequester(socket.DataSocket);
             SavePath = saveLocation;
         }

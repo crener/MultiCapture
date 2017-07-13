@@ -17,6 +17,9 @@ namespace Hub_ClientTests.Networking
         public int recieveCount { get; set; }
 
 
+        public int ReceiveBufferSize { get; set; }
+        public int ReceiveTimeout { get; set; }
+
         public void Connect(IPEndPoint endPoint)
         {
             throw new NotImplementedException();

@@ -45,7 +45,9 @@
     <Compile Include="Networking\CameraHubConnection\InterconnectHelper.cs" />
     <Compile Include="Networking\CameraHubConnection\IRequester.cs" />
     <Compile Include="Networking\CameraHubConnection\IResponder.cs" />
+    <Compile Include="Networking\CameraHubConnection\ChunkRequester.cs" />
     <Compile Include="Networking\CameraHubConnection\SocketRequester.cs" />
+    <Compile Include="Networking\CameraHubConnection\ChunkResponder.cs" />
     <Compile Include="Networking\CameraHubConnection\SocketResponder.cs" />
     <Compile Include="Networking\ISocket.cs" />
     <Compile Include="Networking\IUdpClient.cs" />

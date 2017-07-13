@@ -11,6 +11,7 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
         public SocketResponder()
         {
         }
+
         public SocketResponder(ISocket socket)
         {
             this.socket = socket;

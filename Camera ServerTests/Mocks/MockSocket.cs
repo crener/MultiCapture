@@ -22,6 +22,9 @@ namespace CameraServerTests.Mocks
         public int RecieveQueryCount { get; set; }
         public bool SlowDown { get; set; }
 
+        public int ReceiveBufferSize { get; set; }
+        public int ReceiveTimeout { get; set; }
+
         public void Connect(IPEndPoint endPoint)
         {
             Active = true;
