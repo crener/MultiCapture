@@ -137,7 +137,7 @@ namespace CameraServer
         /// <returns></returns>
         protected virtual IResponder NewResponder()
         {
-            return new SocketResponder();
+            return new ChunkResponder();
         }
     }
 }

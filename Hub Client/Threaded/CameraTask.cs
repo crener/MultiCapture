@@ -22,8 +22,7 @@ namespace Hub.Threaded
         {
             config = socket;
             socket.DataSocket.ReceiveBufferSize = Constants.CameraBufferSize * 2;
-            socket.DataSocket.ReceiveTimeout = 5000;
-            connection = new SocketRequester(socket.DataSocket);
+            connection = new ChunkRequester(socket.DataSocket);
             SavePath = saveLocation;
         }
 

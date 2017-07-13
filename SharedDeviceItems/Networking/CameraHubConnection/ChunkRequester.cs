@@ -34,13 +34,13 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
             {
                 byte[] buffer = new byte[Constants.CameraBufferSize];
                 int recieved = socket.Receive(buffer);
-                byte[] sizeData = InterconnectHelper.RecieveData(buffer, recieved, socket);
+                byte[] recievedData = InterconnectHelper.RecieveData(buffer, recieved, socket);
 
-                int dataSize = BitConverter.ToInt32(sizeData, 0);
+                int dataSize = int.Parse(Encoding.ASCII.GetString(recievedData));
 
                 //send back the chunk size for the rest of the data
-                sizeData = BitConverter.GetBytes(chunkSize);
-                socket.Send(InterconnectHelper.FormatSendData(sizeData));
+                recievedData = Encoding.ASCII.GetBytes(chunkSize.ToString());
+                socket.Send(InterconnectHelper.FormatSendData(recievedData));
 
                 buffer = new byte[Constants.HubBufferSize];
 
@@ -51,12 +51,12 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
 
                 for(int i = 0; i < chunkAmount; i++)
                 {
-                    socket.Send(InterconnectHelper.FormatSendData(BitConverter.GetBytes(i)));
+                    socket.Send(InterconnectHelper.FormatSendData(Encoding.ASCII.GetBytes(i.ToString())));
 
                     recieved = socket.Receive(buffer);
-                    sizeData = InterconnectHelper.RecieveData(buffer, recieved, socket);
+                    recievedData = InterconnectHelper.RecieveData(buffer, recieved, socket);
 
-                    Array.Copy(sizeData, 0, returnData, i * chunkSize, sizeData.Length);
+                    Array.Copy(recievedData, 0, returnData, i * chunkSize, recievedData.Length);
                 }
 
                 return returnData;

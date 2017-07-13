@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Security;
 using System.Text;
 using Hub.Networking;
 
@@ -14,10 +12,13 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
         private byte[] buffer = new byte[Constants.CameraBufferSize];
         private bool waitingForResponse = false;
 
+        public ChunkResponder()
+        {
+        }
+
         public ChunkResponder(ISocket socket)
         {
             this.socket = socket;
-            socket.ReceiveTimeout = 5000;
         }
 
         public void Connect(ISocket listeningSocket)
@@ -55,7 +56,7 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
             byte[] command = InterconnectHelper.RecieveData(buffer, recieve, socket);
             if (command == Constants.EndTransferBytes) return;
 
-            int chunkSize = BitConverter.ToInt32(command, 0);
+            int chunkSize = int.Parse(Encoding.ASCII.GetString(command));
 
             int chunkAmount = data.Length / chunkSize;
 
@@ -83,7 +84,7 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
 
             while (!command.SequenceEqual(Constants.EndTransferBytes))
             {
-                sendChunk = BitConverter.ToInt32(command, 0);
+                sendChunk = int.Parse(Encoding.ASCII.GetString(command));
                 socket.Send(InterconnectHelper.FormatSendData(chunks[sendChunk]));
 
                 recieve = socket.Receive(buffer);
@@ -93,7 +94,7 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
 
         private byte[] GenerateInformationPackage(byte[] data)
         {
-            return InterconnectHelper.FormatSendData(BitConverter.GetBytes(data.Length));
+            return InterconnectHelper.FormatSendData(Encoding.ASCII.GetBytes(data.Length.ToString()));
         }
 
         public int ClearSocket()
