@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using Hub.Networking;
 using SharedDeviceItems;
+using SharedDeviceItems.Networking.CameraHubConnection;
 
 namespace Hub.Helpers
 {
@@ -25,13 +26,10 @@ namespace Hub.Helpers
             {
                 //check if the camera is active
                 DataSocket.Connect(new IPEndPoint(Config.Address, Config.Port));
-                DataSocket.Send(new CommandBuilder(CameraRequest.Alive).Build());
+                IRequester requester = new ChunkRequester(DataSocket);
+                byte[] bytesRec = requester.Request(CameraRequest.Alive);
 
-                //grab data
-                byte[] receiveData = new byte[1000];
-                int bytesRec = DataSocket.Receive(receiveData);
-                //if there was no data the camera must have been off
-                if(bytesRec <= 0)
+                if (bytesRec.Length <= 0)
                 {
                     Console.WriteLine("Camera not active, No data received");
                     DataSocket.Shutdown(SocketShutdown.Both);
@@ -40,11 +38,11 @@ namespace Hub.Helpers
                 }
                 else
                 {
-                    Console.WriteLine("Camera response = {0}", Encoding.ASCII.GetString(receiveData, 0, bytesRec));
+                    Console.WriteLine("Camera response = {0}", Encoding.ASCII.GetString(bytesRec));
                 }
             }
 #if DEBUG
-            catch (SocketException e) 
+            catch (SocketException e)
 #else
             catch (SocketException e)
 #endif

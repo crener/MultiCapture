@@ -20,11 +20,13 @@ namespace SharedDeviceItems
         public const string FailString = "FAIL";
         public const string SuccessString = "SUCCESS";
         public const string EndTransferMessage = "DONE";
+        public const string TransferReady = "READY";
 
         public static readonly byte[] EndOfMessageBytes = Encoding.ASCII.GetBytes(EndOfMessage);
         public static readonly byte[] FailStringBytes = Encoding.ASCII.GetBytes(FailString);
         public static readonly byte[] SuccessStringBytes = Encoding.ASCII.GetBytes(SuccessString);
         public static readonly byte[] EndTransferBytes = Encoding.ASCII.GetBytes(EndTransferMessage);
+        public static readonly byte[] ReadyTransferBytes = Encoding.ASCII.GetBytes(TransferReady);
 
         public const int HubBufferSize = 400000;
         public const int CameraBufferSize = 128;

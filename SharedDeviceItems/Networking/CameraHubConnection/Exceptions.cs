@@ -7,11 +7,13 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
         public InterconnectException() : base() { }
         public InterconnectException(string message ) : base(message) { }
     }
+
     public class ResponderException : InterconnectException
     {
         public ResponderException() : base() { }
         public ResponderException(string message ) : base(message) { }
     }
+
     public class RequesterException : InterconnectException
     {
         public RequesterException() : base() { }
@@ -34,6 +36,12 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
     {
         public SocketDisconnectedException() : base() { }
         public SocketDisconnectedException(string message ) : base(message) { }
+    }
+
+    public class SocketUnexpectedDataException : InterconnectException
+    {
+        public SocketUnexpectedDataException() : base() { }
+        public SocketUnexpectedDataException(string message ) : base(message) { }
     }
 
     public class SocketNotConnectedException : InterconnectException

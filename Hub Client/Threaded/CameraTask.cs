@@ -4,7 +4,6 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Hub.Helpers;
-using Hub.Networking;
 using SharedDeviceItems;
 using SharedDeviceItems.Networking.CameraHubConnection;
 using static Hub.Helpers.CameraHelper;
@@ -23,6 +22,7 @@ namespace Hub.Threaded
             config = socket;
             socket.DataSocket.ReceiveBufferSize = Constants.CameraBufferSize * 2;
             connection = new ChunkRequester(socket.DataSocket);
+            connection.ClearSocket();
             SavePath = saveLocation;
         }
 

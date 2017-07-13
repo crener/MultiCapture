@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using Hub.Networking;
 
@@ -21,7 +22,7 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
 
         public byte[] Request(byte[] requestData)
         {
-            if (!socket.Connected) throw new SocketNotConnectedException();
+            if(!socket.Connected) throw new SocketNotConnectedException();
 
             //format the request data and send it to the camera
             {
@@ -42,12 +43,17 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
                 recievedData = Encoding.ASCII.GetBytes(chunkSize.ToString());
                 socket.Send(InterconnectHelper.FormatSendData(recievedData));
 
-                buffer = new byte[Constants.HubBufferSize];
-
                 //assemble the chunk array
                 int chunkAmount = dataSize / chunkSize;
                 if(dataSize % chunkSize != 0) ++chunkAmount;
                 byte[] returnData = new byte[dataSize];
+
+                recieved = socket.Receive(buffer);
+                recievedData = InterconnectHelper.RecieveData(buffer, recieved, socket);
+                if(!recievedData.SequenceEqual(Constants.ReadyTransferBytes))
+                    throw new SocketUnexpectedDataException("Transfer ready message expected");
+
+                buffer = new byte[Constants.HubBufferSize];
 
                 for(int i = 0; i < chunkAmount; i++)
                 {

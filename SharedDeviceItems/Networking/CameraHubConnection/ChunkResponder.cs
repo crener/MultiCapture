@@ -49,6 +49,7 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
         {
             if (!Connected()) throw new SocketNotConnectedException();
 
+
             //Inform the hub how large the data will be
             socket.Send(GenerateInformationPackage(data));
 
@@ -70,13 +71,15 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
                 chunks.Add(sampleChunks);
             }
 
-            if(data.Length % chunkSize != 0)
+            if (data.Length % chunkSize != 0)
             {
                 byte[] sampleChunks = new byte[data.Length % chunkSize];
                 Array.Copy(data, chunkAmount * chunkSize, sampleChunks, 0, data.Length % chunkSize);
 
                 chunks.Add(sampleChunks);
             }
+
+            socket.Send(InterconnectHelper.FormatSendData(Constants.ReadyTransferBytes));
 
             int sendChunk;
             recieve = socket.Receive(buffer);
@@ -90,6 +93,8 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
                 recieve = socket.Receive(buffer);
                 command = InterconnectHelper.RecieveData(buffer, recieve, socket);
             }
+
+            waitingForResponse = false;
         }
 
         private byte[] GenerateInformationPackage(byte[] data)
