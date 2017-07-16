@@ -5,6 +5,7 @@ using Hub.DesktopInterconnect;
 using Hub.DesktopInterconnect.ResponseSystem;
 using Hub.Util;
 using NUnit.Framework;
+using SharedDeviceItems;
 
 namespace Hub.ResponseSystem.Responses
 {
@@ -29,9 +30,9 @@ namespace Hub.ResponseSystem.Responses
             if (id != null) param.Add("id", id);
             if (set != null) param.Add("set", set);
 
-            List<ScannerCommands> tests = new List<ScannerCommands>(new []{ScannerCommands.ImageSetMetaData, ScannerCommands.ImageSetImageData});
+            List<ScannerCommands> tests = new List<ScannerCommands>(new[] { ScannerCommands.ImageSetMetaData, ScannerCommands.ImageSetImageData });
 
-            foreach(ScannerCommands command in tests)
+            foreach (ScannerCommands command in tests)
             {
                 byte[] result = response.GenerateResponse(command, param);
 
@@ -115,7 +116,7 @@ namespace Hub.ResponseSystem.Responses
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("id", "90000");
             param.Add("set", "2");
-            if(imageParameter == null) param.Add("image", imageParameter);
+            if (imageParameter != null) param.Add("image", imageParameter);
 
             Deployer.Mock = true;
             Deployer.Start();
@@ -126,13 +127,50 @@ namespace Hub.ResponseSystem.Responses
             Assert.IsTrue(resultStr.StartsWith(ResponseConstants.FailString));
         }
 
+        [Test]
+        public void UnsupportedCommand()
+        {
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            param.Add("id", 23.ToString());
+            param.Add("set", 1.ToString());
+
+            byte[] result = response.GenerateResponse(ScannerCommands.Unknown, param);
+
+            string resultStr = Encoding.ASCII.GetString(result);
+            Assert.IsTrue(resultStr.StartsWith(ResponseConstants.FailString));
+        }
+
+        [Test]
+        public void ImageData()
+        {
+            TestImageSet testResponse = new TestImageSet();
+
+            ProjectMapper project = new ProjectMapper("23", 23);
+            project.AddImageSet(2, "..");
+            project.AddImage(2, "test.jpg", 0);
+
+            testResponse.example = project;
+
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            param.Add("id", project.ProjectId.ToString());
+            param.Add("set", "2");
+            param.Add("image", "0");
+
+            Deployer.Mock = true;
+            Deployer.Start();
+
+            byte[] result = testResponse.GenerateResponse(ScannerCommands.ImageSetImageData, param);
+
+            Assert.AreEqual(File.ReadAllBytes(Constants.DefaultHubSaveLocation() + "test.jpg"), result);
+        }
+
         private class TestImageSet : ImageSetReponse
         {
             public ProjectMapper example;
 
             protected override bool FindProject(int projectId)
             {
-                 if(example != null) projectCache.Add(projectId, example);
+                if (example != null) projectCache.Add(projectId, example);
                 return true;
             }
         }
