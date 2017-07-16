@@ -16,9 +16,9 @@ namespace Hub.ResponseSystem.Responses
             foreach (ScannerCommands commands in DesktopThread.Responders.Keys)
                 avalibleResponses.Add((int)commands, commands.ToString());
 
+            //sort the responses so that the lowest number is first
             List<int> sort = new List<int>(avalibleResponses.Keys);
             sort.Sort();
-
             foreach (int index in sort) sortedResponses.Add(index, avalibleResponses[index]);
 
             return Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(sortedResponses));
