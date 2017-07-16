@@ -32,7 +32,7 @@ namespace Hub.ResponseSystem.Responses
         {
             try
             {
-                string path = Deployer.Log.Path;
+                string path = getPath();
                 if (File.Exists(path))
                 {
                     string line;
@@ -78,7 +78,7 @@ namespace Hub.ResponseSystem.Responses
 
             try
             {
-                string path = Deployer.Log.Path;
+                string path = getPath();
                 if (File.Exists(path))
                 {
                     string line;
@@ -124,6 +124,11 @@ namespace Hub.ResponseSystem.Responses
         public override void Reset()
         {
             lastLogPosition = -1;
+        }
+
+        protected virtual string getPath()
+        {
+            return Deployer.Log.Path;
         }
     }
 }
