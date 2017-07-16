@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using NUnit.Framework;
-using SharedDeviceItems;
 using System.Collections.Generic;
 
 namespace Hub.Util.Tests
@@ -10,8 +9,7 @@ namespace Hub.Util.Tests
     [TestFixture]
     class ProjectMapperTest
     {
-        string saveLocation = Path.DirectorySeparatorChar + "scanimage" +
-            Path.DirectorySeparatorChar + ProjectMapper.FileName;
+        string saveLocation = Path.DirectorySeparatorChar + "scanimage" + Path.DirectorySeparatorChar + ProjectMapper.FileName;
 
         [SetUp]
         public void setup()
@@ -416,9 +414,11 @@ namespace Hub.Util.Tests
 
             Assert.AreNotEqual(2333, mapper.saveData.ProjectId);
 
-            Assert.AreEqual(saveLocation + "\\next\\maps", mapper.AbsoluteImagePath(1, "maps"));
-            Assert.AreEqual(saveLocation + "\\other\\bike", mapper.AbsoluteImagePath(2, "bike"));
-            Assert.AreEqual(saveLocation + "\\car\\feet", mapper.AbsoluteImagePath(0, "feet"));
+            string projectRoot = saveLocation.Substring(0, saveLocation.Length - ProjectMapper.FileName.Length - 1);
+
+            Assert.AreEqual(projectRoot + "\\next\\maps", mapper.AbsoluteImagePath(1, "maps"));
+            Assert.AreEqual(projectRoot + "\\other\\bike", mapper.AbsoluteImagePath(2, "bike"));
+            Assert.AreEqual(projectRoot + "\\car\\feet", mapper.AbsoluteImagePath(0, "feet"));
         }
 
         [Test]
@@ -474,7 +474,7 @@ namespace Hub.Util.Tests
 
         private class ProjectMapperExtra : ProjectMapper
         {
-            public ProjectMapperExtra(string project, int projectID) : base(project, projectID)
+            public ProjectMapperExtra(string projectLocation, int projectID) : base(projectLocation, projectID)
             {
             }
 

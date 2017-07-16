@@ -17,7 +17,7 @@ namespace Hub.Util
         public static ProjectMapper CurrentProject { get; set; }
 
         private static bool started = false;
-        internal static bool mock = false;
+        internal static bool Mock = false;
 
         public static SaveLoad.Data SysConfig
         {
@@ -34,14 +34,14 @@ namespace Hub.Util
             if (started) return;
 
             started = true;
-            if (!mock)
+            if (!Mock)
             {
                 Log = new Logger.Logger();
                 Log.RemoveOldLogs(DateTime.Today.AddMonths(-1));
             }
 
             SysConfig = SaveLoad.Load();
-            if (!mock) Manager = new TaskManager(SysConfig);
+            if (!Mock) Manager = new TaskManager(SysConfig);
             DesktopThread.Instance.Start();
 
             ProjectManager = new ProjectManager();

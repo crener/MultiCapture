@@ -10,9 +10,9 @@ using Newtonsoft.Json;
 namespace Hub.ResponseSystem.Responses
 {
     [ResponseType(ScannerCommands.ImageSetMetaData), ResponseType(ScannerCommands.ImageSetImageData)]
-    class ImageSetReponse : BaseResponse
+    internal class ImageSetReponse : BaseResponse
     {
-        Dictionary<int, ProjectMapper> projectCache = new Dictionary<int, ProjectMapper>();
+        protected Dictionary<int, ProjectMapper> projectCache = new Dictionary<int, ProjectMapper>();
 
         public override byte[] GenerateResponse(ScannerCommands command, Dictionary<string, string> parameters)
         {
@@ -46,6 +46,7 @@ namespace Hub.ResponseSystem.Responses
                 return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?\"set\" could not be interprited. Is it possible the value is not a number?");
             }
 
+            //find the project
             if (!projectCache.ContainsKey(project))
             {
                 if (!FindProject(project))
@@ -62,6 +63,12 @@ namespace Hub.ResponseSystem.Responses
             }
             else if (command == ScannerCommands.ImageSetImageData)
             {
+                if (!parameters.ContainsKey("image"))
+                {
+                    Console.WriteLine(command + "is missing parameter: image");
+                    return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?\"image\" parameter is missing");
+                }
+
                 int image;
                 success = int.TryParse(parameters["image"], out image);
 
@@ -100,7 +107,7 @@ namespace Hub.ResponseSystem.Responses
                 projectCache[project].Sent(imageSetNo, name);
                 return File.ReadAllBytes(path);
             }
-            catch (InvalidOperationException)
+            catch (IOException)
             {
                 Console.WriteLine(ScannerCommands.ImageSetImageData + " attempted to access an iamge that doesn't exist!");
 #if DEBUG
@@ -117,10 +124,10 @@ namespace Hub.ResponseSystem.Responses
         /// </summary>
         /// <param name="projectId">the id of the requred project</param>
         /// <returns>true if the project could be loaded successfully</returns>
-        private bool FindProject(int projectId)
+        protected virtual bool FindProject(int projectId)
         {
             //check if the current project is wanted
-            if (Deployer.Manager.ProjectId == projectId)
+            if (Deployer.Manager != null && Deployer.Manager.ProjectId == projectId)
                 projectCache.Add(projectId, Deployer.Manager.ProjectData);
 
             //get the project via a more conventional method
@@ -157,18 +164,14 @@ namespace Hub.ResponseSystem.Responses
                 id = original.ImageSetId;
                 Images = new List<Image>(original.Images.Count);
 
-                string tempFile;
                 foreach (ProjectMapper.Image image in original.Images)
                 {
-                    tempFile = image.File.Substring(image.File.LastIndexOf(Path.DirectorySeparatorChar));
-
                     Images.Add(new Image
                     {
                         Id = image.CameraId,
-                        Name = tempFile
+                        Name = image.File
                     });
                 }
-
             }
         }
 

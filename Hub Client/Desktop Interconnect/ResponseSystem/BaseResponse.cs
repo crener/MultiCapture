@@ -12,9 +12,7 @@ namespace Hub.ResponseSystem
             foreach (ResponseTypeAttribute responseType in responseTypes)
             {
                 if (!DesktopThread.Responders.ContainsKey(responseType.Response))
-                {
                     DesktopThread.Responders.Add(responseType.Response, this);
-                }
             }
         }
 

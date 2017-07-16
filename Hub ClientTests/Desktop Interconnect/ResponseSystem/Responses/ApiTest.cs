@@ -1,14 +1,13 @@
 ﻿using Hub.DesktopInterconnect;
+using Hub.DesktopInterconnect.ResponseSystem;
 using NUnit.Framework;
 
 namespace Hub.ResponseSystem.Responses
 {
-    class ApiTest
+    class ApiTest : ResponseTests
     {
-        ApiResponse response;
-
         [SetUp]
-        public void setup()
+        public override void Setup()
         {
             response = new ApiResponse();
         }
@@ -19,22 +18,6 @@ namespace Hub.ResponseSystem.Responses
             byte[] value = response.GenerateResponse(ScannerCommands.ApiVersion, null);
 
             Assert.AreEqual(ResponseConstants.ApiResponse, value);
-        }
-
-        [Test]
-        public void Register()
-        {
-            IResponse resp = DesktopThread.Responders[ScannerCommands.ApiVersion];
-
-            Assert.NotNull(resp);
-            Assert.AreEqual(response.GetType(), resp.GetType());
-        }
-
-        [Test]
-        public void Reset()
-        {
-            //check that no exceptions are thrown
-            response.Reset();
         }
     }
 }

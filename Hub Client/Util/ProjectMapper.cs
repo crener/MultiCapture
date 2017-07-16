@@ -53,14 +53,22 @@ namespace Hub.Util
 
         public int ImageSetCount => data.sets.Count;
         public int CameraCount => data.cameras.Count;
-        string fileLocation { get; set; }
+        public int ProjectId => data.ProjectId;
+        string projectRoot { get; set; }
+        private string projectFileLocation { get { return projectRoot + Path.DirectorySeparatorChar + FileName; } }
 
-        public ProjectMapper(string project, int projectId)
+        /// <summary>
+        /// Standard class which keeps track of project related resources such as images, project name, cameras, etc.
+        /// if the project location is invalid a new location will be generated based on the projectId
+        /// </summary>
+        /// <param name="projectLocation">location of the project file</param>
+        /// <param name="projectId">unique id of the project</param>
+        public ProjectMapper(string projectLocation, int projectId)
         {
-            if (project.EndsWith(FileName)) fileLocation = project;
-            else fileLocation = project + Path.DirectorySeparatorChar + FileName;
+            if (projectLocation.EndsWith(FileName)) projectRoot = projectLocation.Substring(0, projectLocation.Length - FileName.Length - 1);
+            else projectRoot = Constants.DefaultHubSaveLocation() + projectId;
 
-            if (File.Exists(fileLocation)) Load(fileLocation);
+            if (File.Exists(projectFileLocation)) Load(projectFileLocation);
             else data.ProjectId = projectId;
         }
 
@@ -133,7 +141,7 @@ namespace Hub.Util
             Image look;
             if (!ImageExists(setId, imageName, out look)) throw new Exception("Image doesn't exist");
 
-            return fileLocation + Path.DirectorySeparatorChar + data.sets[setLookUp[setId]].Path + Path.DirectorySeparatorChar + imageName;
+            return projectRoot + Path.DirectorySeparatorChar + data.sets[setLookUp[setId]].Path + Path.DirectorySeparatorChar + imageName;
         }
 
         public static string AbsoluteImagePath(Data details, int set, string imageName)
@@ -221,7 +229,9 @@ namespace Hub.Util
 
         public void Save()
         {
-            using(StreamWriter stream = new StreamWriter(fileLocation))
+            if(!Directory.Exists(projectRoot)) Directory.CreateDirectory(projectRoot);
+
+            using (StreamWriter stream = new StreamWriter(projectFileLocation))
             {
                 stream.WriteLine(JsonConvert.SerializeObject(data));
             }

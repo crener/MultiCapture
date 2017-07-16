@@ -1,25 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 using Hub.DesktopInterconnect;
+using Hub.DesktopInterconnect.ResponseSystem;
 using Hub.Helpers;
 using Hub.Util;
 using NUnit.Framework;
 
 namespace Hub.ResponseSystem.Responses
 {
-    class NameTest
+    class NameTest : ResponseTests
     {
-        NameResponse response;
-
         [SetUp]
-        public void setup()
+        public override void Setup()
         {
             response = new NameResponse();
 
-            Deployer.mock = true;
+            Deployer.Mock = true;
             Deployer.Start();
         }
 
@@ -60,22 +56,6 @@ namespace Hub.ResponseSystem.Responses
                     name = before
                 };
             }
-        }
-
-        [Test]
-        public void Register()
-        {
-            IResponse resp = DesktopThread.Responders[ScannerCommands.SetName];
-
-            Assert.NotNull(resp);
-            Assert.AreEqual(response.GetType(), resp.GetType());
-        }
-
-        [Test]
-        public void Reset()
-        {
-            //check that no exceptions are thrown
-            response.Reset();
         }
     }
 }

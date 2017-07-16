@@ -1,15 +1,14 @@
 ﻿using System.Text;
 using Hub.DesktopInterconnect;
+using Hub.DesktopInterconnect.ResponseSystem;
 using NUnit.Framework;
 
 namespace Hub.ResponseSystem.Responses
 {
-    class LogTest
+    class LogTest : ResponseTests
     {
-        LogResponse response;
-
         [SetUp]
-        public void setup()
+        public override void Setup()
         {
             response = new LogResponse();
         }
@@ -21,28 +20,9 @@ namespace Hub.ResponseSystem.Responses
         }
 
         [Test]
-        public void RegisterFull()
+        public void ResetThenDiff()
         {
-            IResponse resp = DesktopThread.Responders[ScannerCommands.LogFile];
-
-            Assert.NotNull(resp);
-            Assert.AreEqual(response.GetType(), resp.GetType());
-        }
-
-        [Test]
-        public void RegisterDiff()
-        {
-            IResponse resp = DesktopThread.Responders[ScannerCommands.LogDiff];
-
-            Assert.NotNull(resp);
-            Assert.AreEqual(response.GetType(), resp.GetType());
-        }
-
-        [Test]
-        public void Reset()
-        {
-            //check that no exceptions are thrown
-            response.Reset();
+            Reset();
 
             byte[] returned = response.GenerateResponse(ScannerCommands.LogDiff, null);
             string value = Encoding.ASCII.GetString(returned);
