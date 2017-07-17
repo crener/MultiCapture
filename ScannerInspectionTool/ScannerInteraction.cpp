@@ -21,7 +21,7 @@ void ScannerInteraction::requestScanner(ScannerCommands command, QString params,
 	if (!connection->isWritable()) return;
 
 	QString data = QString(std::to_string(static_cast<int>(command)).c_str());
-	if (params != QString::null && !params.isEmpty()) data += '?' + params;
+	data += params;
 
 	connection->write(data.toLatin1());
 

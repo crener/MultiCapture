@@ -17,10 +17,15 @@ namespace Hub.DesktopInterconnect
     {
         private const int BufferSize = 1024;
         private const int ConnectionCheckMs = 15000;
-        private const char Separator = '&';
-        private const char Splitter = '?';
+        public const char Separator = '&';
+        public const char ParamSeperator = '=';
 
         byte[] readBuffer = new byte[BufferSize];
+
+        protected DesktopConnection()
+        {
+
+        }
 
         internal DesktopConnection(TcpClient client)
         {
@@ -57,11 +62,30 @@ namespace Hub.DesktopInterconnect
             stream.BeginRead(readBuffer, 0, BufferSize, NewInstructionCallback, stream);
         }
 
-        private void ExtractRequest(string instruction, NetworkStream stream)
+        /*
+         * The format for a request is Command&key=value&key=value
+         */
+        protected virtual void ExtractRequest(string instruction, NetworkStream stream)
         {
-            string rawCommand = instruction.IndexOf(Splitter) >= 0 ? instruction.Substring(0, instruction.IndexOf(Splitter)) : instruction;
+            //extract the scanner command
             ScannerCommands command = ScannerCommands.Unknown;
-            if (!IsNullOrEmpty(rawCommand)) command = (ScannerCommands)Enum.Parse(typeof(ScannerCommands), rawCommand);
+            string rawCommand = instruction.IndexOf(Separator) >= 0
+                ? instruction.Substring(0, instruction.IndexOf(Separator))
+                : instruction;
+
+            {
+                bool success = true;
+
+                int commandNo;
+                success = int.TryParse(rawCommand, out commandNo);
+
+                if (success &&
+                   !IsNullOrEmpty(rawCommand) &&
+                   Enum.IsDefined(typeof(ScannerCommands), commandNo))
+                {
+                    command = (ScannerCommands)Enum.Parse(typeof(ScannerCommands), rawCommand);
+                }
+            }
 
             if (command == ScannerCommands.Unknown)
             {
@@ -71,16 +95,16 @@ namespace Hub.DesktopInterconnect
             }
 
             Dictionary<string, string> parameters = new Dictionary<string, string>();
-            if (instruction.Contains(Splitter.ToString()))
+            if (instruction.Contains(Separator.ToString()))
             {
-                string rawParameters = instruction.Substring(instruction.IndexOf(Splitter) + 1);
+                string rawParameters = instruction.Substring(instruction.IndexOf(Separator) + 1);
                 string[] pairs = rawParameters.Split(Separator);
                 foreach (string pair in pairs)
                 {
-                    if (IsNullOrEmpty(pair) || !pair.Contains("=")) continue;
+                    if (IsNullOrEmpty(pair) || !pair.Contains(ParamSeperator.ToString())) continue;
                     string key, value;
-                    key = pair.Substring(0, pair.IndexOf('='));
-                    value = pair.Substring(pair.IndexOf('=') + 1);
+                    key = pair.Substring(0, pair.IndexOf(ParamSeperator));
+                    value = pair.Substring(pair.IndexOf(ParamSeperator) + 1);
 
                     parameters.Add(key, value);
                 }
@@ -90,7 +114,7 @@ namespace Hub.DesktopInterconnect
         }
 
 
-        private void ProcessRequest(ScannerCommands command, Dictionary<string, string> parameters, NetworkStream stream)
+        protected virtual void ProcessRequest(ScannerCommands command, Dictionary<string, string> parameters, NetworkStream stream)
         {
             Console.WriteLine("External Instruction received: \"{0}\", code: {1}", command, (int)command);
             if (command == ScannerCommands.Unknown)
@@ -113,7 +137,7 @@ namespace Hub.DesktopInterconnect
                 {
                     Console.WriteLine("Response didn't know what to do! Response: {0}",
                         DesktopThread.Responders[command].GetType());
-                    SendResponse(stream, FailString + "?Response didn't know what to do. " + parameters.ToString());
+                    SendResponse(stream, FailString + "?Response " + DesktopThread.Responders.ContainsKey(command).GetType() + " didn't know what to do.");
 
                     Console.WriteLine(ex);
                 }
@@ -128,7 +152,7 @@ namespace Hub.DesktopInterconnect
                 return;
             }
 
-            SendResponse(stream, FailString + "?Unknown command! " + parameters.ToString());
+            SendResponse(stream, FailString + "?No Response avaliable!");
         }
 
 
@@ -165,7 +189,7 @@ namespace Hub.DesktopInterconnect
             SendResponse(stream, Encoding.ASCII.GetBytes(data));
         }
 
-        private void SendResponse(NetworkStream stream, byte[] data)
+        protected virtual void SendResponse(NetworkStream stream, byte[] data)
         {
             stream.Write(data, 0, data.Length);
         }

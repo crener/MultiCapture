@@ -80,12 +80,8 @@ namespace Hub.ResponseSystem.Responses
 
                 return GenerateImageData(project, set, image);
             }
-            else
-            {
-                Console.WriteLine(command + " used " + GetType() + " which doesn't handle this request!");
-                return Encoding.ASCII.GetBytes(ResponseConstants.FailString +
-                                               "?Request invalid, incorrect Responder used");
-            }
+
+            throw new UnknownResponseException();
         }
 
         private byte[] GenerateImageMetaData(int project, int imageSetNo)
@@ -113,7 +109,7 @@ namespace Hub.ResponseSystem.Responses
 #if DEBUG
                 Console.WriteLine("\tProject: " + project);
                 Console.WriteLine("\tImageSet: " + imageSetNo);
-                Console.WriteLine("\tImage: " + image); 
+                Console.WriteLine("\tImage: " + image);
 #endif
                 return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?image could not be found! image: " + image);
             }

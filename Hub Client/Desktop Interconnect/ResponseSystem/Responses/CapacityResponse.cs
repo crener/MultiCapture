@@ -16,8 +16,7 @@ namespace Hub.ResponseSystem.Responses
             if(Deployer.Manager == null)
                 return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?System not ready");
 
-            string path = Deployer.Manager.SavePath;
-            string root = Path.GetPathRoot(path);
+            string root = Path.GetPathRoot(Deployer.Manager.SavePath);
 
             DriveInfo driveInfo;
             try
