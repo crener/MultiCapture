@@ -13,10 +13,10 @@ namespace Hub.ResponseSystem.Responses
     {
         public override byte[] GenerateResponse(ScannerCommands command, Dictionary<string, string> parameters)
         {
-            if(Deployer.Manager == null)
+            if(!SystemReady())
                 return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?System not ready");
 
-            string root = Path.GetPathRoot(Deployer.Manager.SavePath);
+            string root = Path.GetPathRoot(getPath());
 
             DriveInfo driveInfo;
             try
@@ -25,7 +25,7 @@ namespace Hub.ResponseSystem.Responses
             }
             catch(InvalidOperationException)
             {
-                Console.WriteLine("SaveDrive could not be evaluated, resorting to default drive");
+                Console.WriteLine("The SaveDrive could not be evaluated, resorting to default drive");
 
                 root = Path.GetPathRoot(Environment.SystemDirectory);
                 try
@@ -47,6 +47,16 @@ namespace Hub.ResponseSystem.Responses
 
             Console.WriteLine("Remaining Capacity: {0}MB", freeMB.ToString("N"));
             return Encoding.ASCII.GetBytes(ResponseConstants.SuccessString + "?" + freeMB.ToString("F3"));
+        }
+
+        protected virtual string getPath()
+        {
+            return Deployer.Manager.SavePath;
+        }
+
+        protected virtual bool SystemReady()
+        {
+            return Deployer.Manager != null;
         }
     }
 }

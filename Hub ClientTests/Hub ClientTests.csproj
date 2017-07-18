@@ -60,6 +60,7 @@
     <Compile Include="Desktop Interconnect\MockDesktopThread.cs" />
     <Compile Include="Desktop Interconnect\MockUdpClient.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\ApiCompatabilityTest.cs" />
+    <Compile Include="Desktop Interconnect\ResponseSystem\Responses\CapacityTest.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\ImageSetTest.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\LogTest.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\NameTest .cs" />
