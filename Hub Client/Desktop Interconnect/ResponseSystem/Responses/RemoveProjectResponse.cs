@@ -20,13 +20,7 @@ namespace Hub.ResponseSystem.Responses
 
             string path = SharedDeviceItems.Constants.DefaultHubSaveLocation() + parameters["id"];
             int project = -1;
-            bool validId = Int32.TryParse(parameters["id"], out project);
-
-            if(Deployer.Manager.ProjectId == project)
-            {
-                Console.WriteLine(command + " wanted to remove the current project");
-                return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?You cannot remove the current project!");
-            }
+            bool validId = int.TryParse(parameters["id"], out project);
 
             if (!Directory.Exists(path) || !validId || !Deployer.ProjectManager.ProjectExists(project))
             {
@@ -36,6 +30,12 @@ namespace Hub.ResponseSystem.Responses
 #endif
                 return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?Project " + project +
                                                " not found");
+            }
+
+            if (Deployer.Manager.ProjectId == project)
+            {
+                Console.WriteLine(command + " wanted to remove the current project");
+                return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?You cannot remove the current project!");
             }
 
             Directory.Delete(path);

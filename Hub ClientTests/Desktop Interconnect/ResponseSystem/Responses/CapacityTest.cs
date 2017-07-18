@@ -37,7 +37,7 @@ namespace Hub.ResponseSystem.Responses
             decimal freeMB = actualDrive.TotalFreeSpace / 1000000m;
             string formedString = freeMB.ToString("F3");
 
-            byte[] value = testCase.GenerateResponse(ScannerCommands.ApiVersion, null);
+            byte[] value = testCase.GenerateResponse(ScannerCommands.getCapacity, null);
             string result = Encoding.ASCII.GetString(value);
 
             Assert.IsTrue(result.StartsWith(ResponseConstants.SuccessString));
@@ -65,7 +65,7 @@ namespace Hub.ResponseSystem.Responses
             decimal freeMB = actualDrive.TotalFreeSpace / 1000000m;
             string formedString = freeMB.ToString("F3");
 
-            byte[] value = testCase.GenerateResponse(ScannerCommands.ApiVersion, null);
+            byte[] value = testCase.GenerateResponse(ScannerCommands.getCapacity, null);
             string result = Encoding.ASCII.GetString(value);
 
             Assert.IsTrue(result.StartsWith(ResponseConstants.SuccessString));
@@ -75,7 +75,7 @@ namespace Hub.ResponseSystem.Responses
         [Test]
         public void NotReady()
         {
-            byte[] value = response.GenerateResponse(ScannerCommands.ApiVersion, null);
+            byte[] value = response.GenerateResponse(ScannerCommands.getCapacity, null);
             string result = Encoding.ASCII.GetString(value);
 
             Assert.IsTrue(result.StartsWith(ResponseConstants.FailString));
