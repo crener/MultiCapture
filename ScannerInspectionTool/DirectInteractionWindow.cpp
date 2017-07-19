@@ -12,6 +12,7 @@ DirectInteractionWindow::DirectInteractionWindow(QWidget *parent)
 	apiCode = findChild<QLabel*>("apiCode");
 	submit = findChild<QPushButton*>("submitBtn");
 	apiResponse = findChild<QPlainTextEdit*>("apiResponse");
+	parameters = findChild<QLineEdit*>("parameterInput");
 
 	connect(submit, &QPushButton::released, this, &DirectInteractionWindow::makeRequest);
 }
@@ -24,7 +25,7 @@ void DirectInteractionWindow::makeRequest()
 {
 	ScannerCommands command = ScannerCommands(apiSelection->value());
 	apiResponse->setPlainText("No Data Recieved");
-	emit connection->requestScanner(command, "", this);
+	emit connection->requestScanner(command, parameters->text(), this);
 }
 
 void DirectInteractionWindow::respondToScanner(ScannerCommands command, QByteArray data)

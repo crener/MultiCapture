@@ -29,6 +29,7 @@ private:
 	QLabel* apiCode;
 	QPushButton* submit;
 	QPlainTextEdit* apiResponse;
+	QLineEdit* parameters;
 
 	ScannerInteraction* connection;
 
