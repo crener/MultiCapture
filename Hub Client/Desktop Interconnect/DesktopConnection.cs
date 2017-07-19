@@ -11,7 +11,7 @@ using static Hub.DesktopInterconnect.ResponseConstants;
 namespace Hub.DesktopInterconnect
 {
     /// <summary>
-    /// Responsible for handling commands given from a desktop connected desktop
+    /// Responsible for handeling commands given from an external device via an already established socket connection.
     /// </summary>
     public class DesktopConnection
     {

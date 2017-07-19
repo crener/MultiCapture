@@ -49,6 +49,13 @@
     </layout>
    </item>
    <item>
+    <widget class="QLineEdit" name="parameterInput">
+     <property name="placeholderText">
+      <string>Parameter Field Format: &amp;&lt;key&gt;=&lt;value&gt;&amp;&lt;key&gt;=&lt;value&gt;&amp;...</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QLabel" name="label">

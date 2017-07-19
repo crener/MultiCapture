@@ -3,6 +3,9 @@ using Hub.DesktopInterconnect;
 
 namespace Hub.ResponseSystem
 {
+    /// <summary>
+    /// Basic addition which registers the extending class with the Desktop Thread
+    /// </summary>
     abstract class BaseResponse : IResponse
     {
         protected BaseResponse()

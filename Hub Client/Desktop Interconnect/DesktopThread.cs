@@ -13,6 +13,10 @@ using SharedDeviceItems.Networking;
 [assembly: InternalsVisibleTo("Hub ClientTests")]
 namespace Hub.DesktopInterconnect
 {
+    /// <summary>
+    /// Responsible for handeling incoming connection and handing that resulting socket connection to the a DesktopConnection
+    /// </summary>
+    /// <seealso cref="DesktopConnection"/>
     public class DesktopThread
     {
         private static DesktopThread thread;

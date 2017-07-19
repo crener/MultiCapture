@@ -3,7 +3,7 @@
 namespace Hub.ResponseSystem
 {
     /// <summary>
-    /// Reponse isn't known to this class
+    /// Reponse isn't known to a class
     /// </summary>
     class UnknownResponseException : Exception
     {
