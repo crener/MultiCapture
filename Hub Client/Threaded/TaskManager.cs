@@ -47,18 +47,14 @@ namespace Hub.Threaded
 
         public override void CaptureImageSet(CameraRequest wanted)
         {
-            Console.WriteLine("Start of image capture, request: " + wanted + ", imageSet: " + (imagesetId + 1));
+            Console.WriteLine("Start of image capture, request: " + wanted + ", imageSet: " + (ImagesetId + 1));
             Task[] camCommand = CollectImageCommands(wanted);
             foreach (Task task in camCommand) task.Start();
 
-            projectFile.AddImageSet(imagesetId, "set-" + imagesetId);
-            for (int i = 0; i < config.CameraCount; i++)
-            {
-                projectFile.AddImage(imagesetId, config.Cameras[i].CamFileIdentity + imagesetId + ".jpg", i);
-            }
-            projectFile.Save();
+            projectFile.AddImageSet(ImagesetId, "set-" + ImagesetId);
 
             Task.WaitAll(camCommand);
+            projectFile.Save();
             Console.WriteLine("Image Requests Complete");
         }
 
@@ -70,16 +66,15 @@ namespace Hub.Threaded
             if (needsStoreLocation)
             {
                 //ensure each image has unique name and place to store image
-                ++imagesetId;
-                Directory.CreateDirectory(savePath + Path.DirectorySeparatorChar + "set-" + imagesetId);
+                ++ImagesetId;
+                Directory.CreateDirectory(savePath + Path.DirectorySeparatorChar + "set-" + ImagesetId);
             }
 
             for (int i = 0; i < cameras.Length; i++)
             {
                 if (needsStoreLocation)
                 {
-                    cameras[i].SavePath = savePath + "set-" + imagesetId;
-                    cameras[i].ImageSetName = imagesetId.ToString();
+                    cameras[i].SavePath = savePath + "set-" + ImagesetId;
                 }
 
                 result[i] = cameras[i].ProcessRequest(request);
@@ -130,7 +125,7 @@ namespace Hub.Threaded
             if(cameras == null || cameras.Length == 0) return;
 
             foreach (ICameraTask cam in cameras)
-                cam.SavePath = value + "set-" + imagesetId;
+                cam.SavePath = value + "set-" + ImagesetId;
         }
 
 #if DEBUG

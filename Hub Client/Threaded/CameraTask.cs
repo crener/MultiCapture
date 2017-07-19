@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Hub.Helpers;
+using Hub.Util;
 using SharedDeviceItems;
 using SharedDeviceItems.Networking.CameraHubConnection;
 using static Hub.Helpers.CameraHelper;
@@ -12,7 +13,6 @@ namespace Hub.Threaded
 {
     class CameraTask : ICameraTask
     {
-        public string ImageSetName { get; set; }
         public string SavePath { get; set; }
         private CameraSocket config;
         private IRequester connection;
@@ -61,12 +61,13 @@ namespace Hub.Threaded
                 Console.WriteLine("No Image data recieved!!");
                 Console.WriteLine("Debug data:");
                 Console.WriteLine("\tThread Camera: " + config.Config.Id);
-                Console.WriteLine("\tImage set id: " + ImageSetName);
+                Console.WriteLine("\tImage set id: " + GenericManager.ImagesetId);
                 Console.WriteLine("\tImage return string: " + Encoding.ASCII.GetString(data));
                 return;
             }
 
             SaveData(imageData, SavePath + Path.DirectorySeparatorChar + imageName);
+            Deployer.CurrentProject.AddImage(GenericManager.ImagesetId, imageName, config.Config.Id);
 
             Console.WriteLine("Camera " + config.Config.Id + " image saved");
         }
@@ -77,7 +78,7 @@ namespace Hub.Threaded
 
             if (!SavesImage(request)) return builder.Build();
 
-            builder.AddParam("id", ImageSetName);
+            builder.AddParam("id", GenericManager.ImagesetId.ToString());
 
             return builder.Build();
         }

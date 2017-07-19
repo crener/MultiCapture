@@ -50,7 +50,7 @@ namespace Hub.Threaded
             if (request == CameraRequest.Unknown) Assert.AreEqual(CameraRequest.SendFullResImage, mockCam.lastRequest);
             else Assert.AreEqual(request, mockCam.lastRequest);
 
-            if(CameraHelper.SavesImage(request)) Assert.AreEqual("1", mockCam.ImageSetName);
+            if(CameraHelper.SavesImage(request)) Assert.AreEqual(1, GenericManager.ImagesetId);
         }
 #endif
 

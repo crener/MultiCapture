@@ -20,7 +20,6 @@ namespace Hub.Threaded
             ShutDownTriggered = true;
         }
 
-        public string ImageSetName { get; set; }
         public string SavePath { get; set; }
 
 #if DEBUG

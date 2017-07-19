@@ -35,7 +35,11 @@ namespace Hub.Util
                 if (!File.Exists(dataPath)) continue;
 
                 ProjectMapper.Data statistics = ProjectMapper.ExtractSaveData(dataPath);
-                ProjectInfo info = new ProjectInfo(statistics);
+                ProjectInfo info;
+
+                if (Deployer.CurrentProject != null && statistics.ProjectId == Deployer.CurrentProject.ProjectId)
+                    info = new DynamicProjectInfo(Deployer.CurrentProject);
+                else info = new ProjectInfo(statistics);
 
                 project.Add(info);
             }
@@ -86,16 +90,16 @@ namespace Hub.Util
 
         private class ProjectInfo
         {
-            public ProjectInfo()
-            {
-
-            }
-
             public ProjectInfo(ProjectMapper mapper) : this(mapper.saveData)
             {
             }
 
             public ProjectInfo(ProjectMapper.Data data)
+            {
+                GenerateData(data);
+            }
+
+            protected void GenerateData(ProjectMapper.Data data)
             {
                 Name = data.ProjectName ?? data.ProjectId.ToString();
                 Id = data.ProjectId;
@@ -104,17 +108,61 @@ namespace Hub.Util
                 {
                     foreach (ProjectMapper.Image image in imageSet.Images)
                     {
-                        ImageCount++;
+                        imageCount++;
                         if (File.Exists(ProjectMapper.AbsoluteImagePath(data, imageSet.ImageSetId, image.File)))
-                            SavedCount++;
+                            savedCount++;
                     }
                 }
             }
 
             public string Name { get; set; }
             public int Id { get; set; }
-            public int ImageCount { get; set; }
-            public int SavedCount { get; set; }
+            public virtual int ImageCount { get { return imageCount; } set { imageCount = value; } }
+            public virtual int SavedCount { get { return savedCount; } set { savedCount = value; } }
+            protected int imageCount, savedCount;
+        }
+
+        private class DynamicProjectInfo : ProjectInfo
+        {
+            private ProjectMapper mapper;
+            private int lastSetCount;
+
+            public DynamicProjectInfo(ProjectMapper mapper) : base(mapper.saveData)
+            {
+                this.mapper = mapper;
+                lastSetCount = mapper.ImageSetCount;
+            }
+
+            private void CheckRegen()
+            {
+                if(lastSetCount != mapper.ImageSetCount)
+                {
+                    imageCount = savedCount = 0;
+
+                    GenerateData(mapper.saveData);
+                    lastSetCount = mapper.ImageSetCount;
+                }
+            }
+
+            public override int ImageCount
+            {
+                get
+                {
+                    CheckRegen();
+                    return imageCount;
+                }
+                set { imageCount = value; }
+            }
+
+            public override int SavedCount
+            {
+                get
+                {
+                    CheckRegen();
+                    return savedCount;
+                }
+                set { savedCount = value; }
+            }
         }
     }
 }

@@ -13,13 +13,14 @@ namespace Hub.Threaded
         protected ProjectMapper projectFile;
 
         protected string savePath;
-        protected int imagesetId = -1;
+        public static int ImagesetId { get; protected set; }
         public int ProjectId { get; }
         public ProjectMapper ProjectData { get { return projectFile; } }
 
         internal GenericManager(SaveLoad.Data config)
         {
             this.config = config;
+            ImagesetId = -1;
 
             Random rand = new Random();
             ProjectId = rand.Next(0, int.MaxValue - 1);
@@ -65,7 +66,7 @@ namespace Hub.Threaded
                     Directory.CreateDirectory(savePath);
 
                 //since the directory has changed the image set should change too
-                imagesetId = 0;
+                ImagesetId = 0;
 
                 //implementation specific modifications to internal data
                 SaveChange(value);

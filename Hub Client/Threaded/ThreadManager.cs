@@ -57,8 +57,8 @@ namespace Hub.Threaded
             //iterate the image identifier name
             if (wanted == CameraRequest.SendFullResImage)
             {
-                ++imagesetId;
-                Directory.CreateDirectory(savePath + Path.DirectorySeparatorChar + "set-" + imagesetId);
+                ++ImagesetId;
+                Directory.CreateDirectory(savePath + Path.DirectorySeparatorChar + "set-" + ImagesetId);
 
                 SaveChange(savePath);
             }
@@ -67,15 +67,15 @@ namespace Hub.Threaded
             {
                 if (cameraThreads[i] != null && cameraThreads[i].IsAlive)
                 {
-                    threadConfiguration[i].ImageSetName = imagesetId.ToString();
+                    threadConfiguration[i].ImageSetName = ImagesetId.ToString();
                     threadConfiguration[i].Request = wanted;
                 }
             }
 
-            projectFile.AddImageSet(imagesetId, "set-" + imagesetId);
+            projectFile.AddImageSet(ImagesetId, "set-" + ImagesetId);
             for (int i = 0; i < config.Cameras.Length; i++)
             {
-                projectFile.AddImage(imagesetId, config.Cameras[i].CamFileIdentity + imagesetId + ".jpg", i);
+                projectFile.AddImage(ImagesetId, config.Cameras[i].CamFileIdentity + ImagesetId + ".jpg", i);
             }
             projectFile.Save();
         }
@@ -123,7 +123,7 @@ namespace Hub.Threaded
             if(threadConfiguration == null) return;
 
             foreach (ICameraThread thread in threadConfiguration)
-                thread.SavePath = value + "set-" + imagesetId;
+                thread.SavePath = value + "set-" + ImagesetId;
         }
 
         private bool CheckDone()
