@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using Hub.DesktopInterconnect;
 using Hub.Util;
@@ -12,8 +13,6 @@ namespace Hub.ResponseSystem.Responses
     [ResponseType(ScannerCommands.ImageSetMetaData), ResponseType(ScannerCommands.ImageSetImageData)]
     internal class ImageSetReponse : BaseResponse
     {
-        protected Dictionary<int, ProjectMapper> projectCache = new Dictionary<int, ProjectMapper>();
-
         public override byte[] GenerateResponse(ScannerCommands command, Dictionary<string, string> parameters)
         {
             //check that all parameters are met
@@ -47,13 +46,10 @@ namespace Hub.ResponseSystem.Responses
             }
 
             //find the project
-            if (!projectCache.ContainsKey(project))
+            if (!FindProject(project))
             {
-                if (!FindProject(project))
-                {
                     Console.WriteLine(command + " project couldn't be found");
                     return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?Project could not be found");
-                }
             }
 
             //get the actual data
@@ -84,9 +80,31 @@ namespace Hub.ResponseSystem.Responses
             throw new UnknownResponseException();
         }
 
+        protected virtual bool FindProject(int projectId)
+        {
+            try
+            {
+                ProjectCache.RetrieveProject(projectId);
+                return true;
+            }
+            catch(KeyNotFoundException)
+            {
+                return false;
+            }
+        }
+
         private byte[] GenerateImageMetaData(int project, int imageSetNo)
         {
-            ProjectMapper.ImageSet set = projectCache[project].saveData.sets.First(p => p.ImageSetId == imageSetNo);
+            ProjectMapper.ImageSet set;
+            try
+            {
+                set = ProjectCache.RetrieveProject(project).saveData.sets.First(p => p.ImageSetId == imageSetNo);
+            }
+            catch (KeyNotFoundException)
+            {
+                return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?image could not be found! imageSet: " + imageSetNo);
+            }
+
             ImageSet output = new ImageSet(set);
 
             return Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(output));
@@ -94,13 +112,24 @@ namespace Hub.ResponseSystem.Responses
 
         private byte[] GenerateImageData(int project, int imageSetNo, int image)
         {
-            ProjectMapper.ImageSet imageSet = projectCache[project].saveData.sets.First(p => p.ImageSetId == imageSetNo);
+            ProjectMapper projectMapper;
+            ProjectMapper.ImageSet imageSet;
+            try
+            {
+                projectMapper = ProjectCache.RetrieveProject(project);
+                imageSet = projectMapper.saveData.sets.First(p => p.ImageSetId == imageSetNo);
+            }
+            catch(KeyNotFoundException)
+            {
+                return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?image could not be found! image: " + image);
+            }
+
             try
             {
                 string name = imageSet.Images.First(i => i.CameraId == image).File;
-                string path = projectCache[project].AbsoluteImagePath(imageSetNo, name);
+                string path = projectMapper.AbsoluteImagePath(imageSetNo, name);
 
-                projectCache[project].Sent(imageSetNo, name);
+                projectMapper.Sent(imageSetNo, name);
                 return File.ReadAllBytes(path);
             }
             catch (IOException)
@@ -111,38 +140,8 @@ namespace Hub.ResponseSystem.Responses
                 Console.WriteLine("\tImageSet: " + imageSetNo);
                 Console.WriteLine("\tImage: " + image);
 #endif
-                return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?image could not be found! image: " + image);
+                return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?image could not be accessed! image: " + image);
             }
-        }
-
-        /// <summary>
-        /// loads project and adds it to the project cache
-        /// </summary>
-        /// <param name="projectId">the id of the requred project</param>
-        /// <returns>true if the project could be loaded successfully</returns>
-        protected virtual bool FindProject(int projectId)
-        {
-            //check if the current project is wanted
-            if (Deployer.Manager != null && Deployer.Manager.ProjectId == projectId)
-                projectCache.Add(projectId, Deployer.Manager.ProjectData);
-
-            //get the project via a more conventional method
-            if (!Deployer.ProjectManager.ProjectExists(projectId)) return false;
-
-            string path = SharedDeviceItems.Constants.DefaultHubSaveLocation() + projectId;
-            if (!Directory.Exists(path)) return false;
-
-            ProjectMapper wanted = new ProjectMapper(path, -1);
-            if (wanted.saveData.ProjectId != projectId) return false;
-
-            projectCache.Add(projectId, wanted);
-
-            return true;
-        }
-
-        public override void Reset()
-        {
-            projectCache.Clear();
         }
 
         private class ImageSet

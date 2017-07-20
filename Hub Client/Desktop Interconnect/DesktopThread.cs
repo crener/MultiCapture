@@ -155,6 +155,9 @@ namespace Hub.DesktopInterconnect
                 responder.Reset();
             }
 
+            //Clear possible Response dependencies
+            ProjectCache.Clear();
+
             udp.BeginReceive(DiscoveryAction, udp);
             tcpListener.BeginAcceptTcpClient(DesktopConnection, tcpListener);
         }

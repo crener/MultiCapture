@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Desktop Interconnect\DesktopConnection.cs" />
     <Compile Include="Desktop Interconnect\DesktopThread.cs" />
+    <Compile Include="Desktop Interconnect\ProjectCache.cs" />
     <Compile Include="Desktop Interconnect\ResponseConstants.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\BaseResponse.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\IResponse.cs" />

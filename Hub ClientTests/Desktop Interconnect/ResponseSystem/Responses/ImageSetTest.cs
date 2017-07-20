@@ -18,6 +18,12 @@ namespace Hub.ResponseSystem.Responses
             response = new ImageSetReponse();
         }
 
+        [TearDown]
+        public void Clear()
+        {
+            ProjectCache.Clear();
+        }
+
         [TestCase(null, null)]
         [TestCase("2", null)]
         [TestCase(null, "5")]
@@ -170,7 +176,7 @@ namespace Hub.ResponseSystem.Responses
 
             protected override bool FindProject(int projectId)
             {
-                if (example != null) projectCache.Add(projectId, example);
+                if (example != null) ProjectCache.ForceAddProjectMapper(projectId, example);
                 return true;
             }
         }
