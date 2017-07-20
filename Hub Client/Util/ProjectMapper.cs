@@ -54,6 +54,7 @@ namespace Hub.Util
         public int ImageSetCount => data.sets.Count;
         public int CameraCount => data.cameras.Count;
         public int ProjectId => data.ProjectId;
+        public string Name => data.ProjectName;
         string projectRoot { get; set; }
         private string projectFileLocation { get { return projectRoot + Path.DirectorySeparatorChar + FileName; } }
 

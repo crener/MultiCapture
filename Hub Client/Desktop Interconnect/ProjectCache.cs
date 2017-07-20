@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using Hub.Util;
 
 namespace Hub.DesktopInterconnect
@@ -45,8 +40,9 @@ namespace Hub.DesktopInterconnect
             //get the project via a more conventional method
             if (!Deployer.ProjectManager.ProjectExists(projectId)) return false;
 
-            string path = SharedDeviceItems.Constants.DefaultHubSaveLocation() + projectId;
-            if (!Directory.Exists(path)) return false;
+            string path = SharedDeviceItems.Constants.DefaultHubSaveLocation() + projectId + 
+                Path.DirectorySeparatorChar + ProjectMapper.FileName;
+            if (!File.Exists(path)) return false;
 
             ProjectMapper wanted = new ProjectMapper(path, -1);
             if (wanted.saveData.ProjectId != projectId) return false;
