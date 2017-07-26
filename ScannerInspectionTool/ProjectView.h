@@ -21,14 +21,19 @@ public:
 
 	public slots:
 	void refreshProjects();
+	void createCustomMenu(const QPoint &pos);
+	void changeProjectName();
 
 private:
 	const int timerDuration = 30000; //30sec
 
 	ScannerInteraction* connector;
 	ProjectTableView* dataModel;
+	QMenu* nameChange;
+	QModelIndex* contextMenuIndex;
 
-	void processProjects(QByteArray);
+	void processProjects(QByteArray) const;
+	void produceContextMenu();
 
 	//ui elements
 	QPushButton* refresh, *transfer;

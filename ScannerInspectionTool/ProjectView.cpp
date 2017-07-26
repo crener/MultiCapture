@@ -2,6 +2,11 @@
 #include <qtimer.h>
 #include "Lib/json.hpp"
 #include "Project.h"
+#include <QInputDialog>
+#include <QMenu>
+#include "parameterBuilder.h"
+#include <qdir.h>
+#include <QLineEdit>
 
 ProjectView::ProjectView(QPushButton* refresh, QPushButton* transfer, QTableView* table, ScannerInteraction* connector)
 {
@@ -14,10 +19,13 @@ ProjectView::ProjectView(QPushButton* refresh, QPushButton* transfer, QTableView
 
 	dataModel = new ProjectTableView();
 	table->setModel(dataModel);
-	table->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
 	table->resizeColumnsToContents();
+	table->setContextMenuPolicy(Qt::CustomContextMenu);
+	produceContextMenu();
 
 	connect(refresh, &QPushButton::clicked, this, &ProjectView::refreshProjects);
+	connect(table, &QTableView::customContextMenuRequested, this, &ProjectView::createCustomMenu);
 }
 
 ProjectView::~ProjectView()
@@ -46,7 +54,35 @@ void ProjectView::refreshProjects()
 	connector->requestScanner(ScannerCommands::getLoadedProjects, "", this);
 }
 
-void ProjectView::processProjects(QByteArray data)
+void ProjectView::createCustomMenu(const QPoint& pos)
+{
+	//check what cell is requested
+	QModelIndex index = table->indexAt(pos);
+	if (!dataModel->canChangeName(index)) return;
+
+	//show context menu for changing the project name
+	QPoint location = table->mapToGlobal(pos);
+	contextMenuIndex = new QModelIndex(index);
+	nameChange->exec(location);
+}
+
+void ProjectView::changeProjectName()
+{
+	bool ok;
+	int project = dataModel->getProjectId(*contextMenuIndex);
+
+	QString text = QInputDialog::getText(table, tr("New Project Name"),
+		tr("New Name"), QLineEdit::Normal, QString::number(project), &ok);
+
+	//check if user canceled
+	if (!ok) return;
+
+	connector->requestScanner(ScannerCommands::setProjectNiceName,
+		parameterBuilder().addParam("name", text)->toString(), this);
+	refreshProjects();
+}
+
+void ProjectView::processProjects(QByteArray data) const
 {
 	nlohmann::json result = nlohmann::json::parse(data.toStdString().c_str());
 
@@ -71,5 +107,13 @@ void ProjectView::processProjects(QByteArray data)
 	dataModel->updateTable();
 
 	table->resizeColumnsToContents();
-	table->resizeRowsToContents();
+}
+
+void ProjectView::produceContextMenu()
+{
+	nameChange = new QMenu();
+
+	QAction* name = nameChange->addAction("Change Name");
+	name->setStatusTip("Change the name of the project");
+	connect(name, &QAction::triggered, this, &ProjectView::changeProjectName);
 }

@@ -18,6 +18,8 @@ public:
 	void addItem(project);
 	void clearData();
 	void updateTable();
+	bool canChangeName(const QModelIndex &);
+	int getProjectId(const QModelIndex&);
 
 private:
 	const int headerNameSize = 50;

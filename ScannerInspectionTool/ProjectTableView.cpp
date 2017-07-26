@@ -106,3 +106,13 @@ void ProjectTableView::updateTable()
 
 	emit dataChanged(topLeft, bottomRight);
 }
+
+bool ProjectTableView::canChangeName(const QModelIndex& index)
+{
+	return index.column() == 0;
+}
+
+int ProjectTableView::getProjectId(const QModelIndex& index)
+{
+	return projects->at(index.row()).id;
+}
