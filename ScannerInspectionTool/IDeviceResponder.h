@@ -5,6 +5,6 @@ class QByteArray;
 
 class IDeviceResponder
 {
-signals:
+public:
 	virtual void respondToScanner(ScannerCommands, QByteArray) = 0;
 };

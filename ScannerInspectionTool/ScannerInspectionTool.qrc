@@ -1,5 +1,9 @@
 <RCC>
   <qresource prefix="ScannerInspectionTool">
+    <file>Resources/icon-fileDone.png</file>
+    <file>Resources/icon-fileNeeded.png</file>
+    <file>Resources/icon-play.svg</file>
+    <file>Resources/icon-pause.svg</file>
     <file>Resources/icon-inspector.png</file>
   </qresource>
   <qresource prefix="DirectInteractionWindow">

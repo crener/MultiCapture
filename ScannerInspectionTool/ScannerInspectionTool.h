@@ -7,6 +7,7 @@
 #include "ScannerResponseListener.h"
 #include "ScannerInteraction.h"
 #include "DirectInteractionWindow.h"
+#include "ProjectView.h"
 
 QT_BEGIN_NAMESPACE
 class QUdpSocket;
@@ -48,6 +49,7 @@ public:
 
 private:
 	void setupBroadcastListener();
+	void setupProjectView();
 	void clearScanners();
 	void updateLogView(QByteArray);
 	void refreshLogs(bool);
@@ -56,6 +58,7 @@ private:
 
 	ScannerResponseListener* listener;
 	ScannerInteraction* connector;
+	ProjectView* projects;
 	QThread* listenerThread;
 	QStringList* scannerItems;
 	std::list<ScannerDeviceInformation*> scanners;

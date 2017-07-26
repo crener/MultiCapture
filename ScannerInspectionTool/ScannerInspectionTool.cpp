@@ -5,6 +5,7 @@
 #include "ScannerInteraction.h"
 #include "parameterBuilder.h"
 #include "Lib/json.hpp"
+#include "ProjectView.h"
 
 
 ScannerInspectionTool::ScannerInspectionTool(QWidget *parent)
@@ -44,7 +45,9 @@ ScannerInspectionTool::ScannerInspectionTool(QWidget *parent)
 	//connect(logRefresh, &QPushButton::released, this, &ScannerInspectionTool::refreshLogs);
 
 	setupBroadcastListener();
+	setupProjectView();
 
+	//setup the direct interaction window and hide it in the background
 	directWn = new DirectInteractionWindow();
 	directWn->setConnection(connector);
 	DirectInteractionBtn = findChild<QAction*>("actionDirect_Interaction_Window");
@@ -94,9 +97,9 @@ void ScannerInspectionTool::handleConnectionBtn()
 	{
 		//disconnect, show confirmation message
 		QMessageBox msgBox;
-		msgBox.setWindowTitle("Disconnect?");
+		msgBox.setWindowTitle("Are you sure?");
 		msgBox.setIcon(QMessageBox::Question);
-		msgBox.setInformativeText("Are you sure you want to disconnect?");
+		msgBox.setText("Are you sure you want to disconnect?");
 		msgBox.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
 		msgBox.setDefaultButton(QMessageBox::Yes);
 		int ret = msgBox.exec();
@@ -194,6 +197,8 @@ void ScannerInspectionTool::respondToScanner(ScannerCommands command, QByteArray
 	case ScannerCommands::getRecentLogDiff:
 		updateLogView(data);
 		break;
+	default:
+		return;
 	}
 }
 
@@ -244,6 +249,17 @@ void ScannerInspectionTool::setupBroadcastListener()
 	//connect(connector, &ScannerInteraction::scannerResult, this, &ScannerInspectionTool::respondToScanner);
 
 	listenerThread->start();
+}
+
+void ScannerInspectionTool::setupProjectView()
+{
+	QPushButton* trans = findChild<QPushButton*>("transferBtn");
+	QPushButton* refresh = findChild<QPushButton*>("projectRefresh");
+	QTableView* table = findChild<QTableView*>("projects");
+
+	projects = new ProjectView(refresh, trans, table, connector);
+
+	connect(connector, &ScannerInteraction::scannerConnected, projects, &ProjectView::refreshProjects);
 }
 
 void ScannerInspectionTool::clearScanners()

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>746</width>
+    <width>872</width>
     <height>630</height>
    </rect>
   </property>
@@ -24,160 +24,250 @@
     <normaloff>:/ScannerInspectionTool/Resources/icon-inspector.png</normaloff>:/ScannerInspectionTool/Resources/icon-inspector.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
-     <widget class="QSplitter" name="top">
+     <widget class="QSplitter" name="splitter_2">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QWidget" name="layoutWidget">
-       <layout class="QVBoxLayout" name="connections">
-        <property name="leftMargin">
-         <number>5</number>
-        </property>
-        <property name="topMargin">
-         <number>5</number>
-        </property>
-        <property name="rightMargin">
-         <number>5</number>
-        </property>
-        <property name="bottomMargin">
-         <number>0</number>
-        </property>
+      <widget class="QWidget" name="">
+       <layout class="QVBoxLayout" name="connectionLogsImagePreview">
         <item>
-         <layout class="QVBoxLayout" name="connectionControl">
-          <property name="sizeConstraint">
-           <enum>QLayout::SetDefaultConstraint</enum>
+         <widget class="QSplitter" name="top">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
-          <item>
-           <widget class="QLabel" name="currentLbl">
-            <property name="font">
-             <font>
-              <pointsize>14</pointsize>
-             </font>
+          <widget class="QWidget" name="layoutWidget">
+           <layout class="QVBoxLayout" name="connections">
+            <property name="leftMargin">
+             <number>5</number>
             </property>
-            <property name="styleSheet">
-             <string notr="true">color: rgb(237, 20, 61);</string>
+            <property name="topMargin">
+             <number>5</number>
             </property>
-            <property name="lineWidth">
-             <number>1</number>
+            <property name="rightMargin">
+             <number>5</number>
             </property>
-            <property name="text">
-             <string>Disconnected</string>
+            <property name="bottomMargin">
+             <number>0</number>
             </property>
-            <property name="scaledContents">
-             <bool>true</bool>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-            <property name="wordWrap">
-             <bool>false</bool>
-            </property>
-            <property name="openExternalLinks">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QListView" name="deviceList">
-            <property name="editTriggers">
-             <set>QAbstractItemView::NoEditTriggers</set>
-            </property>
-            <property name="resizeMode">
-             <enum>QListView::Fixed</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
-             <widget class="QPushButton" name="deviceScanBtn">
-              <property name="minimumSize">
-               <size>
-                <width>80</width>
-                <height>23</height>
-               </size>
+             <layout class="QVBoxLayout" name="connectionControl">
+              <property name="sizeConstraint">
+               <enum>QLayout::SetDefaultConstraint</enum>
               </property>
-              <property name="text">
-               <string>Refresh</string>
-              </property>
-             </widget>
+              <item>
+               <widget class="QLabel" name="currentLbl">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                 </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">color: rgb(237, 20, 61);</string>
+                </property>
+                <property name="lineWidth">
+                 <number>1</number>
+                </property>
+                <property name="text">
+                 <string>Disconnected</string>
+                </property>
+                <property name="scaledContents">
+                 <bool>true</bool>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="wordWrap">
+                 <bool>false</bool>
+                </property>
+                <property name="openExternalLinks">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QListView" name="deviceList">
+                <property name="editTriggers">
+                 <set>QAbstractItemView::NoEditTriggers</set>
+                </property>
+                <property name="resizeMode">
+                 <enum>QListView::Fixed</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout">
+                <item>
+                 <widget class="QPushButton" name="deviceScanBtn">
+                  <property name="minimumSize">
+                   <size>
+                    <width>80</width>
+                    <height>23</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>Refresh</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="deviceConnectBtn">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>80</width>
+                    <height>23</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>Connect</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
             </item>
             <item>
-             <widget class="QPushButton" name="deviceConnectBtn">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>80</width>
-                <height>23</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Connect</string>
-              </property>
-             </widget>
+             <layout class="QHBoxLayout" name="nameControl">
+              <item>
+               <widget class="QLineEdit" name="nameText"/>
+              </item>
+              <item>
+               <widget class="QPushButton" name="nameUpdateBtn">
+                <property name="text">
+                 <string>Update Name</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
-          </item>
-         </layout>
+          </widget>
+          <widget class="QGraphicsView" name="deviceImagePreview">
+           <property name="minimumSize">
+            <size>
+             <width>270</width>
+             <height>0</height>
+            </size>
+           </property>
+          </widget>
+         </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="nameControl">
+         <layout class="QVBoxLayout" name="logs">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetNoConstraint</enum>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item>
-           <widget class="QLineEdit" name="nameText"/>
-          </item>
-          <item>
-           <widget class="QPushButton" name="nameUpdateBtn">
+           <widget class="QPushButton" name="deviceLogsBtn">
             <property name="text">
-             <string>Update Name</string>
+             <string>Refresh Scanner Logs</string>
             </property>
            </widget>
+          </item>
+          <item>
+           <widget class="QListView" name="deviceLogs"/>
           </item>
          </layout>
         </item>
        </layout>
       </widget>
-      <widget class="QGraphicsView" name="deviceImagePreview">
-       <property name="minimumSize">
-        <size>
-         <width>270</width>
-         <height>0</height>
-        </size>
+      <widget class="QSplitter" name="splitter">
+       <property name="lineWidth">
+        <number>1</number>
        </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <widget class="QWidget" name="layoutWidget">
+        <layout class="QVBoxLayout" name="projectview">
+         <item>
+          <layout class="QHBoxLayout" name="controls">
+           <item>
+            <widget class="QPushButton" name="transferBtn">
+             <property name="text">
+              <string>Transfer</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="projectRefresh">
+             <property name="text">
+              <string>Refresh Projects</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QTableView" name="projects">
+           <property name="cornerButtonEnabled">
+            <bool>true</bool>
+           </property>
+           <attribute name="horizontalHeaderStretchLastSection">
+            <bool>true</bool>
+           </attribute>
+           <attribute name="verticalHeaderVisible">
+            <bool>false</bool>
+           </attribute>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="layoutWidget">
+        <layout class="QVBoxLayout" name="localView">
+         <item>
+          <layout class="QHBoxLayout" name="controls_2">
+           <item>
+            <widget class="QLineEdit" name="savePath">
+             <property name="placeholderText">
+              <string>Project Transfer Location</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pausePlay">
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset>
+               <normaloff>Resources/icon-pause.svg</normaloff>
+               <normalon>Resources/icon-play.svg</normalon>Resources/icon-pause.svg</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>16</width>
+               <height>16</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QTreeView" name="progress"/>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </widget>
-    </item>
-    <item>
-     <layout class="QVBoxLayout" name="logs">
-      <property name="sizeConstraint">
-       <enum>QLayout::SetNoConstraint</enum>
-      </property>
-      <property name="leftMargin">
-       <number>5</number>
-      </property>
-      <property name="topMargin">
-       <number>5</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>5</number>
-      </property>
-      <item>
-       <widget class="QPushButton" name="deviceLogsBtn">
-        <property name="text">
-         <string>Refresh Scanner Logs</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QListView" name="deviceLogs"/>
-      </item>
-     </layout>
     </item>
    </layout>
   </widget>
@@ -186,7 +276,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>746</width>
+     <width>872</width>
      <height>21</height>
     </rect>
    </property>
@@ -222,6 +312,22 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>deviceScanBtn</tabstop>
+  <tabstop>deviceConnectBtn</tabstop>
+  <tabstop>nameUpdateBtn</tabstop>
+  <tabstop>nameText</tabstop>
+  <tabstop>deviceList</tabstop>
+  <tabstop>deviceImagePreview</tabstop>
+  <tabstop>deviceLogsBtn</tabstop>
+  <tabstop>deviceLogs</tabstop>
+  <tabstop>projectRefresh</tabstop>
+  <tabstop>progress</tabstop>
+  <tabstop>savePath</tabstop>
+  <tabstop>pausePlay</tabstop>
+  <tabstop>projects</tabstop>
+  <tabstop>transferBtn</tabstop>
+ </tabstops>
  <resources>
   <include location="ScannerInspectionTool.qrc"/>
  </resources>
