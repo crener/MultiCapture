@@ -74,6 +74,29 @@ namespace Hub.Util
             project.Remove(remove);
         }
 
+        public void RefreshProject(int id)
+        {
+            //ensure the project exists
+            if (!ProjectExists(id)) return;
+            if (Deployer.CurrentProject.ProjectId == id) return;
+
+            string projectPath = SharedDeviceItems.Constants.DefaultHubSaveLocation() + id + Path.DirectorySeparatorChar +
+                                 ProjectMapper.FileName;
+            if (!File.Exists(projectPath)) return;
+
+            //find the project index
+            int location = -1;
+            for (int i = 0; i < project.Count; i++)
+                if (project[i].Id == id)
+                {
+                    location = i;
+                    break;
+                }
+            if (location == -1) return;
+
+            project[location] = new ProjectInfo(ProjectMapper.ExtractSaveData(projectPath));
+        }
+
         public bool ProjectExists(int projectId)
         {
             try
@@ -135,7 +158,7 @@ namespace Hub.Util
 
             private void CheckRegen()
             {
-                if(lastSetCount != mapper.ImageSetCount)
+                if (lastSetCount != mapper.ImageSetCount)
                 {
                     imageCount = savedCount = 0;
 

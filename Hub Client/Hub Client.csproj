@@ -50,6 +50,7 @@
     <Compile Include="Desktop Interconnect\ResponseSystem\IResponse.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\ImageSetReponse.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\ProjectDetails.cs" />
+    <Compile Include="Desktop Interconnect\ResponseSystem\Responses\ProjectNameChange.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\RemoveProjectResponse.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\SavedProjectsResponse.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\ApiCompatability.cs" />

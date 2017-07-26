@@ -60,6 +60,7 @@
     <Compile Include="Desktop Interconnect\MockDesktopThread.cs" />
     <Compile Include="Desktop Interconnect\MockUdpClient.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\ApiCompatabilityTest.cs" />
+    <Compile Include="Desktop Interconnect\ResponseSystem\Responses\ProjectNameChangeTest.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\ProjectDetailsTest.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\SavedProjectsTest.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\RemoveProjectTest.cs" />

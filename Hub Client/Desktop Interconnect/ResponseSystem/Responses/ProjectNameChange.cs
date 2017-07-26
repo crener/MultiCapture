@@ -3,25 +3,30 @@ using System.Collections.Generic;
 using System.Text;
 using Hub.ResponseSystem;
 using Hub.Util;
-using Newtonsoft.Json;
 
 namespace Hub.DesktopInterconnect.ResponseSystem.Responses
 {
-    [ResponseType(ScannerCommands.ProjectDetails)]
-    internal class ProjectDetails : BaseResponse
+    [ResponseType(ScannerCommands.ProjectNameChange)]
+    class ProjectNameChange : BaseResponse
     {
         public override byte[] GenerateResponse(ScannerCommands command, Dictionary<string, string> parameters)
         {
-            if(!parameters.ContainsKey("id"))
+            if (!parameters.ContainsKey("id"))
             {
                 Console.WriteLine(command + " is missisng parameter: id");
                 return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?\"id\" parameter is missing");
             }
 
+            if (!parameters.ContainsKey("name"))
+            {
+                Console.WriteLine(command + " is missisng parameter: name");
+                return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?\"name\" parameter is missing");
+            }
+
             int projectid;
             bool success = int.TryParse(parameters["id"], out projectid);
 
-            if(!success)
+            if (!success)
             {
                 Console.WriteLine(command + " could't convert parameter: id");
                 return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?\"id\" could not be converted. Is \"" +
@@ -31,29 +36,19 @@ namespace Hub.DesktopInterconnect.ResponseSystem.Responses
             try
             {
                 ProjectMapper project = ProjectCache.RetrieveProject(projectid);
-                return Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(new ProjectJson(project)));
+                Console.WriteLine("Project name changed from \"{0}\" to \"{1}\"", project.Name, parameters["name"]);
+                project.saveData.ProjectName = parameters["name"];
+                project.Save();
+
+                if (Deployer.ProjectManager != null)
+                    Deployer.ProjectManager.RefreshProject(projectid);
+                return ResponseConstants.SuccessResponse;
             }
-            catch(KeyNotFoundException)
+            catch (KeyNotFoundException)
             {
                 Console.WriteLine(command + "could not find project " + projectid);
                 return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?project could not be found! project: " +
                                                projectid);
-            }
-        }
-
-        private struct ProjectJson
-        {
-            public int ProjectId { get; set; }
-            public string ProjectName { get; set; }
-            public ProjectMapper.ImageSet[] ImageSets { get; set; }
-            public ProjectMapper.Camera[] Cameras { get; set; }
-
-            public ProjectJson(ProjectMapper project)
-            {
-                ProjectId = project.ProjectId;
-                ProjectName = project.Name ?? ProjectId.ToString();
-                ImageSets = project.saveData.sets.ToArray();
-                Cameras = project.saveData.cameras.ToArray();
             }
         }
     }

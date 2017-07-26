@@ -78,7 +78,8 @@ void ProjectView::changeProjectName()
 	if (!ok) return;
 
 	connector->requestScanner(ScannerCommands::setProjectNiceName,
-		parameterBuilder().addParam("name", text)->toString(), this);
+		parameterBuilder().addParam("id", QString::number(project))->
+		addParam("name", text)->toString(), this);
 	refreshProjects();
 }
 
