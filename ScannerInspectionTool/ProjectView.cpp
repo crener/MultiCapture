@@ -7,6 +7,7 @@
 #include "parameterBuilder.h"
 #include <qdir.h>
 #include <QLineEdit>
+#include <QErrorMessage>
 #include <QMessageBox>
 
 ProjectView::ProjectView(QPushButton* refresh, QPushButton* transfer, QTableView* table, ScannerInteraction* connector)
@@ -17,6 +18,8 @@ ProjectView::ProjectView(QPushButton* refresh, QPushButton* transfer, QTableView
 	this->table = table;
 
 	this->connector = connector;
+	projectError = new QErrorMessage();
+	projectError->setWindowTitle("Project Management Error");
 
 	dataModel = new ProjectTableView();
 	table->setModel(dataModel);
@@ -45,6 +48,9 @@ void ProjectView::respondToScanner(ScannerCommands command, QByteArray data)
 	case ScannerCommands::getLoadedProjects:
 		processProjects(data);
 		break;
+	case ScannerCommands::RemoveProject:
+	case ScannerCommands::setProjectNiceName:
+		reportPossibleError(data);
 	default:
 		return;
 	}
@@ -86,7 +92,7 @@ void ProjectView::changeProjectName()
 
 void ProjectView::removeProject()
 {
-	QMessageBox::StandardButton reply  = QMessageBox::question(table, "Are You Sure?", "Would you like to remove this project?",
+	QMessageBox::StandardButton reply = QMessageBox::question(table, "Are You Sure?", "Would you like to remove this project?",
 		QMessageBox::Yes | QMessageBox::No);
 
 	if (reply == QMessageBox::No) return;
@@ -100,6 +106,7 @@ void ProjectView::removeProject()
 
 void ProjectView::processProjects(QByteArray data) const
 {
+	reportPossibleError(data);
 	nlohmann::json result = nlohmann::json::parse(data.toStdString().c_str());
 
 	dataModel->clearData();
@@ -136,4 +143,14 @@ void ProjectView::setupContextMenu()
 	QAction* remove = nameChange->addAction("Delete Project");
 	name->setStatusTip("Delete the project from the scanner");
 	connect(remove, &QAction::triggered, this, &ProjectView::removeProject);
+}
+
+void ProjectView::reportPossibleError(QByteArray data) const
+{
+	//reports any failures from the response of a request
+	QString response = QString(data);
+
+	if (response.startsWith("Fail"))
+		projectError->showMessage(response.mid(response.indexOf("?") + 1));
+
 }

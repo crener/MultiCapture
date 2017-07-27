@@ -4,6 +4,7 @@
 #include "ScannerInteraction.h"
 #include "Lib/json.hpp"
 #include "ProjectTableView.h"
+#include <QErrorMessage>
 
 QT_BEGIN_NAMESPACE
 class QPushButton;
@@ -32,9 +33,11 @@ private:
 	ProjectTableView* dataModel;
 	QMenu* nameChange;
 	QModelIndex* contextMenuIndex;
+	QErrorMessage* projectError;
 
 	void processProjects(QByteArray) const;
 	void setupContextMenu();
+	void reportPossibleError(QByteArray) const;
 
 	//ui elements
 	QPushButton* refresh, *transfer;
