@@ -23,6 +23,7 @@ public:
 	void refreshProjects();
 	void createCustomMenu(const QPoint &pos);
 	void changeProjectName();
+	void removeProject();
 
 private:
 	const int timerDuration = 30000; //30sec
@@ -33,7 +34,7 @@ private:
 	QModelIndex* contextMenuIndex;
 
 	void processProjects(QByteArray) const;
-	void produceContextMenu();
+	void setupContextMenu();
 
 	//ui elements
 	QPushButton* refresh, *transfer;

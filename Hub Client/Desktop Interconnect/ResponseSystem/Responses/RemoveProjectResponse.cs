@@ -38,7 +38,7 @@ namespace Hub.ResponseSystem.Responses
                 return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?You cannot remove the current project!");
             }
 
-            Directory.Delete(path);
+            Directory.Delete(path, true);
             Deployer.ProjectManager.RemoveProject(project);
 
             return ResponseConstants.SuccessResponse;

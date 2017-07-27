@@ -7,6 +7,7 @@
 #include "parameterBuilder.h"
 #include <qdir.h>
 #include <QLineEdit>
+#include <QMessageBox>
 
 ProjectView::ProjectView(QPushButton* refresh, QPushButton* transfer, QTableView* table, ScannerInteraction* connector)
 {
@@ -22,7 +23,7 @@ ProjectView::ProjectView(QPushButton* refresh, QPushButton* transfer, QTableView
 
 	table->resizeColumnsToContents();
 	table->setContextMenuPolicy(Qt::CustomContextMenu);
-	produceContextMenu();
+	setupContextMenu();
 
 	connect(refresh, &QPushButton::clicked, this, &ProjectView::refreshProjects);
 	connect(table, &QTableView::customContextMenuRequested, this, &ProjectView::createCustomMenu);
@@ -83,6 +84,20 @@ void ProjectView::changeProjectName()
 	refreshProjects();
 }
 
+void ProjectView::removeProject()
+{
+	QMessageBox::StandardButton reply  = QMessageBox::question(table, "Are You Sure?", "Would you like to remove this project?",
+		QMessageBox::Yes | QMessageBox::No);
+
+	if (reply == QMessageBox::No) return;
+
+	int id = dataModel->getProjectId(*contextMenuIndex);
+
+	connector->requestScanner(ScannerCommands::RemoveProject,
+		parameterBuilder().addParam("id", QString::number(id))->toString(), this);
+	refreshProjects();
+}
+
 void ProjectView::processProjects(QByteArray data) const
 {
 	nlohmann::json result = nlohmann::json::parse(data.toStdString().c_str());
@@ -110,11 +125,15 @@ void ProjectView::processProjects(QByteArray data) const
 	table->resizeColumnsToContents();
 }
 
-void ProjectView::produceContextMenu()
+void ProjectView::setupContextMenu()
 {
 	nameChange = new QMenu();
 
 	QAction* name = nameChange->addAction("Change Name");
 	name->setStatusTip("Change the name of the project");
 	connect(name, &QAction::triggered, this, &ProjectView::changeProjectName);
+
+	QAction* remove = nameChange->addAction("Delete Project");
+	name->setStatusTip("Delete the project from the scanner");
+	connect(remove, &QAction::triggered, this, &ProjectView::removeProject);
 }

@@ -138,7 +138,7 @@ namespace Hub.Util
                 }
             }
 
-            public string Name { get; set; }
+            public virtual string Name { get; set; }
             public int Id { get; set; }
             public virtual int ImageCount { get { return imageCount; } set { imageCount = value; } }
             public virtual int SavedCount { get { return savedCount; } set { savedCount = value; } }
@@ -166,6 +166,8 @@ namespace Hub.Util
                     lastSetCount = mapper.ImageSetCount;
                 }
             }
+
+            public override string Name => mapper.Name ?? mapper.ProjectId.ToString();
 
             public override int ImageCount
             {
