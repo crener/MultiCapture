@@ -9,22 +9,31 @@
 QT_BEGIN_NAMESPACE
 class QPushButton;
 class QTableWidget;
-class QTimer;
+class QTableView;
 QT_END_NAMESPACE
 
 class ProjectView : public QObject, public IDeviceResponder
 {
+	Q_OBJECT
+
 public:
 	ProjectView(QPushButton*, QPushButton*, QTableView*, ScannerInteraction*);
 	~ProjectView();
 
 	void respondToScanner(ScannerCommands, QByteArray) override;
 
+	signals:
+	void transferProject(const int);
+
 	public slots:
 	void refreshProjects();
+
+	private slots:
 	void createCustomMenu(const QPoint &pos);
 	void changeProjectName();
 	void removeProject();
+
+	void triggerProjectChange();
 
 private:
 	const int timerDuration = 30000; //30sec

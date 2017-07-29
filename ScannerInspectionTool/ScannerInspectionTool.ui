@@ -217,11 +217,11 @@
          </item>
          <item>
           <widget class="QTableView" name="projects">
-           <property name="editTriggers">
-            <set>QAbstractItemView::NoEditTriggers</set>
+           <property name="selectionMode">
+            <enum>QAbstractItemView::SingleSelection</enum>
            </property>
-           <property name="cornerButtonEnabled">
-            <bool>true</bool>
+           <property name="selectionBehavior">
+            <enum>QAbstractItemView::SelectRows</enum>
            </property>
            <attribute name="horizontalHeaderStretchLastSection">
             <bool>true</bool>
@@ -250,9 +250,9 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset>
-               <normaloff>Resources/icon-pause.svg</normaloff>
-               <normalon>Resources/icon-play.svg</normalon>Resources/icon-pause.svg</iconset>
+              <iconset resource="ScannerInspectionTool.qrc">
+               <normaloff>:/ScannerInspectionTool/Resources/icon-play.svg</normaloff>
+               <normalon>:/ScannerInspectionTool/Resources/icon-pause.svg</normalon>:/ScannerInspectionTool/Resources/icon-play.svg</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -265,7 +265,11 @@
           </layout>
          </item>
          <item>
-          <widget class="QTreeView" name="progress"/>
+          <widget class="QTreeView" name="progress">
+           <property name="uniformRowHeights">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>

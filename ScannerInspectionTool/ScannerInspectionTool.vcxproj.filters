@@ -53,6 +53,12 @@
     <Filter Include="Lib">
       <UniqueIdentifier>{c9fa883e-cdcc-4692-9e2e-da58fb5cf1bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ViewModels">
+      <UniqueIdentifier>{eac315af-c9e0-4870-835c-8899d0502f86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ViewModels">
+      <UniqueIdentifier>{1b7d022b-ead7-48b8-b2c3-94eb8f3d97b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -106,14 +112,41 @@
     <ClCompile Include="ProjectView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ProjectTableView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_ProjectTableView.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_ProjectTableView.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="projectTransfer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ProjectView.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_projectTransfer.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ProjectView.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_projectTransfer.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageSet.cpp">
+      <Filter>Source Files\Data Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ProjectTransferViewModel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ProjectTransferViewModel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectTransferViewModel.cpp">
+      <Filter>Source Files\ViewModels</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectTableView.cpp">
+      <Filter>Source Files\ViewModels</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -138,8 +171,17 @@
     <CustomBuild Include="DirectInteractionWindow.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="ProjectTableView.h">
+    <CustomBuild Include="ProjectView.h">
       <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="projectTransfer.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ProjectTableView.h">
+      <Filter>Header Files\ViewModels</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ProjectTransferViewModel.h">
+      <Filter>Header Files\ViewModels</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -164,10 +206,10 @@
     <ClInclude Include="IDeviceResponder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ProjectView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Project.h">
+      <Filter>Header Files\Data Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageSet.h">
       <Filter>Header Files\Data Handlers</Filter>
     </ClInclude>
   </ItemGroup>

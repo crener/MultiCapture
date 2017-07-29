@@ -45,7 +45,7 @@ QVariant ProjectTableView::data(const QModelIndex& index, int role) const
 
 Qt::ItemFlags ProjectTableView::flags(const QModelIndex& index) const
 {
-	return Qt::ItemIsEnabled;
+	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
 bool ProjectTableView::validIndex(const QModelIndex& index) const

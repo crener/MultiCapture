@@ -29,16 +29,16 @@ ProjectView::ProjectView(QPushButton* refresh, QPushButton* transfer, QTableView
 	setupContextMenu();
 
 	connect(refresh, &QPushButton::clicked, this, &ProjectView::refreshProjects);
+	connect(transfer, &QPushButton::clicked, this, &ProjectView::triggerProjectChange);
 	connect(table, &QTableView::customContextMenuRequested, this, &ProjectView::createCustomMenu);
 }
 
 ProjectView::~ProjectView()
 {
-	delete refresh;
-	delete transfer;
-	delete table;
-
-	//delete timer;
+	delete dataModel;
+	delete nameChange;
+	delete contextMenuIndex;
+	delete projectError;
 }
 
 void ProjectView::respondToScanner(ScannerCommands command, QByteArray data)
@@ -104,6 +104,19 @@ void ProjectView::removeProject()
 	refreshProjects();
 }
 
+void ProjectView::triggerProjectChange()
+{
+	QItemSelectionModel* select = table->selectionModel();
+
+	//ensure that there is a project selection
+	if (!select->hasSelection()) return;
+
+	QModelIndex row = select->selectedRows().at(0);
+	int project = dataModel->getProjectId(row);
+
+	emit transferProject(project);
+}
+
 void ProjectView::processProjects(QByteArray data) const
 {
 	reportPossibleError(data);
@@ -145,12 +158,11 @@ void ProjectView::setupContextMenu()
 	connect(remove, &QAction::triggered, this, &ProjectView::removeProject);
 }
 
+//reports any failures from the response of a request
 void ProjectView::reportPossibleError(QByteArray data) const
 {
-	//reports any failures from the response of a request
 	QString response = QString(data);
 
 	if (response.startsWith("Fail"))
 		projectError->showMessage(response.mid(response.indexOf("?") + 1));
-
 }

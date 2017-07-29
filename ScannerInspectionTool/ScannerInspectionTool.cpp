@@ -46,6 +46,7 @@ ScannerInspectionTool::ScannerInspectionTool(QWidget *parent)
 
 	setupBroadcastListener();
 	setupProjectView();
+	setupProjectTransfer();
 
 	//setup the direct interaction window and hide it in the background
 	directWn = new DirectInteractionWindow();
@@ -260,6 +261,17 @@ void ScannerInspectionTool::setupProjectView()
 	projects = new ProjectView(refresh, trans, table, connector);
 
 	connect(connector, &ScannerInteraction::scannerConnected, projects, &ProjectView::refreshProjects);
+}
+
+void ScannerInspectionTool::setupProjectTransfer()
+{
+	QLineEdit* path = findChild<QLineEdit*>("savePath");
+	QPushButton* pause = findChild<QPushButton*>("pausePlay");
+	QTreeView* progress = findChild<QTreeView*>("progress");
+
+	transfer = new projectTransfer(path, pause, progress, connector);
+
+	connect(projects, &ProjectView::transferProject, transfer, &projectTransfer::changeTargetProject);
 }
 
 void ScannerInspectionTool::clearScanners()
