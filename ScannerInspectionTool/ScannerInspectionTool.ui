@@ -265,11 +265,7 @@
           </layout>
          </item>
          <item>
-          <widget class="QTreeView" name="progress">
-           <property name="uniformRowHeights">
-            <bool>true</bool>
-           </property>
-          </widget>
+          <widget class="QTreeView" name="progress"/>
          </item>
         </layout>
        </widget>

@@ -1,26 +1,39 @@
 #include "ImageSet.h"
 #include "Lib/json.hpp"
+#include <QStringList>
+#include "Image.h"
 
-
-ImageSet::ImageSet(std::string json, QString name, int setId)
+ImageSet::ImageSet(const std::string json, QString name, int setId, GenericTreeItem* root)
+	: GenericTreeItem(root)
 {
-	this->name = name;
-	id = setId;
+	this->setName = name;
+	this->setId = setId;
 
 	//extract required image data from json
 	{
 		nlohmann::json data = nlohmann::json::parse(json.c_str());
 		for (int i = 0; i < data.size(); ++i)
 		{
-			Image img;
-			img.cameraId = data[i]["id"];
-			img.fileName = QString::fromStdString(data[i]["path"]);
+			int id = data[i]["id"];
+			QString file = QString::fromStdString(data[i]["path"]);
 
-			images.append(img);
+			Image* img = new Image(id, file, this);
+			appendChild(img);
 		}
 	}
 }
 
 ImageSet::~ImageSet()
 {
+}
+
+QVariant ImageSet::data(int column)
+{
+	if (column == 0) return setName;
+	else return setId;
+}
+
+int ImageSet::columnCount()
+{
+	return 2;
 }

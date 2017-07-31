@@ -2,7 +2,7 @@
 #include <QPushButton>
 #include "ScannerInteraction.h"
 #include <qdir.h>
-#include "ProjectTransferViewModel.h"
+#include "GenericTreeViewModel.h"
 
 QT_BEGIN_NAMESPACE
 class QTreeView;
@@ -31,7 +31,7 @@ private:
 
 	int projectid = -1;
 	QDir* transferRoot;
-	ProjectTransferViewModel* model;
+	GenericTreeViewModel* model;
 	
 	QLineEdit* path;
 	QPushButton* statusControl;

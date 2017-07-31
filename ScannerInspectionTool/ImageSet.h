@@ -1,23 +1,19 @@
 #pragma once
-#include <QList>
+#include "GenericTreeItem.h"
 
-class ImageSet
+class Image;
+
+class ImageSet : public GenericTreeItem
 {
 public:
-	struct Image
-	{
-		QString fileName;
-		int cameraId;
-	};
-
-	ImageSet(std::string, QString, int);
+	explicit ImageSet(const std::string, QString, int, GenericTreeItem* root = 0);
 	~ImageSet();
 
-	QList<Image> images = QList<Image>();
-	int id;
-	QString name;
+	QVariant data(int column) override;
+	int columnCount() override;
 
 private:
-	
+	QString setName;
+	int setId;
+	bool transfered = false;
 };
-

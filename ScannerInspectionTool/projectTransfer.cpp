@@ -2,13 +2,14 @@
 #include "ScannerInteraction.h"
 #include "parameterBuilder.h"
 #include "Lib/json.hpp"
-#include <QListView>
 #include <QTreeView>
 #include <QInputDialog>
 #include <qdir.h>
 #include <QMessageBox>
 #include <QFileDialog>
 #include "ImageSet.h"
+#include "GenericTreeViewModel.h"
+#include "GenericTreeRootItem.h"
 
 
 projectTransfer::projectTransfer(QLineEdit* path, QPushButton* statusBtn, QTreeView* project, ScannerInteraction* connector)
@@ -20,7 +21,8 @@ projectTransfer::projectTransfer(QLineEdit* path, QPushButton* statusBtn, QTreeV
 
 	transferRoot = new QDir();
 	
-	model = new ProjectTransferViewModel();
+	GenericTreeRootItem* root = new GenericTreeRootItem();
+	model = new GenericTreeViewModel(root);
 	project->setModel(model);
 }
 
@@ -44,8 +46,8 @@ void projectTransfer::changeTargetProject(int project)
 {
 	if (project == projectid) return;
 
-	bool done = false;
-	QString newPath;
+	bool done = transferRoot->exists(path->text());
+	QString newPath = path->text();
 
 	//check the path the user entered is expected and correct
 	while (!done) {
@@ -92,6 +94,7 @@ void projectTransfer::processProjectDetails(QByteArray data)
 	}
 	catch (std::exception) {}
 
+	model->clearData();
 
 	//extract image details
 	{
@@ -105,9 +108,11 @@ void projectTransfer::processProjectDetails(QByteArray data)
 			std::string name = imageSetJson["path"];
 
 			std::string json = imageSetJson["images"].dump();
-			ImageSet set = ImageSet(json, QString::fromStdString(name), id);
+			ImageSet* set = new ImageSet(json, QString::fromStdString(name), id);
 
-			model->addImageSet(set);
+			model->addItem(set);
+			//bool added = model->addItem(set);
+			//if (!added) delete set;
 		}
 	}
 }

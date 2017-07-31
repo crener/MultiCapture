@@ -148,6 +148,24 @@
     <ClCompile Include="ProjectTableView.cpp">
       <Filter>Source Files\ViewModels</Filter>
     </ClCompile>
+    <ClCompile Include="GenericTreeItem.cpp">
+      <Filter>Source Files\Data Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_GenericTreeViewModel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_GenericTreeViewModel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>Source Files\Data Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="GenericTreeViewModel.cpp">
+      <Filter>Source Files\ViewModels</Filter>
+    </ClCompile>
+    <ClCompile Include="GenericTreeRootItem.cpp">
+      <Filter>Source Files\Data Handlers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ScannerInspectionTool.h">
@@ -183,6 +201,9 @@
     <CustomBuild Include="ProjectTransferViewModel.h">
       <Filter>Header Files\ViewModels</Filter>
     </CustomBuild>
+    <CustomBuild Include="GenericTreeViewModel.h">
+      <Filter>Header Files\ViewModels</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_ScannerInspectionTool.h">
@@ -210,6 +231,15 @@
       <Filter>Header Files\Data Handlers</Filter>
     </ClInclude>
     <ClInclude Include="ImageSet.h">
+      <Filter>Header Files\Data Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="GenericTreeItem.h">
+      <Filter>Header Files\Data Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="GenericTreeRootItem.h">
+      <Filter>Header Files\Data Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
       <Filter>Header Files\Data Handlers</Filter>
     </ClInclude>
   </ItemGroup>
