@@ -7,9 +7,7 @@
 #include <qdir.h>
 #include <QMessageBox>
 #include <QFileDialog>
-#include "ImageSet.h"
-#include "GenericTreeViewModel.h"
-#include "GenericTreeRootItem.h"
+#include "ImageSetViewModel.h"
 
 
 projectTransfer::projectTransfer(QLineEdit* path, QPushButton* statusBtn, QTreeView* project, ScannerInteraction* connector)
@@ -21,8 +19,8 @@ projectTransfer::projectTransfer(QLineEdit* path, QPushButton* statusBtn, QTreeV
 
 	transferRoot = new QDir();
 	
-	GenericTreeRootItem* root = new GenericTreeRootItem();
-	model = new GenericTreeViewModel(root);
+	//GenericTreeRootItem* root = new GenericTreeRootItem();
+	model = new ImageSetViewModel();
 	project->setModel(model);
 }
 
@@ -94,7 +92,7 @@ void projectTransfer::processProjectDetails(QByteArray data)
 	}
 	catch (std::exception) {}
 
-	model->clearData();
+	model->clear();
 
 	//extract image details
 	{
@@ -108,10 +106,10 @@ void projectTransfer::processProjectDetails(QByteArray data)
 			std::string name = imageSetJson["path"];
 
 			std::string json = imageSetJson["images"].dump();
-			ImageSet* set = new ImageSet(json, QString::fromStdString(name), id);
+			//ImageSet* set = new ImageSet(json, QString::fromStdString(name), id);
 
-			model->addItem(set);
-			//bool added = model->addItem(set);
+			//model->addItem(id, name, json);
+			bool added = model->addSet(id, name, json);
 			//if (!added) delete set;
 		}
 	}

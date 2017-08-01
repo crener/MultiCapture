@@ -61,9 +61,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ScannerInspectionTool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -133,9 +130,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_projectTransfer.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="ImageSet.cpp">
-      <Filter>Source Files\Data Handlers</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_ProjectTransferViewModel.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -148,23 +142,17 @@
     <ClCompile Include="ProjectTableView.cpp">
       <Filter>Source Files\ViewModels</Filter>
     </ClCompile>
-    <ClCompile Include="GenericTreeItem.cpp">
-      <Filter>Source Files\Data Handlers</Filter>
+    <ClCompile Include="ImageSetViewModel.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_GenericTreeViewModel.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_GenericTreeViewModel.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="Image.cpp">
-      <Filter>Source Files\Data Handlers</Filter>
-    </ClCompile>
-    <ClCompile Include="GenericTreeViewModel.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files\ViewModels</Filter>
     </ClCompile>
-    <ClCompile Include="GenericTreeRootItem.cpp">
-      <Filter>Source Files\Data Handlers</Filter>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ImageSetViewModel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ImageSetViewModel.cpp">
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -201,7 +189,7 @@
     <CustomBuild Include="ProjectTransferViewModel.h">
       <Filter>Header Files\ViewModels</Filter>
     </CustomBuild>
-    <CustomBuild Include="GenericTreeViewModel.h">
+    <CustomBuild Include="ImageSetViewModel.h">
       <Filter>Header Files\ViewModels</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -228,18 +216,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Project.h">
-      <Filter>Header Files\Data Handlers</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageSet.h">
-      <Filter>Header Files\Data Handlers</Filter>
-    </ClInclude>
-    <ClInclude Include="GenericTreeItem.h">
-      <Filter>Header Files\Data Handlers</Filter>
-    </ClInclude>
-    <ClInclude Include="GenericTreeRootItem.h">
-      <Filter>Header Files\Data Handlers</Filter>
-    </ClInclude>
-    <ClInclude Include="Image.h">
       <Filter>Header Files\Data Handlers</Filter>
     </ClInclude>
   </ItemGroup>
