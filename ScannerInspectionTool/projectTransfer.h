@@ -20,12 +20,17 @@ class projectTransfer : public QObject, public IDeviceResponder
 	{
 		int cameraId;
 		QString fileName;
+
+		QStandardItem* item;
 	};
+
 	struct Set
 	{
 		int setId;
 		QString name;
 		QList<Image*>* images = new QList<Image*>();
+
+		QStandardItem* item;
 	};
 
 public:
@@ -50,10 +55,17 @@ private:
 	void generateImageSetModel(int row) const;
 	bool imageSetExists(int setId) const;
 
+	//transfer methods
+	bool fileExists(QString path);
+	void checkTransferState();
+
 	int projectId = -1;
 	QDir* transferRoot;
 	QStandardItemModel* model;
 	QList<Set*>* setData = new QList<Set*>();
+
+	const QIcon ImageTransfered = QIcon(":/ScannerInspectionTool/transferComplete");
+	const QIcon ImageNotTransfered = QIcon(":/ScannerInspectionTool/transferNeeded");
 	
 	QLineEdit* path;
 	QPushButton* statusControl;

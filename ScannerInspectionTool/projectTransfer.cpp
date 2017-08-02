@@ -91,8 +91,6 @@ void projectTransfer::processProjectDetails(QByteArray data)
 	}
 	catch (std::exception) {}
 
-
-
 	//extract image details
 	nlohmann::json result = nlohmann::json::parse(data.toStdString().c_str());
 	if (result["projectID"] == projectId)
@@ -107,6 +105,7 @@ void projectTransfer::processProjectDetails(QByteArray data)
 		setupModelHeadings();
 
 		overrideProject(result);
+		checkTransferState();
 	}
 }
 
@@ -120,6 +119,34 @@ void projectTransfer::setupModelHeadings() const
 	model->setHorizontalHeaderLabels(labels);
 }
 
+void projectTransfer::checkTransferState()
+{
+	for (int i = 0; i < setData->size(); ++i)
+	{
+		Set* set = setData->at(i);
+		QModelIndex setIndex = model->index(i, 0);
+		bool complete = true;
+
+		for (int j = 0; j < set->images->size(); ++j)
+		{
+			QString path = this->path->text() + "/" + set->name + "/" + set->images->at(j)->fileName;
+
+			if (fileExists(path))
+			{
+				set->images->at(j)->item->setIcon(ImageTransfered);
+			}
+			else
+			{
+				complete = false;
+				set->images->at(j)->item->setIcon(ImageNotTransfered);
+			}
+		}
+
+		if (complete) set->item->setIcon(ImageTransfered);
+		else set->item->setIcon(ImageNotTransfered);
+	}
+}
+
 void projectTransfer::generateImageSetModel(int row) const
 {
 	Set* set = setData->at(row);
@@ -127,6 +154,7 @@ void projectTransfer::generateImageSetModel(int row) const
 	QStandardItem* name = new QStandardItem(set->name);
 	QStandardItem* id = new QStandardItem(QString::number(set->setId));
 	model->appendRow(name);
+	set->item = name;
 	model->setItem(row, 1, id);
 
 	for (int i = 0; i < set->images->size(); ++i)
@@ -135,6 +163,7 @@ void projectTransfer::generateImageSetModel(int row) const
 
 		QStandardItem* imgName = new QStandardItem(img->fileName);
 		name->setChild(i, 0, imgName);
+		img->item = imgName;
 
 		QStandardItem* imgId = new QStandardItem(QString::number(img->cameraId));
 		name->setChild(i, 1, imgId);
@@ -146,6 +175,11 @@ bool projectTransfer::imageSetExists(int setId) const
 	for (int i = 0; i < setData->size(); ++i)
 		if (setData->at(i)->setId == setId) return true;
 	return false;
+}
+
+bool projectTransfer::fileExists(QString path)
+{
+	return QFile().exists(path);
 }
 
 void projectTransfer::modifyExistingProject(nlohmann::json json) const
