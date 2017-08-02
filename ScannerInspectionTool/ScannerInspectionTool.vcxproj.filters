@@ -130,29 +130,11 @@
     <ClCompile Include="GeneratedFiles\Release\moc_projectTransfer.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ProjectTransferViewModel.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ProjectTransferViewModel.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="ProjectTransferViewModel.cpp">
-      <Filter>Source Files\ViewModels</Filter>
-    </ClCompile>
     <ClCompile Include="ProjectTableView.cpp">
       <Filter>Source Files\ViewModels</Filter>
     </ClCompile>
-    <ClCompile Include="ImageSetViewModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files\ViewModels</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ImageSetViewModel.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ImageSetViewModel.cpp">
-      <Filter>Generated Files\Release</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,12 +166,6 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="ProjectTableView.h">
-      <Filter>Header Files\ViewModels</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ProjectTransferViewModel.h">
-      <Filter>Header Files\ViewModels</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ImageSetViewModel.h">
       <Filter>Header Files\ViewModels</Filter>
     </CustomBuild>
   </ItemGroup>

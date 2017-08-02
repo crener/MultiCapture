@@ -7,7 +7,6 @@
 #include <qdir.h>
 #include <QMessageBox>
 #include <QFileDialog>
-#include "ImageSetViewModel.h"
 
 
 projectTransfer::projectTransfer(QLineEdit* path, QPushButton* statusBtn, QTreeView* project, ScannerInteraction* connector)
@@ -18,9 +17,9 @@ projectTransfer::projectTransfer(QLineEdit* path, QPushButton* statusBtn, QTreeV
 	projectView = project;
 
 	transferRoot = new QDir();
-	
-	//GenericTreeRootItem* root = new GenericTreeRootItem();
-	model = new ImageSetViewModel();
+
+	model = new QStandardItemModel();
+	setupModelHeadings();
 	project->setModel(model);
 }
 
@@ -42,7 +41,7 @@ void projectTransfer::respondToScanner(ScannerCommands command, QByteArray data)
 
 void projectTransfer::changeTargetProject(int project)
 {
-	if (project == projectid) return;
+	if (project == projectId) return;
 
 	bool done = transferRoot->exists(path->text());
 	QString newPath = path->text();
@@ -69,7 +68,7 @@ void projectTransfer::changeTargetProject(int project)
 	}
 
 	path->setText(newPath);
-	projectid = project;
+	projectId = project;
 	emit projectChanged();
 
 	connector->requestScanner(ScannerCommands::ProjectDetails,
@@ -78,7 +77,7 @@ void projectTransfer::changeTargetProject(int project)
 
 void projectTransfer::processProjectDetails(QByteArray data)
 {
-	QString directory = transferRoot->path() + "/" + QString::number(projectid);
+	QString directory = transferRoot->path() + "/" + QString::number(projectId);
 
 	if (!QDir(directory).exists()) QDir().mkdir(directory);
 
@@ -92,25 +91,115 @@ void projectTransfer::processProjectDetails(QByteArray data)
 	}
 	catch (std::exception) {}
 
-	model->clear();
+
 
 	//extract image details
+	nlohmann::json result = nlohmann::json::parse(data.toStdString().c_str());
+	if (result["projectID"] == projectId)
 	{
-		nlohmann::json result = nlohmann::json::parse(data.toStdString().c_str());
-		nlohmann::json imageSets = result["ImageSets"];
-		for (int i = 0; i < imageSets.size(); ++i)
+		//must be a potential update to the project
+		modifyExistingProject(result);
+	}
+	else
+	{
+		//clear the old project information and regnerate the new stuff
+		model->clear();
+		setupModelHeadings();
+
+		overrideProject(result);
+	}
+}
+
+void projectTransfer::setupModelHeadings() const
+{
+	model->setColumnCount(2);
+
+	QStringList labels = QStringList();
+	labels.append("Name");
+	labels.append("ID");
+	model->setHorizontalHeaderLabels(labels);
+}
+
+void projectTransfer::generateImageSetModel(int row) const
+{
+	Set* set = setData->at(row);
+
+	QStandardItem* name = new QStandardItem(set->name);
+	QStandardItem* id = new QStandardItem(QString::number(set->setId));
+	model->appendRow(name);
+	model->setItem(row, 1, id);
+
+	for (int i = 0; i < set->images->size(); ++i)
+	{
+		Image* img = set->images->at(i);
+
+		QStandardItem* imgName = new QStandardItem(img->fileName);
+		name->setChild(i, 0, imgName);
+
+		QStandardItem* imgId = new QStandardItem(QString::number(img->cameraId));
+		name->setChild(i, 1, imgId);
+	}
+}
+
+bool projectTransfer::imageSetExists(int setId) const
+{
+	for (int i = 0; i < setData->size(); ++i)
+		if (setData->at(i)->setId == setId) return true;
+	return false;
+}
+
+void projectTransfer::modifyExistingProject(nlohmann::json json) const
+{
+	nlohmann::json imageSets = json["ImageSets"];
+	for (int i = 0; i < imageSets.size(); ++i)
+	{
+		nlohmann::json imageSetJson = imageSets[i];
+
+		if (imageSetExists(imageSetJson["id"])) continue;
+
+		Set* newSet = new Set();
+		newSet->setId = imageSetJson["id"];
+		newSet->name = QString::fromStdString(imageSetJson["path"]);
+
+		nlohmann::json data = imageSetJson["images"];
+		for (int j = 0; j < data.size(); ++j)
 		{
-			nlohmann::json imageSetJson = imageSets[i];
+			Image* img = new Image();
+			img->fileName = QString::fromStdString(data[j]["path"]);
+			img->cameraId = data[j]["id"];
 
-			int id = imageSetJson["id"];
-			std::string name = imageSetJson["path"];
-
-			std::string json = imageSetJson["images"].dump();
-			//ImageSet* set = new ImageSet(json, QString::fromStdString(name), id);
-
-			//model->addItem(id, name, json);
-			bool added = model->addSet(id, name, json);
-			//if (!added) delete set;
+			newSet->images->append(img);
 		}
+
+		setData->append(newSet);
+		generateImageSetModel(setData->size() - 1);
+	}
+}
+
+void projectTransfer::overrideProject(nlohmann::json json) const
+{
+	setData->clear();
+
+	nlohmann::json imageSets = json["ImageSets"];
+	for (int i = 0; i < imageSets.size(); ++i)
+	{
+		nlohmann::json imageSetJson = imageSets[i];
+
+		Set* newSet = new Set();
+		newSet->setId = imageSetJson["id"];
+		newSet->name = QString::fromStdString(imageSetJson["path"]);
+
+		nlohmann::json data = imageSetJson["images"];
+		for (int j = 0; j < data.size(); ++j)
+		{
+			Image* img = new Image();
+			img->fileName = QString::fromStdString(data[j]["path"]);
+			img->cameraId = data[j]["id"];
+
+			newSet->images->append(img);
+		}
+
+		setData->append(newSet);
+		generateImageSetModel(setData->size() - 1);
 	}
 }
