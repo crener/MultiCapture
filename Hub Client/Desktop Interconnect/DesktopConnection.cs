@@ -59,7 +59,14 @@ namespace Hub.DesktopInterconnect
             string instruction = Encoding.ASCII.GetString(readBuffer, 0, read);
             ExtractRequest(instruction, stream);
 
-            stream.BeginRead(readBuffer, 0, BufferSize, NewInstructionCallback, stream);
+            try
+            {
+                stream.BeginRead(readBuffer, 0, BufferSize, NewInstructionCallback, stream);
+            }
+            catch(Exception ex)
+            {
+                DesktopThread.Instance.Disconnected();
+            }
         }
 
         /*

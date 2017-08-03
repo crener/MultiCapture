@@ -37,8 +37,10 @@ namespace Hub.DesktopInterconnect
             if (Deployer.Manager != null && Deployer.Manager.ProjectId == projectId)
                 projectCache.Add(projectId, Deployer.Manager.ProjectData);
 
-            //get the project via a more conventional method
+            //get the project by asking the project manager
             if (Deployer.ProjectManager != null && !Deployer.ProjectManager.ProjectExists(projectId)) return false;
+
+            if(projectCache.ContainsKey(projectId)) return true;
 
             string path = SharedDeviceItems.Constants.DefaultHubSaveLocation() + projectId + 
                 Path.DirectorySeparatorChar + ProjectMapper.FileName;

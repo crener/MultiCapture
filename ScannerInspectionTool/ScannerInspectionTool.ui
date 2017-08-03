@@ -251,8 +251,7 @@
              </property>
              <property name="icon">
               <iconset resource="ScannerInspectionTool.qrc">
-               <normaloff>:/ScannerInspectionTool/Resources/icon-play.svg</normaloff>
-               <normalon>:/ScannerInspectionTool/Resources/icon-pause.svg</normalon>:/ScannerInspectionTool/Resources/icon-play.svg</iconset>
+               <normaloff>:/ScannerInspectionTool/play</normaloff>:/ScannerInspectionTool/play</iconset>
              </property>
              <property name="iconSize">
               <size>

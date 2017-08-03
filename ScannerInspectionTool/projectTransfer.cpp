@@ -17,15 +17,23 @@ projectTransfer::projectTransfer(QLineEdit* path, QPushButton* statusBtn, QTreeV
 	projectView = project;
 
 	transferRoot = new QDir();
+	projectError = new QErrorMessage();
+	projectError->setWindowTitle("Project Transfer Error");
 
-	model = new QStandardItemModel();
+	model = new QStandardItemModel(project);
 	setupModelHeadings();
 	project->setModel(model);
+
+	connect(statusControl, &QPushButton::clicked, this, &projectTransfer::changeTransferAction);
 }
 
 
 projectTransfer::~projectTransfer()
 {
+	delete transferRoot;
+	setData->clear();
+	delete setData;
+	delete projectError;
 }
 
 void projectTransfer::respondToScanner(ScannerCommands command, QByteArray data)
@@ -34,6 +42,10 @@ void projectTransfer::respondToScanner(ScannerCommands command, QByteArray data)
 	{
 	case ScannerCommands::ProjectDetails:
 		processProjectDetails(data);
+		break;
+	case ScannerCommands::ImageSetImageData:
+		continueTransfer(data);
+		break;
 	default:
 		return;
 	}
@@ -41,7 +53,7 @@ void projectTransfer::respondToScanner(ScannerCommands command, QByteArray data)
 
 void projectTransfer::changeTargetProject(int project)
 {
-	if (project == projectId) return;
+	if (project == projectId || transfering) return;
 
 	bool done = transferRoot->exists(path->text());
 	QString newPath = path->text();
@@ -52,6 +64,8 @@ void projectTransfer::changeTargetProject(int project)
 		do {
 			newPath = QFileDialog::getExistingDirectory(path, tr("Transfer root directory"),
 				"/home", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+
+			if (newPath.isEmpty() && newPath.isNull()) return;
 		} while (!transferRoot->exists(newPath));
 
 		transferRoot->setPath(newPath);
@@ -75,10 +89,39 @@ void projectTransfer::changeTargetProject(int project)
 		parameterBuilder().addParam("id", QString::number(project))->toString(), this);
 }
 
+void projectTransfer::changeTransferAction()
+{
+	if (transfering)
+	{
+		transfering = false;
+		statusControl->setIcon(Play);
+		path->setEnabled(true);
+	}
+	else
+	{
+		if (transferSet >= setData->size() ||
+			transferImage >= setData->at(transferSet)->images->size()) return;
+
+		transfering = true;
+		statusControl->setIcon(Pause);
+		path->setEnabled(false);
+
+		//make the first transfer request
+		QString param = parameterBuilder().addParam("id", QString::number(projectId))
+			->addParam("set", QString::number(setData->at(transferSet)->setId))
+			->addParam("image", QString::number(setData->at(transferSet)->images->at(transferImage)->cameraId))
+			->toString();
+
+		connector->requestScanner(ScannerCommands::ImageSetImageData, param, this);
+	}
+}
+
 void projectTransfer::processProjectDetails(QByteArray data)
 {
-	QString directory = transferRoot->path() + "/" + QString::number(projectId);
+	QString response = QString(data);
+	if (response.startsWith("Fail")) return;
 
+	QString directory = transferRoot->path() + "/" + QString::number(projectId);
 	if (!QDir(directory).exists()) QDir().mkdir(directory);
 
 	QString projectFilePath = directory + "/project.scan";
@@ -90,9 +133,11 @@ void projectTransfer::processProjectDetails(QByteArray data)
 		projectFile.close();
 	}
 	catch (std::exception) {}
+	if (projectFile.isOpen()) projectFile.close();
 
 	//extract image details
-	nlohmann::json result = nlohmann::json::parse(data.toStdString().c_str());
+	nlohmann::json result = nlohmann::json::parse(response.toStdString().c_str());
+
 	if (result["projectID"] == projectId)
 	{
 		//must be a potential update to the project
@@ -105,7 +150,9 @@ void projectTransfer::processProjectDetails(QByteArray data)
 		setupModelHeadings();
 
 		overrideProject(result);
-		checkTransferState();
+		populateIcons();
+
+		initalTransferSetup();
 	}
 }
 
@@ -119,7 +166,99 @@ void projectTransfer::setupModelHeadings() const
 	model->setHorizontalHeaderLabels(labels);
 }
 
-void projectTransfer::checkTransferState()
+void projectTransfer::continueTransfer(QByteArray data)
+{
+	QString response = QString(data);
+
+	if (response.startsWith("Fail"))
+		projectError->showMessage(response.mid(response.indexOf("?") + 1));
+	else
+	{
+		QString dirPath = path->text() + "/" + QString::number(projectId) + "/" + setData->at(transferSet)->name;
+		if (!QDir().exists(dirPath)) QDir().mkdir(dirPath);
+
+		QString savePath = dirPath + "/" + setData->at(transferSet)->images->at(transferImage)->fileName;
+		QFile projectFile(savePath);
+
+		try {
+			projectFile.open(QIODevice::WriteOnly);
+			projectFile.write(data);
+			projectFile.close();
+		}
+		catch (std::exception) {}
+		if (projectFile.isOpen()) projectFile.close();
+
+		if (fileExists(savePath))
+		{
+			setData->at(transferSet)->images->at(transferImage)->item->setIcon(ImageTransfered);
+
+			//check if all images have been transfered
+			bool allTransfered = true;
+			for (int j = 0; j < setData->at(transferSet)->images->size(); ++j)
+			{
+				QString path = this->path->text() + "/" + QString::number(projectId) + "/" + setData->at(transferSet)->name + "/" + setData->at(transferSet)->images->at(j)->fileName;
+				if (!fileExists(path)) allTransfered = false;
+			}
+
+			if (allTransfered) setData->at(transferSet)->item->setIcon(ImageTransfered);
+		}
+		else setData->at(transferSet)->images->at(transferImage)->item->setIcon(ImageNotTransfered);
+	}
+
+	//setup the next request
+	if (transfering) resumeTransferRequest();
+}
+
+void projectTransfer::initalTransferSetup()
+{
+	QString basePath = path->text() + "/" + QString::number(projectId) + "/";
+
+	for (int i = 0; i < setData->size(); ++i)
+	{
+		QString setPath = basePath + setData->at(i)->name + "/";
+
+		for (int j = 0; j < setData->at(i)->images->size(); ++j)
+		{
+			QString imgPath = setPath + setData->at(i)->images->at(j)->fileName;
+			if (!fileExists(imgPath))
+			{
+				transferSet = i;
+				transferImage = j;
+				return;
+			}
+		}
+	}
+
+	transferSet = setData->size();
+}
+
+void projectTransfer::resumeTransferRequest()
+{
+	if (transferSet <= setData->size() - 1)
+	{
+		if (transferImage < setData->at(transferSet)->images->size() - 1)
+			transferImage++;
+		else
+		{
+			transferSet++;
+			transferImage = 0;
+		}
+
+		if (transferSet >= setData->size()) changeTransferAction();
+		else {
+			Set* set = setData->at(transferSet);
+			QString param = parameterBuilder().addParam("id", QString::number(projectId))
+				->addParam("set", QString::number(set->setId))
+				->addParam("image", QString::number(set->images->at(transferImage)->cameraId))
+				->toString();
+
+			connector->requestScanner(ScannerCommands::ImageSetImageData, param, this);
+		}
+	}
+	else changeTransferAction();
+}
+
+void projectTransfer::populateIcons() const
 {
 	for (int i = 0; i < setData->size(); ++i)
 	{
@@ -129,7 +268,7 @@ void projectTransfer::checkTransferState()
 
 		for (int j = 0; j < set->images->size(); ++j)
 		{
-			QString path = this->path->text() + "/" + set->name + "/" + set->images->at(j)->fileName;
+			QString path = this->path->text() + "/" + QString::number(projectId) + "/" + set->name + "/" + set->images->at(j)->fileName;
 
 			if (fileExists(path))
 			{

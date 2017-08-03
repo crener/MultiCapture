@@ -4,6 +4,7 @@
 #include <qdir.h>
 #include <QStandardItemModel.h>
 #include "Lib/json.hpp"
+#include <QErrorMessage>
 
 QT_BEGIN_NAMESPACE
 class QTreeView;
@@ -45,6 +46,9 @@ public:
 	public slots:
 	void changeTargetProject(int);
 
+	private slots:
+	void changeTransferAction();
+
 private:
 	void processProjectDetails(QByteArray);
 	void setupModelHeadings() const;
@@ -56,16 +60,26 @@ private:
 	bool imageSetExists(int setId) const;
 
 	//transfer methods
-	bool fileExists(QString path);
-	void checkTransferState();
+	static bool fileExists(QString path);
+	void populateIcons() const;
+	void continueTransfer(QByteArray data);
+	void initalTransferSetup();
+	void resumeTransferRequest();
 
 	int projectId = -1;
 	QDir* transferRoot;
 	QStandardItemModel* model;
 	QList<Set*>* setData = new QList<Set*>();
+	QErrorMessage* projectError;
+
+	bool transfering = false;
+	int transferSet = 0;
+	int transferImage = 0;
 
 	const QIcon ImageTransfered = QIcon(":/ScannerInspectionTool/transferComplete");
 	const QIcon ImageNotTransfered = QIcon(":/ScannerInspectionTool/transferNeeded");
+	const QIcon Play = QIcon(":/ScannerInspectionTool/play");
+	const QIcon Pause = QIcon(":/ScannerInspectionTool/pause");
 	
 	QLineEdit* path;
 	QPushButton* statusControl;

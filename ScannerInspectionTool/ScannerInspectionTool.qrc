@@ -2,8 +2,8 @@
     <qresource prefix="/ScannerInspectionTool">
         <file alias="transferComplete">Resources/icon-fileDone.png</file>
         <file alias="transferNeeded">Resources/icon-fileNeeded.png</file>
-        <file>Resources/icon-play.svg</file>
-        <file>Resources/icon-pause.svg</file>
+        <file alias="play">Resources/icon-play.svg</file>
+        <file alias="pause">Resources/icon-pause.svg</file>
         <file>Resources/icon-inspector.png</file>
     </qresource>
     <qresource prefix="/DirectInteractionWindow">
