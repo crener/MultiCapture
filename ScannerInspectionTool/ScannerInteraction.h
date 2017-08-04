@@ -61,5 +61,6 @@ enum class ScannerCommands
 	ImageSetMetaData = 320,
 	ImageSetImageData = 321,
 	ProjectDetails = 330,
+	CurrentProject = 331,
 	setProjectNiceName = 350,
 };

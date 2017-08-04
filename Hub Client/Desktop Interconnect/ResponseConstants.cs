@@ -43,5 +43,6 @@ namespace Hub.DesktopInterconnect
         ImageSetImageData = 321,
         ProjectDetails = 330,
         ProjectNameChange = 350,
+        CurrentProject = 331
     }
 }

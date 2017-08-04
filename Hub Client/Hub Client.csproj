@@ -48,6 +48,7 @@
     <Compile Include="Desktop Interconnect\ResponseConstants.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\BaseResponse.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\IResponse.cs" />
+    <Compile Include="Desktop Interconnect\ResponseSystem\Responses\CurrentProject.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\ImageSetReponse.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\ProjectDetails.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\ProjectNameChange.cs" />
