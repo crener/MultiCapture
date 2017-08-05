@@ -170,9 +170,11 @@ void projectTransfer::processProjectDetails(QByteArray data)
 		//must be a potential update to the project
 		updateProjectTree(result);
 
-		if (transfering && resumeRequired)
+		if (transfering && resumeRequired && transferSet < setData->size())
 		{
 			Set* set = setData->at(transferSet);
+			resumeRequired = false;
+
 			QString param = parameterBuilder().addParam("id", QString::number(projectId))
 				->addParam("set", QString::number(set->setId))
 				->addParam("image", QString::number(set->images->at(transferImage)->cameraId))
@@ -280,15 +282,20 @@ void projectTransfer::initalTransferSetup()
 
 void projectTransfer::resumeTransferRequest()
 {
-	if (transferSet <= setData->size() - 1)
+	if (transferSet < setData->size())
 	{
-		if (transferImage < setData->at(transferSet)->images->size() - 1)
-			transferImage++;
-		else
-		{
-			transferSet++;
-			transferImage = 0;
-		}
+		QString projectDir = path->text() + "/" + QString::number(projectId) + "/";
+
+		do {
+			if (transferImage < setData->at(transferSet)->images->size() - 1)
+				transferImage++;
+			else
+			{
+				transferSet++;
+				transferImage = 0;
+			}
+		} while (transferSet < setData->size() &&
+			fileExists(projectDir + setData->at(transferSet)->name + "/" + setData->at(transferSet)->images->at(transferImage)->fileName));
 
 		//dont stop transfering if the current  
 		if (transferSet >= setData->size() && currentProject != projectId) changeTransferAction();
