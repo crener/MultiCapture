@@ -19,7 +19,8 @@ public:
 	void clearData();
 	void updateTable();
 	bool canChangeName(const QModelIndex &);
-	int getProjectId(const QModelIndex&);
+	int getProjectId(const QModelIndex&) const;
+	void setCurrentProject(int project) { currentProject = project; }
 
 private:
 	const int headerNameSize = 50;
@@ -29,5 +30,6 @@ private:
 	bool validIndex(const QModelIndex& index) const;
 
 	QList<project>* projects = new QList<project>();
+	int currentProject = -1;
 };
 

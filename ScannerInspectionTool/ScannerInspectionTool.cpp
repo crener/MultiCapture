@@ -259,8 +259,6 @@ void ScannerInspectionTool::setupProjectView()
 	QTableView* table = findChild<QTableView*>("projects");
 
 	projects = new ProjectView(refresh, trans, table, connector);
-
-	connect(connector, &ScannerInteraction::scannerConnected, projects, &ProjectView::refreshProjects);
 }
 
 void ScannerInspectionTool::setupProjectTransfer()

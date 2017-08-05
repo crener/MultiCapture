@@ -48,14 +48,17 @@ public:
 
 	private slots:
 	void changeTransferAction();
+	void newScannerConnection();
+	void timerReset();
 
 private:
 	void processProjectDetails(QByteArray);
 	void setupModelHeadings() const;
+	void currentScanner(QByteArray);
 
 	//project detail management
-	void modifyExistingProject(nlohmann::json) const;
-	void overrideProject(nlohmann::json) const;
+	void updateProjectTree(nlohmann::json) const;
+	void resetProjectTree(nlohmann::json) const;
 	void generateImageSetModel(int row) const;
 	bool imageSetExists(int setId) const;
 
@@ -73,8 +76,12 @@ private:
 	QErrorMessage* projectError;
 
 	bool transfering = false;
+	bool resumeRequired = false;
+	bool initialLoad = true;
 	int transferSet = 0;
 	int transferImage = 0;
+	int currentProject = -1;
+	QTimer* timer;
 
 	const QIcon ImageTransfered = QIcon(":/ScannerInspectionTool/transferComplete");
 	const QIcon ImageNotTransfered = QIcon(":/ScannerInspectionTool/transferNeeded");

@@ -1,5 +1,7 @@
 #include "ProjectTableView.h"
 #include <qsize.h>
+#include <qrgb.h>
+#include <QBrush>
 
 
 ProjectTableView::ProjectTableView()
@@ -38,7 +40,10 @@ QVariant ProjectTableView::data(const QModelIndex& index, int role) const
 		default:
 			return QVariant();
 		}
-	else if (role == Qt::EditRole) return false;
+
+	if (role == Qt::EditRole) return false;
+	if (role == Qt::BackgroundRole && getProjectId(index) == currentProject )
+		return QColor(Qt::lightGray);
 
 	return QVariant();
 }
@@ -71,7 +76,7 @@ QVariant ProjectTableView::headerData(int section, Qt::Orientation orientation, 
 		default:
 			return "Unknown";
 		}
-	if(role == Qt::SizeHintRole)
+	if (role == Qt::SizeHintRole)
 	{
 		if (section == 0) return QSize(headerNameSize, headerHeight);
 		return QSize(headerSize, headerHeight);
@@ -112,7 +117,7 @@ bool ProjectTableView::canChangeName(const QModelIndex& index)
 	return index.column() == 0;
 }
 
-int ProjectTableView::getProjectId(const QModelIndex& index)
+int ProjectTableView::getProjectId(const QModelIndex& index) const
 {
 	return projects->at(index.row()).id;
 }

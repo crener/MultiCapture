@@ -31,6 +31,7 @@ ProjectView::ProjectView(QPushButton* refresh, QPushButton* transfer, QTableView
 	connect(refresh, &QPushButton::clicked, this, &ProjectView::refreshProjects);
 	connect(transfer, &QPushButton::clicked, this, &ProjectView::triggerProjectChange);
 	connect(table, &QTableView::customContextMenuRequested, this, &ProjectView::createCustomMenu);
+	connect(connector, &ScannerInteraction::scannerConnected, this, &ProjectView::scannerConnected);
 }
 
 ProjectView::~ProjectView()
@@ -51,6 +52,9 @@ void ProjectView::respondToScanner(ScannerCommands command, QByteArray data)
 	case ScannerCommands::RemoveProject:
 	case ScannerCommands::setProjectNiceName:
 		reportPossibleError(data);
+	case ScannerCommands::CurrentProject:
+		currentProjectResult(data);
+		break;
 	default:
 		return;
 	}
@@ -117,6 +121,12 @@ void ProjectView::triggerProjectChange()
 	emit transferProject(project);
 }
 
+void ProjectView::scannerConnected()
+{
+	emit connector->requestScanner(ScannerCommands::CurrentProject, "", this);
+	refreshProjects();
+}
+
 void ProjectView::processProjects(QByteArray data) const
 {
 	reportPossibleError(data);
@@ -165,4 +175,13 @@ void ProjectView::reportPossibleError(QByteArray data) const
 
 	if (response.startsWith("Fail"))
 		projectError->showMessage(response.mid(response.indexOf("?") + 1));
+}
+
+void ProjectView::currentProjectResult(QByteArray data)
+{
+	QString result = QString(data);
+	if (result.startsWith("Fail")) projectError->showMessage(result.mid(result.indexOf("?") + 1));
+
+	int project = result.toInt();
+	dataModel->setCurrentProject(project);
 }

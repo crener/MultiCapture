@@ -34,6 +34,7 @@ public:
 	void removeProject();
 
 	void triggerProjectChange();
+	void scannerConnected();
 
 private:
 	const int timerDuration = 30000; //30sec
@@ -47,6 +48,7 @@ private:
 	void processProjects(QByteArray) const;
 	void setupContextMenu();
 	void reportPossibleError(QByteArray) const;
+	void currentProjectResult(QByteArray);
 
 	//ui elements
 	QPushButton* refresh, *transfer;

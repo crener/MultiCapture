@@ -6,6 +6,7 @@
 #include <QInputDialog>
 #include <qdir.h>
 #include <QMessageBox>
+#include <QTimer>
 #include <QFileDialog>
 
 
@@ -20,11 +21,16 @@ projectTransfer::projectTransfer(QLineEdit* path, QPushButton* statusBtn, QTreeV
 	projectError = new QErrorMessage();
 	projectError->setWindowTitle("Project Transfer Error");
 
+	timer = new QTimer(this);
+	timer->setInterval(60000);
+
 	model = new QStandardItemModel(project);
 	setupModelHeadings();
 	project->setModel(model);
 
 	connect(statusControl, &QPushButton::clicked, this, &projectTransfer::changeTransferAction);
+	connect(connector, &ScannerInteraction::scannerConnected, this, &projectTransfer::newScannerConnection);
+	connect(timer, &QTimer::timeout, this, &projectTransfer::timerReset);
 }
 
 
@@ -34,6 +40,7 @@ projectTransfer::~projectTransfer()
 	setData->clear();
 	delete setData;
 	delete projectError;
+	delete timer;
 }
 
 void projectTransfer::respondToScanner(ScannerCommands command, QByteArray data)
@@ -46,6 +53,9 @@ void projectTransfer::respondToScanner(ScannerCommands command, QByteArray data)
 	case ScannerCommands::ImageSetImageData:
 		continueTransfer(data);
 		break;
+	case ScannerCommands::CurrentProject:
+		currentScanner(data);
+		break;
 	default:
 		return;
 	}
@@ -54,6 +64,8 @@ void projectTransfer::respondToScanner(ScannerCommands command, QByteArray data)
 void projectTransfer::changeTargetProject(int project)
 {
 	if (project == projectId || transfering) return;
+	if (project == currentProject) timer->start();
+	else timer->stop();
 
 	bool done = transferRoot->exists(path->text());
 	QString newPath = path->text();
@@ -83,14 +95,17 @@ void projectTransfer::changeTargetProject(int project)
 
 	path->setText(newPath);
 	projectId = project;
+	initialLoad = true;
 	emit projectChanged();
 
-	connector->requestScanner(ScannerCommands::ProjectDetails,
+	emit connector->requestScanner(ScannerCommands::ProjectDetails,
 		parameterBuilder().addParam("id", QString::number(project))->toString(), this);
 }
 
 void projectTransfer::changeTransferAction()
 {
+	resumeRequired = false;
+
 	if (transfering)
 	{
 		transfering = false;
@@ -106,14 +121,26 @@ void projectTransfer::changeTransferAction()
 		statusControl->setIcon(Pause);
 		path->setEnabled(false);
 
-		//make the first transfer request
 		QString param = parameterBuilder().addParam("id", QString::number(projectId))
 			->addParam("set", QString::number(setData->at(transferSet)->setId))
 			->addParam("image", QString::number(setData->at(transferSet)->images->at(transferImage)->cameraId))
 			->toString();
 
-		connector->requestScanner(ScannerCommands::ImageSetImageData, param, this);
+		emit connector->requestScanner(ScannerCommands::ImageSetImageData, param, this);
 	}
+}
+
+void projectTransfer::newScannerConnection()
+{
+	emit connector->requestScanner(ScannerCommands::CurrentProject, "", this);
+}
+
+void projectTransfer::timerReset()
+{
+	emit connector->requestScanner(ScannerCommands::ProjectDetails,
+		parameterBuilder().addParam("id", QString::number(projectId))->toString(), this);
+
+	if (projectId == currentProject) timer->start();
 }
 
 void projectTransfer::processProjectDetails(QByteArray data)
@@ -138,10 +165,21 @@ void projectTransfer::processProjectDetails(QByteArray data)
 	//extract image details
 	nlohmann::json result = nlohmann::json::parse(response.toStdString().c_str());
 
-	if (result["projectID"] == projectId)
+	if (result["ProjectId"] == projectId && !initialLoad)
 	{
 		//must be a potential update to the project
-		modifyExistingProject(result);
+		updateProjectTree(result);
+
+		if (transfering && resumeRequired)
+		{
+			Set* set = setData->at(transferSet);
+			QString param = parameterBuilder().addParam("id", QString::number(projectId))
+				->addParam("set", QString::number(set->setId))
+				->addParam("image", QString::number(set->images->at(transferImage)->cameraId))
+				->toString();
+
+			emit connector->requestScanner(ScannerCommands::ImageSetImageData, param, this);
+		}
 	}
 	else
 	{
@@ -149,10 +187,10 @@ void projectTransfer::processProjectDetails(QByteArray data)
 		model->clear();
 		setupModelHeadings();
 
-		overrideProject(result);
-		populateIcons();
+		resetProjectTree(result);
 
 		initalTransferSetup();
+		initialLoad = false;
 	}
 }
 
@@ -164,6 +202,14 @@ void projectTransfer::setupModelHeadings() const
 	labels.append("Name");
 	labels.append("ID");
 	model->setHorizontalHeaderLabels(labels);
+}
+
+void projectTransfer::currentScanner(QByteArray data)
+{
+	QString result = QString(data);
+	if (result.startsWith("Fail")) projectError->showMessage(result.mid(result.indexOf("?") + 1));
+
+	currentProject = result.toInt();
 }
 
 void projectTransfer::continueTransfer(QByteArray data)
@@ -192,7 +238,7 @@ void projectTransfer::continueTransfer(QByteArray data)
 		{
 			setData->at(transferSet)->images->at(transferImage)->item->setIcon(ImageTransfered);
 
-			//check if all images have been transfered
+			//check if all images have been transfered and update icons
 			bool allTransfered = true;
 			for (int j = 0; j < setData->at(transferSet)->images->size(); ++j)
 			{
@@ -244,7 +290,9 @@ void projectTransfer::resumeTransferRequest()
 			transferImage = 0;
 		}
 
-		if (transferSet >= setData->size()) changeTransferAction();
+		//dont stop transfering if the current  
+		if (transferSet >= setData->size() && currentProject != projectId) changeTransferAction();
+		else if (transferSet >= setData->size() && currentProject == projectId) resumeRequired = true;
 		else {
 			Set* set = setData->at(transferSet);
 			QString param = parameterBuilder().addParam("id", QString::number(projectId))
@@ -252,9 +300,10 @@ void projectTransfer::resumeTransferRequest()
 				->addParam("image", QString::number(set->images->at(transferImage)->cameraId))
 				->toString();
 
-			connector->requestScanner(ScannerCommands::ImageSetImageData, param, this);
+			emit connector->requestScanner(ScannerCommands::ImageSetImageData, param, this);
 		}
 	}
+	else if (currentProject == projectId) resumeRequired = true;
 	else changeTransferAction();
 }
 
@@ -321,7 +370,7 @@ bool projectTransfer::fileExists(QString path)
 	return QFile().exists(path);
 }
 
-void projectTransfer::modifyExistingProject(nlohmann::json json) const
+void projectTransfer::updateProjectTree(nlohmann::json json) const
 {
 	nlohmann::json imageSets = json["ImageSets"];
 	for (int i = 0; i < imageSets.size(); ++i)
@@ -347,9 +396,11 @@ void projectTransfer::modifyExistingProject(nlohmann::json json) const
 		setData->append(newSet);
 		generateImageSetModel(setData->size() - 1);
 	}
+
+	populateIcons();
 }
 
-void projectTransfer::overrideProject(nlohmann::json json) const
+void projectTransfer::resetProjectTree(nlohmann::json json) const
 {
 	setData->clear();
 
@@ -375,4 +426,6 @@ void projectTransfer::overrideProject(nlohmann::json json) const
 		setData->append(newSet);
 		generateImageSetModel(setData->size() - 1);
 	}
+
+	populateIcons();
 }
