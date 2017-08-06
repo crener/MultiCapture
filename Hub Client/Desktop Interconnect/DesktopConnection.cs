@@ -63,7 +63,7 @@ namespace Hub.DesktopInterconnect
             {
                 stream.BeginRead(readBuffer, 0, BufferSize, NewInstructionCallback, stream);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 DesktopThread.Instance.Disconnected();
             }

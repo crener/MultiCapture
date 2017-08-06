@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using SharedDeviceItems;
 
 namespace CameraServer
 {
@@ -31,6 +32,9 @@ namespace CameraServer
         {
             settings.Add("name", "PiCam");
             settings.Add("port", "11003");
+            settings.Add("rotation", ((int)Rotation.Zero).ToString());
+            settings.Add("hFlip", "false");
+            settings.Add("vFlip", "false");
             Save();
         }
 
@@ -120,6 +124,11 @@ namespace CameraServer
             if (settings.TryGetValue(key, out value))
                 return value;
             return defaultValue;
+        }
+
+        public static bool Contains(string key)
+        {
+            return settings.ContainsKey(key);
         }
     }
 }

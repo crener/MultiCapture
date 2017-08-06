@@ -17,6 +17,22 @@ namespace CameraServer
             camera.SetCameraName(CameraSettings.GetSetting("name"));
             camera.SetResolution(3280, 2464);
 
+            Rotation rot;
+            if (CameraSettings.Contains("rotation") && Enum.TryParse(CameraSettings.GetSetting("rotation"), true, out rot))
+                camera.setRotation(rot);
+
+            {
+                bool hFlip = false;
+                if(CameraSettings.Contains("hFlip"))
+                    bool.TryParse(CameraSettings.GetSetting("hFlip"), out hFlip);
+
+                bool vFlip = false;
+                if(CameraSettings.Contains("vFlip"))
+                    bool.TryParse(CameraSettings.GetSetting("vFlip"), out vFlip);
+
+                camera.setFlip(vFlip, hFlip);
+            }
+
             if (requestLookup.Count <= 0)
             {
                 Console.WriteLine("request initialisation");
@@ -43,7 +59,7 @@ namespace CameraServer
 
         private byte[] ProcessRequest(CommandReader requestMessage)
         {
-            switch(requestMessage.Request)
+            switch (requestMessage.Request)
             {
                 case CameraRequest.Alive:
                     return Constants.SuccessStringBytes;
@@ -61,7 +77,7 @@ namespace CameraServer
 
         private byte[] ProcessSetProporties(CommandReader command)
         {
-            if(command.Parameters.ContainsKey(Constants.CameraSettingName))
+            if (command.Parameters.ContainsKey(Constants.CameraSettingName))
             {
                 CameraSettings.AddSetting(Constants.CameraSettingName, command.Parameters[Constants.CameraSettingName]);
                 camera.SetCameraName(command.Parameters[Constants.CameraSettingName]);
@@ -72,13 +88,13 @@ namespace CameraServer
 
         private byte[] ProcessCaptureRequest(CommandReader command)
         {
-            if(!command.Parameters.ContainsKey(Constants.CameraCaptureImageName)) return Constants.FailStringBytes;
+            if (!command.Parameters.ContainsKey(Constants.CameraCaptureImageName)) return Constants.FailStringBytes;
 
             //todo extract image size as a parameter rather than setting statically in the constructor and set as capture parameter
             string imageName = command.Parameters[Constants.CameraCaptureImageName];
             Console.WriteLine("ImageName: " + imageName);
 
-            if(command.Request == CameraRequest.SendFullResImage)
+            if (command.Request == CameraRequest.SendFullResImage)
             {
                 return camera.CaptureImageByte(imageName);
             }

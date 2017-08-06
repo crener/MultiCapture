@@ -5,6 +5,7 @@ using System.IO;
 using IronPython.Hosting;
 using IronPython.Runtime.Exceptions;
 using Microsoft.Scripting.Hosting;
+using SharedDeviceItems;
 using SharedDeviceItems.Interface;
 using SharedDeviceItems.Helpers;
 
@@ -155,6 +156,16 @@ namespace PythonCamera
             byte[] data = ByteHelpers.FileToBytes(imageLocation);
             if (File.Exists(imageLocation)) File.Delete(imageLocation);
             return data;
+        }
+
+        public void setFlip(bool verticleFlip, bool horizontalFlip)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void setRotation(Rotation rotation)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿namespace SharedDeviceItems.Interface
+﻿using System;
+using System.Runtime.Remoting.Messaging;
+
+namespace SharedDeviceItems.Interface
 {
     public interface ICamera
     {
@@ -34,5 +37,18 @@
         /// <param name="identifier">name added to the end of the standard image name</param>
         /// <returns>byte array of the captured image</returns>
         byte[] CaptureImageByte(string identifier);
+
+        /// <summary>
+        /// set the way in which the outputImage is flipped
+        /// </summary>
+        /// <param name="verticleFlip">flip along the verticle line</param>
+        /// <param name="horizontalFlip">flip along the horizonal line</param>
+        void setFlip(bool verticleFlip, bool horizontalFlip);
+
+        /// <summary>
+        /// set the rotation of an image
+        /// </summary>
+        /// <param name="rotation">the rotation of the image</param>
+        void setRotation(Rotation rotation);
     }
 }

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using SharedDeviceItems;
 using SharedDeviceItems.Exceptions;
 using SharedDeviceItems.Interface;
 using SharedDeviceItems.Helpers;
@@ -17,6 +18,8 @@ namespace Shell_Camera
         private int resX = 1920, resY = 1080;
         private string name;
         private string location;
+        private Rotation rotation = Rotation.Zero;
+        private bool vFlip = false, hFlip = false;
         private string currentDir = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar;
 
         public ShellCamera(string name, string saveLocation = "/scanImage/")
@@ -33,7 +36,8 @@ namespace Shell_Camera
                 ProcessStartInfo startInfo = new ProcessStartInfo
                 {
                     FileName = "/usr/bin/raspistill",
-                    Arguments = "-o " + name + identifier + ".jpg -w " + resX + " -h " + resY + " -q 100 -t 100",
+                    Arguments = "-o " + name + identifier + ".jpg -w " + resX + " -h " + resY + " -q 100 -t 100" + 
+                        (rotation == Rotation.Zero ? "" : " -rot " + (int)rotation) + (vFlip ? " -vf" : "") + (hFlip ? " -hf" : ""),
                     UseShellExecute = false
                 };
                 Process proc = new Process { StartInfo = startInfo };
@@ -86,6 +90,17 @@ namespace Shell_Camera
             byte[] data = ByteHelpers.FileToBytes(imageLocation);
             if (File.Exists(imageLocation)) File.Delete(imageLocation);
             return data;
+        }
+
+        public void setFlip(bool verticleFlip, bool horizontalFlip)
+        {
+            vFlip = verticleFlip;
+            hFlip = horizontalFlip;
+        }
+
+        public void setRotation(Rotation rotation)
+        {
+            this.rotation = rotation;
         }
     }
 }

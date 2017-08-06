@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using SharedDeviceItems;
 using SharedDeviceItems.Interface;
 using SharedDeviceItems.Helpers;
 
@@ -51,6 +52,14 @@ namespace CameraServerTests.Mocks
         public byte[] CaptureImageByte(string identifier)
         {
             return CameraData;
+        }
+
+        public void setFlip(bool verticleFlip, bool horizontalFlip)
+        {
+        }
+
+        public void setRotation(Rotation rotation)
+        {
         }
     }
 }

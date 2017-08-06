@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SharedDeviceItems;
 using SharedDeviceItems.Interface;
 
 namespace CCameraAdapter
@@ -26,6 +27,16 @@ namespace CCameraAdapter
         }
 
         public byte[] CaptureImageByte(string identifier)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void setFlip(bool verticleFlip, bool horizontalFlip)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void setRotation(Rotation rotation)
         {
             throw new NotImplementedException();
         }

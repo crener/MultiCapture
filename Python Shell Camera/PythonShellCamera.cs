@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using SharedDeviceItems;
 using SharedDeviceItems.Exceptions;
 using SharedDeviceItems.Interface;
 using SharedDeviceItems.Helpers;
@@ -168,6 +169,16 @@ namespace Python_Shell_Camera
             byte[] data = ByteHelpers.FileToBytes(imageLocation);
             if (File.Exists(imageLocation)) File.Delete(imageLocation);
             return data;
+        }
+
+        public void setFlip(bool verticleFlip, bool horizontalFlip)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void setRotation(Rotation rotation)
+        {
+            throw new NotImplementedException();
         }
     }
 }

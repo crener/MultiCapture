@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using CameraServer;
+using SharedDeviceItems;
 using SharedDeviceItems.Interface;
 
 namespace CameraServerTests.Mocks
@@ -53,6 +54,16 @@ namespace CameraServerTests.Mocks
             public byte[] CaptureImageByte(string identifier)
             {
                 return Encoding.ASCII.GetBytes("");
+            }
+
+            public void setFlip(bool verticleFlip, bool horizontalFlip)
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public void setRotation(Rotation rotation)
+            {
+                throw new System.NotImplementedException();
             }
         }
     }

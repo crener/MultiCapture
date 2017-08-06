@@ -12,6 +12,14 @@ namespace SharedDeviceItems
         SetProporties = 8
     }
 
+    public enum Rotation
+    {
+        Zero = 0,
+        Ninty = 90,
+        OneEighty = 180,
+        TwoSeventy = 270
+    };
+
     public static class Constants
     {
         #region data transfer settings
