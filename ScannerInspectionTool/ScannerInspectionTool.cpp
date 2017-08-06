@@ -2,6 +2,7 @@
 #include "ScannerResponseListener.h"
 #include <QMessageBox>
 #include <QLabel>
+#include <QGraphicsItem>
 #include "ScannerInteraction.h"
 #include "parameterBuilder.h"
 #include "Lib/json.hpp"
@@ -18,6 +19,7 @@ ScannerInspectionTool::ScannerInspectionTool(QWidget *parent)
 	deviceScanBtn = findChild<QPushButton*>("deviceScanBtn");
 	deviceConnectBtn = findChild<QPushButton*>("deviceConnectBtn");
 	currentLbl = findChild<QLabel*>("currentLbl");
+	imgPreview = findChild<QGraphicsView*>("deviceImagePreview");
 	broadcastSocket = new QUdpSocket(this);
 
 	nameText = findChild<QLineEdit*>("nameText");
@@ -32,6 +34,11 @@ ScannerInspectionTool::ScannerInspectionTool(QWidget *parent)
 	logView->setSelectionMode(QAbstractItemView::NoSelection);
 	logView->setModel(new QStringListModel(*logData));
 
+	scene = new QGraphicsScene;
+	scene->addText("No Image Selected");
+	imgPreview->setScene(scene);
+	refreshImagePreview();
+
 	timer = new QTimer(this);
 	timer->start(30000);
 
@@ -42,7 +49,11 @@ ScannerInspectionTool::ScannerInspectionTool(QWidget *parent)
 	connect(deviceScanBtn, &QPushButton::released, this, &ScannerInspectionTool::refreshDevices);
 	connect(nameBtn, &QPushButton::released, this, &ScannerInspectionTool::changeScannerName);
 	connect(logRefresh, SIGNAL(released()), this, SLOT(refreshLogs()));
-	//connect(logRefresh, &QPushButton::released, this, &ScannerInspectionTool::refreshLogs);
+	
+	QSplitter* top = findChild<QSplitter*>("topSplitter");
+	connect(top, &QSplitter::splitterMoved, this, &ScannerInspectionTool::splitterChanged);
+	QSplitter* left = findChild<QSplitter*>("leftSplitter");
+	connect(left, &QSplitter::splitterMoved, this, &ScannerInspectionTool::splitterChanged);
 
 	setupBroadcastListener();
 	setupProjectView();
@@ -84,12 +95,20 @@ void ScannerInspectionTool::refreshDevices()
 	broadcastSocket->writeDatagram(datagram.data(), datagram.size(), QHostAddress::Broadcast, brdPort);
 }
 
-void ScannerInspectionTool::selectionChanged()
+void ScannerInspectionTool::selectionChanged() const
 {
 	if (!connected)
 	{
 		deviceConnectBtn->setDisabled(false);
 	}
+}
+
+void ScannerInspectionTool::setImagePreview(QString path) const
+{
+	scene->clear();
+	scene->addItem(new QGraphicsPixmapItem(QPixmap::fromImage(QImage(path))));
+
+	refreshImagePreview();
 }
 
 void ScannerInspectionTool::handleConnectionBtn()
@@ -190,6 +209,12 @@ void ScannerInspectionTool::refreshLogs(bool partial)
 	connector->requestScanner(partial ? ScannerCommands::getRecentLogDiff : ScannerCommands::getRecentLogFile, "", this);
 }
 
+void ScannerInspectionTool::refreshImagePreview() const
+{
+	imgPreview->fitInView(scene->itemsBoundingRect(), Qt::KeepAspectRatio);
+	imgPreview->show();
+}
+
 void ScannerInspectionTool::respondToScanner(ScannerCommands command, QByteArray data)
 {
 	switch (command)
@@ -206,6 +231,18 @@ void ScannerInspectionTool::respondToScanner(ScannerCommands command, QByteArray
 void ScannerInspectionTool::openDirectInteraction()
 {
 	if (!directWn->isVisible()) directWn->show();
+}
+
+void ScannerInspectionTool::splitterChanged(int pos, int index)
+{
+	refreshImagePreview();
+}
+
+void ScannerInspectionTool::resizeEvent(QResizeEvent* event)
+{
+	QMainWindow::resizeEvent(event);
+
+	refreshImagePreview();
 }
 
 void ScannerInspectionTool::addNewScanner(ScannerDeviceInformation* scanner)
@@ -270,6 +307,7 @@ void ScannerInspectionTool::setupProjectTransfer()
 	transfer = new projectTransfer(path, pause, progress, connector);
 
 	connect(projects, &ProjectView::transferProject, transfer, &projectTransfer::changeTargetProject);
+	connect(transfer, &projectTransfer::triggerImagePreview, this, &ScannerInspectionTool::setImagePreview);
 }
 
 void ScannerInspectionTool::clearScanners()

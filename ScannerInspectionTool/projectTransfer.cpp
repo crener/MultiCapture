@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <QFileDialog>
+#include <QModelIndex>
 
 
 projectTransfer::projectTransfer(QLineEdit* path, QPushButton* statusBtn, QTreeView* project, ScannerInteraction* connector)
@@ -31,6 +32,7 @@ projectTransfer::projectTransfer(QLineEdit* path, QPushButton* statusBtn, QTreeV
 	connect(statusControl, &QPushButton::clicked, this, &projectTransfer::changeTransferAction);
 	connect(connector, &ScannerInteraction::scannerConnected, this, &projectTransfer::newScannerConnection);
 	connect(timer, &QTimer::timeout, this, &projectTransfer::timerReset);
+	connect(project, &QTreeView::clicked, this, &projectTransfer::changeImagePreview);
 }
 
 
@@ -141,6 +143,35 @@ void projectTransfer::timerReset()
 		parameterBuilder().addParam("id", QString::number(projectId))->toString(), this);
 
 	if (projectId == currentProject) timer->start();
+}
+
+void projectTransfer::changeImagePreview(const QModelIndex& index)
+{
+	QModelIndex parent = model->parent(index);
+	if (!parent.isValid()) return;
+
+	QVariant selectText = model->data(index);
+	QVariant parentText = model->data(parent);
+
+	Set* selectedSet = nullptr;
+	for (int i = 0; i < setData->size(); ++i)
+		if (setData->at(i)->name == parentText.toString())
+		{
+			selectedSet = setData->at(i);
+			break;
+		}
+	if (selectedSet == nullptr) return;
+
+	Image* selectedImage = nullptr;
+	for (int i = 0; i < selectedSet->images->size(); ++i)
+		if (selectedSet->images->at(i)->fileName == selectText.toString())
+		{
+			selectedImage = selectedSet->images->at(i);
+			break;
+		}
+	if (selectedImage == nullptr) return;
+
+	emit triggerImagePreview(this->path->text() + "/" + QString::number(projectId) + "/" + selectedSet->name + "/" + selectedImage->fileName);
 }
 
 void projectTransfer::processProjectDetails(QByteArray data)

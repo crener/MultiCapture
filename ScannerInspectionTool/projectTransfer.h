@@ -42,6 +42,7 @@ public:
 
 	signals:
 	void projectChanged();
+	void triggerImagePreview(QString);
 
 	public slots:
 	void changeTargetProject(int);
@@ -50,6 +51,7 @@ public:
 	void changeTransferAction();
 	void newScannerConnection();
 	void timerReset();
+	void changeImagePreview(const QModelIndex&);
 
 private:
 	void processProjectDetails(QByteArray);
