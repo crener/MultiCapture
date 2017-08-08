@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using Newtonsoft.Json;
+using SharedDeviceItems;
 using static SharedDeviceItems.Constants;
 
 namespace Hub.Helpers
@@ -44,7 +44,6 @@ namespace Hub.Helpers
         /// <returns>configuration data structure</returns>
         public static Data Load(string path)
         {
-
             if (!File.Exists(path)) throw new FileNotFoundException();
 
             try
@@ -78,7 +77,6 @@ namespace Hub.Helpers
         /// <param name="path">Place to save the configuration file</param>
         public static void Save(string path)
         {
-            if (Conf.CameraCount == 0) throw new ArgumentException();
             if (path == null) throw new NullReferenceException();
 
             try
@@ -114,6 +112,17 @@ namespace Hub.Helpers
         public struct Data : IEquatable<Data>
         {
             public string name { get; set; }
+
+            //internal camera stuff
+            public bool enableInternalCamera { get; set; }
+            public int internalCameraId { get; set; }
+            public bool internalCameraVFlip { get; set; }
+            public bool internalCameraHFlip { get; set; }
+            public int internalCameraYRez { get; set; }
+            public int internalCameraXRez { get; set; }
+            public Rotation internalCameraRotation { get; set; }
+            //end internal camera
+            
             public CameraConfiguration[] Cameras { get; set; }
 
             [JsonIgnore]
@@ -121,14 +130,21 @@ namespace Hub.Helpers
             public Data Default()
             {
                 name = "3D Scanner";
+                enableInternalCamera = true;
+                internalCameraVFlip = false;
+                internalCameraHFlip = false;
+                internalCameraXRez = 1920;
+                internalCameraYRez = 1080;
+                internalCameraId = 0;
+                internalCameraRotation = Rotation.Zero;
 
                 List<CameraConfiguration> cameras = new List<CameraConfiguration>();
                 cameras.Add(new CameraConfiguration
                 {
-                    Address = 2668101289,
-                    CamFileIdentity = "hub",
-                    Port = 11003,
-                    Id = 0
+                    Address = 2222222222,
+                    CamFileIdentity = "name",
+                    Port = 11020,
+                    Id = 1
                 });
 
                 Cameras = cameras.ToArray();

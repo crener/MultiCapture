@@ -143,24 +143,6 @@ namespace Hub.Helpers.Tests
         public void SaveException()
         {
             Exception ex = null;
-            SaveLoad.Conf = new SaveLoad.Data()
-            {
-                Cameras = new CameraConfiguration[0]
-            };
-
-            //No camera Exception
-            try
-            {
-                SaveLoad.Save("nope");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                ex = e;
-            }
-
-            Assert.IsTrue(ex != null);
-            ex = null;
 
             //Invlid path exception
             SaveLoad.Conf = new SaveLoad.Data().Default();

@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Hub.Helpers;
+using Hub.Threaded.Cameras;
 using SharedDeviceItems;
 using SharedDeviceItems.Networking;
 using static Hub.Helpers.CameraHelper;
@@ -105,7 +106,7 @@ namespace Hub.Threaded
                     ICameraTask threadTask = new CameraTask(tempCameraSockets, savePath);
 
                     threadConfiguration.Add(threadTask);
-                    projectFile.AddCamera(i, config.Cameras[i].CamFileIdentity);
+                    projectFile.AddCamera(config.Cameras[i].Id, config.Cameras[i].CamFileIdentity);
                 }
                 else
                 {
@@ -114,6 +115,13 @@ namespace Hub.Threaded
                     Console.WriteLine("\tlong addr:\t " + config.Cameras[i].Address);
                     Console.WriteLine("\tFile ID:\t " + config.Cameras[i].CamFileIdentity);
                 }
+            }
+
+            if(config.enableInternalCamera)
+            {
+                threadConfiguration.Add(new InternalCameraTask(config));
+                projectFile.AddCamera(config.internalCameraId, "Hub");
+                Console.WriteLine("Hub Camera Initialised");
             }
 
             cameras = threadConfiguration.ToArray();
