@@ -34,3 +34,12 @@ class python:
     def shutdown(self):
         camera.close()
         return
+
+    def setFlip(self, v, h):
+        camera.vflip = v
+        camera.hflip = h
+        return;
+
+    def setRotation(self, rot):
+        camera.rotation = rot
+        return;

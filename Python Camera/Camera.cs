@@ -34,9 +34,9 @@ namespace PythonCamera
             {
                 //ScriptRuntime run = IronPython.Hosting.Python.CreateRuntime();
                 engine = Python.CreateEngine();
-                ICollection<string> paths = engine.GetSearchPaths();
                 script = engine.CreateScope();
                 
+                ICollection<string> paths = engine.GetSearchPaths();
                 paths.Add("/usr/lib/python2.7");
                 paths.Add("/usr/lib/python2.7/lib-old");
                 paths.Add("/usr/lib/pymodules/python2.7");
@@ -47,7 +47,7 @@ namespace PythonCamera
                 try
                 {
                     Console.WriteLine("start camera");
-                    dynamic start = engine.Runtime.UseFile("camstart.py");
+                    ScriptScope start = engine.Runtime.UseFile("Python.py");
                     Console.WriteLine("camera done");
                 }
                 catch(Exception e)
@@ -61,8 +61,8 @@ namespace PythonCamera
                 pyCam = engine.Operations.CreateInstance(type);
 
                 camName = name;
-                var newName = pyCam.setCamName("23");
-                if (newName != "23") throw new InvalidOperationException("python name failed");
+                var newName = pyCam.setCamName(camName);
+                if (newName != camName) throw new InvalidOperationException("python name failed");
 
                 fileLocation = saveLocation;
                 var newLocation = pyCam.changeLocation(saveLocation);
@@ -70,8 +70,8 @@ namespace PythonCamera
 
                 pyCam.setResulution(x, y);
 
-                Thread maintanceThread = new Thread(MaintainCamera);
-                if (maintanceThread.IsAlive) maintanceThread.Start();
+                //Thread maintanceThread = new Thread(MaintainCamera);
+                //if (maintanceThread.IsAlive) maintanceThread.Start();
             }
             catch (ImportException e)
             {
@@ -160,12 +160,12 @@ namespace PythonCamera
 
         public void setFlip(bool verticleFlip, bool horizontalFlip)
         {
-            throw new NotImplementedException();
+            pyCam.setFlip(verticleFlip, horizontalFlip);
         }
 
         public void setRotation(Rotation rotation)
         {
-            throw new NotImplementedException();
+            pyCam.setRotation((int) rotation);
         }
     }
 }

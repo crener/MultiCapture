@@ -52,6 +52,10 @@
       <Project>{1b0d1ebf-233c-4d02-a441-c5f023e3fcf2}</Project>
       <Name>Logger</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Python Camera\Python Camera.csproj">
+      <Project>{EDE424B0-FDFC-476C-AD52-981837DD076A}</Project>
+      <Name>Python Camera</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharedDeviceItems\SharedDeviceItems.csproj">
       <Project>{d9c3e348-042c-4eb8-941f-c1891f2dad46}</Project>
       <Name>SharedDeviceItems</Name>
