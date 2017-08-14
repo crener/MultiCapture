@@ -98,8 +98,8 @@ void projectTransfer::changeTargetProject(int project)
 	path->setText(newPath);
 	projectId = project;
 	initialLoad = true;
-	emit projectChanged();
 
+	emit projectChanged(newPath + "/" + QString::number(projectId));
 	emit connector->requestScanner(ScannerCommands::ProjectDetails,
 		parameterBuilder().addParam("id", QString::number(project))->toString(), this);
 }
@@ -410,6 +410,7 @@ bool projectTransfer::fileExists(QString path)
 
 void projectTransfer::updateProjectTree(nlohmann::json json) const
 {
+	bool newImage = false;
 	nlohmann::json imageSets = json["ImageSets"];
 	for (int i = 0; i < imageSets.size(); ++i)
 	{
@@ -433,9 +434,11 @@ void projectTransfer::updateProjectTree(nlohmann::json json) const
 
 		setData->append(newSet);
 		generateImageSetModel(setData->size() - 1);
+		newImage = true;
 	}
 
 	populateIcons();
+	if (newImage) emit &projectTransfer::newProjectImageDetected;
 }
 
 void projectTransfer::resetProjectTree(nlohmann::json json) const

@@ -59,11 +59,14 @@
     <Filter Include="Source Files\ViewModels">
       <UniqueIdentifier>{1b7d022b-ead7-48b8-b2c3-94eb8f3d97b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Windows">
+      <UniqueIdentifier>{35ef6020-02d6-4b8d-8e43-c1df9fc908be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Windows">
+      <UniqueIdentifier>{9dc47e76-46fc-4e74-a161-fe0affdca0fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ScannerInspectionTool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_ScannerInspectionTool.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -103,9 +106,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_DirectInteractionWindow.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="DirectInteractionWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ProjectView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -136,11 +136,32 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DirectInteractionWindow.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="ScannerInspectionTool.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="CalibrationWindow.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CalibrationWindow.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CalibrationWindow.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="CalibrationListModel.cpp">
+      <Filter>Source Files\ViewModels</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CalibrationListModel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CalibrationListModel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="ScannerInspectionTool.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="ScannerInspectionTool.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
@@ -153,9 +174,6 @@
     <CustomBuild Include="ScannerInteraction.h">
       <Filter>Header Files\Threading</Filter>
     </CustomBuild>
-    <CustomBuild Include="DirectInteractionWindow.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="DirectInteractionWindow.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
@@ -166,6 +184,21 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="ProjectTableView.h">
+      <Filter>Header Files\ViewModels</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CalibrationWindow.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="DirectInteractionWindow.h">
+      <Filter>Header Files\Windows</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ScannerInspectionTool.h">
+      <Filter>Header Files\Windows</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CalibrationWindow.h">
+      <Filter>Header Files\Windows</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CalibrationListModel.h">
       <Filter>Header Files\ViewModels</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -192,6 +225,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Project.h">
+      <Filter>Header Files\Data Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_CalibrationWindow.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonTypes.h">
       <Filter>Header Files\Data Handlers</Filter>
     </ClInclude>
   </ItemGroup>

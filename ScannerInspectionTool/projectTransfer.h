@@ -5,6 +5,7 @@
 #include <QStandardItemModel.h>
 #include "Lib/json.hpp"
 #include <QErrorMessage>
+#include "JsonTypes.h"
 
 QT_BEGIN_NAMESPACE
 class QTreeView;
@@ -16,24 +17,6 @@ class projectTransfer : public QObject, public IDeviceResponder
 {
 	Q_OBJECT
 
-	struct Set;
-	struct Image
-	{
-		int cameraId;
-		QString fileName;
-
-		QStandardItem* item;
-	};
-
-	struct Set
-	{
-		int setId;
-		QString name;
-		QList<Image*>* images = new QList<Image*>();
-
-		QStandardItem* item;
-	};
-
 public:
 	projectTransfer(QLineEdit*, QPushButton*, QTreeView*, ScannerInteraction*);
 	~projectTransfer();
@@ -41,8 +24,9 @@ public:
 	void respondToScanner(ScannerCommands, QByteArray) override;
 
 	signals:
-	void projectChanged();
+	void projectChanged(QString path);
 	void triggerImagePreview(QString);
+	void newProjectImageDetected();
 
 	public slots:
 	void changeTargetProject(int);

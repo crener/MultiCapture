@@ -8,6 +8,7 @@
 #include "DirectInteractionWindow.h"
 #include "ProjectView.h"
 #include "projectTransfer.h"
+#include "CalibrationWindow.h"
 
 QT_BEGIN_NAMESPACE
 class QUdpSocket;
@@ -50,6 +51,7 @@ public:
 
 	//windows
 	void openDirectInteraction();
+	void openCalibration();
 	void splitterChanged(int pos, int index);
 
 protected:
@@ -76,6 +78,8 @@ private:
 
 	DirectInteractionWindow* directWn;
 	QAction* DirectInteractionBtn;
+	CalibrationWindow* calibWn;
+	QAction* CalibrationBtn;
 
 	Ui::ScannerInspectionToolClass ui;
 	QByteArray datagram = "InspectionApp";

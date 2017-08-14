@@ -294,6 +294,7 @@
      <string>Tools</string>
     </property>
     <addaction name="actionDirect_Interaction_Window"/>
+    <addaction name="actionCalibration_Tool"/>
    </widget>
    <addaction name="menuDirectInteraction"/>
   </widget>
@@ -314,6 +315,11 @@
    </property>
    <property name="text">
     <string>Direct Interaction Window</string>
+   </property>
+  </action>
+  <action name="actionCalibration_Tool">
+   <property name="text">
+    <string>Calibration Tool</string>
    </property>
   </action>
  </widget>

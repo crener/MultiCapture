@@ -65,6 +65,14 @@ ScannerInspectionTool::ScannerInspectionTool(QWidget *parent)
 	DirectInteractionBtn = findChild<QAction*>("actionDirect_Interaction_Window");
 	connect(DirectInteractionBtn, &QAction::triggered, this, &ScannerInspectionTool::openDirectInteraction);
 
+	//setup the calibration window
+	calibWn = new CalibrationWindow();
+	calibWn->setConnection(connector);
+	CalibrationBtn = findChild<QAction*>("actionCalibration_Tool");
+	connect(CalibrationBtn, &QAction::triggered, this, &ScannerInspectionTool::openCalibration);
+	connect(transfer, &projectTransfer::newProjectImageDetected, calibWn, &CalibrationWindow::updateProject);
+	connect(transfer, &projectTransfer::projectChanged, calibWn, &CalibrationWindow::projectSelected);
+
 	emit refreshDevices();
 }
 
@@ -231,6 +239,11 @@ void ScannerInspectionTool::respondToScanner(ScannerCommands command, QByteArray
 void ScannerInspectionTool::openDirectInteraction()
 {
 	if (!directWn->isVisible()) directWn->show();
+}
+
+void ScannerInspectionTool::openCalibration()
+{
+	if (!calibWn->isVisible()) calibWn->show();
 }
 
 void ScannerInspectionTool::splitterChanged(int pos, int index)
