@@ -72,6 +72,8 @@ ScannerInspectionTool::ScannerInspectionTool(QWidget *parent)
 	connect(CalibrationBtn, &QAction::triggered, this, &ScannerInspectionTool::openCalibration);
 	connect(transfer, &projectTransfer::newProjectImageDetected, calibWn, &CalibrationWindow::updateProject);
 	connect(transfer, &projectTransfer::projectChanged, calibWn, &CalibrationWindow::projectSelected);
+	connect(connector, &ScannerInteraction::scannerConnected, calibWn, &CalibrationWindow::scannerConnected);
+	connect(connector, &ScannerInteraction::scannerConnectionLost, calibWn, &CalibrationWindow::scannerDisconnected);
 
 	emit refreshDevices();
 }

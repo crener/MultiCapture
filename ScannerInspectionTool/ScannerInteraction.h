@@ -42,15 +42,15 @@ enum class ScannerCommands
 {
 	Unknown = 0,
 	ApiCompatability = 1,
+	ApiVersion = 2,
 
 	//Global Commands
 	setName = 100,
 	getRecentLogFile = 120,
 	getRecentLogDiff = 121,
 	getLoadedProjects = 130,
-	getCameraConfiguration = 140,
+	CameraPairs = 140,
 	getCapacity = 150,
-	getApiVersion = 180,
 
 	//Camera Commands
 	CaptureImageSet = 200,

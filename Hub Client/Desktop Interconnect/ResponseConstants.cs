@@ -6,7 +6,7 @@ namespace Hub.DesktopInterconnect
 
     public class ResponseConstants
     {
-        public const float ApiVersion = 1f;
+        public const float ApiVersion = 1.1f;
 
         public const string SuccessString = "Success";
         public const string FailString = "Fail";
@@ -23,15 +23,15 @@ namespace Hub.DesktopInterconnect
     {
         Unknown = 0,
         ApiCompatability = 1,
+        ApiVersion = 2,
 
         //Global Commands
         SetName = 100,
         LogFile = 120,
         LogDiff = 121,
         CurrentProjects = 130,
-        getCameraConfiguration = 140,
-        getCapacity = 150,
-        ApiVersion = 180,
+        CameraPairs = 140,
+        Capacity = 150,
 
         //Camera Commands
         CaptureImageSet = 200,
@@ -43,6 +43,6 @@ namespace Hub.DesktopInterconnect
         ImageSetImageData = 321,
         ProjectDetails = 330,
         ProjectNameChange = 350,
-        CurrentProject = 331
+        CurrentProject = 331,
     }
 }

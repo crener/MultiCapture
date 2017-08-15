@@ -8,7 +8,7 @@ using Hub.Util;
 
 namespace Hub.ResponseSystem.Responses
 {
-    [ResponseType(ScannerCommands.getCapacity)]
+    [ResponseType(ScannerCommands.Capacity)]
     class CapacityResponse : BaseResponse
     {
         public override byte[] GenerateResponse(ScannerCommands command, Dictionary<string, string> parameters)

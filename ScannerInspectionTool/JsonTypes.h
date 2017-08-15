@@ -23,19 +23,26 @@ enum CalibrationValidity
 {
 	Pending,
 	Valid,
-	Invalid
+	Invalid,
+	Missing
 };
 
 struct CalibrationImage
 {
 	int cameraId;
 	QString fileName;
+};
+
+struct CameraPair
+{
+	int leftId, rightId;
 	CalibrationValidity valid = Pending;
 };
+
 struct CalibrationSet
 {
 	int setId;
 	QString name;
 	QList<CalibrationImage*>* images = new QList<CalibrationImage*>();
-	CalibrationValidity valid = Pending;
+	std::vector<CalibrationValidity>* pairs = new std::vector<CalibrationValidity>();
 };

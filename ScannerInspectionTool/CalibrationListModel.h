@@ -16,6 +16,7 @@ public:
 	void addItem(CalibrationSet* set);
 	void clearData();
 	bool containsSet(int id) const;
+	CalibrationSet* getSet(int row);
 
 private:
 	QList<CalibrationSet*>* sets = new QList<CalibrationSet*>();

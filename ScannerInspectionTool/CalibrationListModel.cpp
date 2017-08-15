@@ -21,7 +21,26 @@ QVariant CalibrationListModel::data(const QModelIndex& index, int role) const
 		return sets->at(index.row())->name;
 
 	if (role == Qt::DecorationRole)
-		switch (sets->at(index.row())->valid)
+	{
+		CalibrationValidity icon = Missing;
+		for (int i = 0; i < sets->at(index.row())->pairs->size(); ++i)
+		{
+			switch (sets->at(index.row())->pairs->at(i))
+			{
+			case Pending:
+				icon = Pending;
+				break;
+			case Invalid:
+				return failed;
+			case Valid:
+				if (icon != Pending) icon = Valid;
+				break;
+			case Missing:
+				continue;
+			}
+		}
+
+		switch (icon)
 		{
 		case Pending:
 			return pending;
@@ -29,7 +48,10 @@ QVariant CalibrationListModel::data(const QModelIndex& index, int role) const
 			return failed;
 		case Valid:
 			return done;
+		case Missing:
+			return pending;
 		}
+	}
 
 	return QVariant();
 }
@@ -58,4 +80,9 @@ bool CalibrationListModel::containsSet(int id) const
 	for (int i = 0; i < sets->size(); ++i)
 		if (sets->at(i)->setId == id) return true;
 	return false;
+}
+
+CalibrationSet* CalibrationListModel::getSet(int row)
+{
+	return sets->at(row);
 }

@@ -65,6 +65,12 @@
     <Filter Include="Source Files\Windows">
       <UniqueIdentifier>{9dc47e76-46fc-4e74-a161-fe0affdca0fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\CustomizedElements">
+      <UniqueIdentifier>{1c30e262-5119-44d5-8685-c4027085d40c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CustomizedElements">
+      <UniqueIdentifier>{63e13cf1-e3b4-4a3b-a9c0-22bbdc7e91e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_ScannerInspectionTool.cpp">
@@ -160,6 +166,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_CalibrationListModel.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_TagPushButton.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_TagPushButton.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="TagPushButton.cpp">
+      <Filter>Source Files\CustomizedElements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ScannerInspectionTool.ui">
@@ -200,6 +215,9 @@
     </CustomBuild>
     <CustomBuild Include="CalibrationListModel.h">
       <Filter>Header Files\ViewModels</Filter>
+    </CustomBuild>
+    <CustomBuild Include="TagPushButton.h">
+      <Filter>Header Files\CustomizedElements</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

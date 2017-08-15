@@ -3,6 +3,7 @@
 #include "ui_CalibrationWindow.h"
 #include "ScannerInteraction.h"
 #include "CalibrationListModel.h"
+#include "TagPushButton.h"
 
 QT_BEGIN_NAMESPACE
 class QGraphicsView;
@@ -23,18 +24,37 @@ public:
 	public slots:
 	void projectSelected(QString project);
 	void updateProject();
+	void scannerConnected();
+	void scannerDisconnected();
+
+	private slots:
+	void selctionChanged(QModelIndex index);
+	void cameraChange(const int &id);
 
 private:
 	void respondToScanner(ScannerCommands, QByteArray) override;
 	QString getProjectJsonString();
+	void processCameraPairs(QByteArray data);
+	void updateCameraImages();
+
+	CalibrationListModel* model;
+	QSpacerItem* spacer;
+	const QPalette calibrationValid = QPalette(QColor(24, 185, 119));
+	const QPalette calibrationInvalid = QPalette(QColor(253, 91, 93));
+	const QPalette calibrationPending = QPalette();
+	QGraphicsScene *leftCam, *rightCam;
 
 	QString projectPath = "";
-	CalibrationListModel* model;
+	std::vector<CameraPair>* cameras = new std::vector<CameraPair>;
+	std::vector<TagPushButton*>* buttons = new std::vector<TagPushButton*>;
+
+	CalibrationSet* activeSet = nullptr;
+	int activePair = -1;
 
 	Ui::CalibrationWindow ui;
 	ScannerInteraction* connection;
-	QGraphicsView *leftCam, *rightCam;
+	QGraphicsView *leftCamView, *rightCamView;
 	QListView* imageSets;
-	QLayout* pairSelectionLayout;
+	QLayout* pairLayout;
 };
 
