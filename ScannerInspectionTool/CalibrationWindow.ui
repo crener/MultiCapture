@@ -26,14 +26,8 @@
       <property name="selectionBehavior">
        <enum>QAbstractItemView::SelectRows</enum>
       </property>
-      <property name="flow">
-       <enum>QListView::TopToBottom</enum>
-      </property>
       <property name="viewMode">
        <enum>QListView::IconMode</enum>
-      </property>
-      <property name="uniformItemSizes">
-       <bool>true</bool>
       </property>
      </widget>
      <widget class="QWidget" name="verticalLayoutWidget">

@@ -4,6 +4,8 @@
 #include "ScannerInteraction.h"
 #include "CalibrationListModel.h"
 #include "TagPushButton.h"
+#include <qthreadpool.h>
+#include "Lib/json.hpp"
 
 QT_BEGIN_NAMESPACE
 class QGraphicsView;
@@ -29,13 +31,17 @@ public:
 
 	private slots:
 	void selctionChanged(QModelIndex index);
-	void cameraChange(const int &id);
+	void pairChange(const int &id);
 
 private:
 	void respondToScanner(ScannerCommands, QByteArray) override;
 	QString getProjectJsonString();
 	void processCameraPairs(QByteArray data);
 	void updateCameraImages();
+
+	CalibrationSet* generateCalibrationSet(nlohmann::json json) const;
+	void checkImagePairs(CalibrationSet* set) const;
+	void generateCalibrationTasks(CalibrationSet* set) const;
 
 	CalibrationListModel* model;
 	QSpacerItem* spacer;
@@ -50,6 +56,7 @@ private:
 
 	CalibrationSet* activeSet = nullptr;
 	int activePair = -1;
+	QThreadPool* workQueue = new QThreadPool(this);
 
 	Ui::CalibrationWindow ui;
 	ScannerInteraction* connection;

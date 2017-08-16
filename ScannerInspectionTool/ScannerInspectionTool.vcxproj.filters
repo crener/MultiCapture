@@ -71,6 +71,12 @@
     <Filter Include="Source Files\CustomizedElements">
       <UniqueIdentifier>{63e13cf1-e3b4-4a3b-a9c0-22bbdc7e91e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Tasks">
+      <UniqueIdentifier>{6cba6168-966b-4090-b6db-c24d05229b05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tasks">
+      <UniqueIdentifier>{cd5443cb-8185-4cbb-a333-ad98e342f959}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_ScannerInspectionTool.cpp">
@@ -175,6 +181,9 @@
     <ClCompile Include="TagPushButton.cpp">
       <Filter>Source Files\CustomizedElements</Filter>
     </ClCompile>
+    <ClCompile Include="CalibrationImageValidityTask.cpp">
+      <Filter>Source Files\Tasks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ScannerInspectionTool.ui">
@@ -250,6 +259,9 @@
     </ClInclude>
     <ClInclude Include="JsonTypes.h">
       <Filter>Header Files\Data Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="CalibrationImageValidityTask.h">
+      <Filter>Header Files\Tasks</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
