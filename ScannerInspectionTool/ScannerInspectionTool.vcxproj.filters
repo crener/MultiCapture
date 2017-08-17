@@ -184,6 +184,12 @@
     <ClCompile Include="CalibrationImageValidityTask.cpp">
       <Filter>Source Files\Tasks</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CalibrationImageValidityTask.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CalibrationImageValidityTask.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ScannerInspectionTool.ui">
@@ -228,6 +234,9 @@
     <CustomBuild Include="TagPushButton.h">
       <Filter>Header Files\CustomizedElements</Filter>
     </CustomBuild>
+    <CustomBuild Include="CalibrationImageValidityTask.h">
+      <Filter>Header Files\Tasks</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_ScannerInspectionTool.h">
@@ -259,9 +268,6 @@
     </ClInclude>
     <ClInclude Include="JsonTypes.h">
       <Filter>Header Files\Data Handlers</Filter>
-    </ClInclude>
-    <ClInclude Include="CalibrationImageValidityTask.h">
-      <Filter>Header Files\Tasks</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

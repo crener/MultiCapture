@@ -28,6 +28,7 @@ public:
 	void updateProject();
 	void scannerConnected();
 	void scannerDisconnected();
+	void newImageTransfered(int setId, int imageId);
 
 	private slots:
 	void selctionChanged(QModelIndex index);
@@ -38,6 +39,7 @@ private:
 	QString getProjectJsonString();
 	void processCameraPairs(QByteArray data);
 	void updateCameraImages();
+	void calculateButtonStates();
 
 	CalibrationSet* generateCalibrationSet(nlohmann::json json) const;
 	void checkImagePairs(CalibrationSet* set) const;

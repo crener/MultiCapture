@@ -34,28 +34,39 @@ CalibrationWindow::CalibrationWindow(QWidget *parent) : QWidget(parent)
 CalibrationWindow::~CalibrationWindow()
 {
 	delete model;
+	delete spacer;
+	delete leftCam;
+	delete rightCam;
+
+	for (int i = 0; i < buttons->size(); ++i)
+		delete buttons->at(i);
+	buttons->clear();
+	delete buttons;
+	
+	cameras->clear();
+	delete cameras;
 }
 
 //clear the existing imagesets and load a new project
 void CalibrationWindow::projectSelected(QString project)
 {
 	projectPath = project;
+	QString data = getProjectJsonString();
 
-	nlohmann::json json = nlohmann::json::parse(getProjectJsonString().toStdString().c_str());
+	nlohmann::json json = nlohmann::json::parse(data.toStdString().c_str());
 	for (int i = 0; i < json["ImageSets"].size(); ++i) {
 		CalibrationSet* newSet = generateCalibrationSet(json["ImageSets"][i]);
 
 		generateCalibrationTasks(newSet);
 		model->addItem(newSet);
 	}
-
-	//Todo setup a file watcher to look for new images being added
 }
 
 //add imagesets to the existing sets
 void CalibrationWindow::updateProject()
 {
-	nlohmann::json json = nlohmann::json::parse(getProjectJsonString().toStdString().c_str());
+	QString data = getProjectJsonString();
+	nlohmann::json json = nlohmann::json::parse(data.toStdString().c_str());
 
 	if (json["ImageSets"].size() <= model->rowCount()) return;
 
@@ -97,12 +108,7 @@ void CalibrationWindow::selctionChanged(QModelIndex index)
 {
 	activeSet = model->getSet(index.row());
 
-	//generate the button information
-	for (int i = 0; i < activeSet->pairs->size(); ++i)
-	{
-		if (activeSet->pairs->at(i) == CalibrationValidity::Missing)
-			buttons->at(i)->setEnabled(false);
-	}
+	calculateButtonStates();
 
 	//try to find an image pair to display
 	activePair = -1;
@@ -122,6 +128,18 @@ void CalibrationWindow::pairChange(const int& id)
 {
 	activePair = id;
 	updateCameraImages();
+}
+
+void CalibrationWindow::newImageTransfered(int setId, int imageId)
+{
+	//check if new images complete a pair
+	CalibrationSet* set = model->getSet(setId);
+	checkImagePairs(set);
+	generateCalibrationTasks(set);
+
+	//rescan the buttons and enable any new pairs that now (potentially) exist
+	if(activeSet->setId == setId)
+		calculateButtonStates();
 }
 
 void CalibrationWindow::respondToScanner(ScannerCommands command, QByteArray data)
@@ -237,17 +255,29 @@ void CalibrationWindow::updateCameraImages()
 	leftCamView->show();
 
 
-	if (rightCam->items().size() > 0)rightCam->clear();
+	if (rightCam->items().size() > 0) rightCam->clear();
 	rightCam->addItem(new QGraphicsPixmapItem(QPixmap::fromImage(QImage(projectPath + "/" + activeSet->name + "/" + rightName))));
 	rightCamView->fitInView(rightCam->itemsBoundingRect(), Qt::KeepAspectRatio);
 	rightCamView->show();
 
 }
 
+void CalibrationWindow::calculateButtonStates()
+{
+	for (int i = 0; i < activeSet->pairs->size(); ++i)
+	{
+		if (activeSet->pairs->at(i) == CalibrationValidity::Missing)
+			buttons->at(i)->setEnabled(false);
+		else if (activeSet->pairs->at(i) == CalibrationValidity::Uncaptured)
+			buttons->at(i)->setEnabled(false);
+		else buttons->at(i)->setEnabled(true);
+	}
+}
+
 void CalibrationWindow::generateCalibrationTasks(CalibrationSet* set) const
 {
 	QString basePath = projectPath + "/" + set->name + "/";
-	for (int i = 0; i < set->images->size(); ++i)
+	for (int i = 0; i < set->pairs->size(); ++i)
 	{
 		if (set->pairs->at(i) == Pending)
 			workQueue->start(new CalibrationImageValidityTask(basePath + set->images->at(i)->fileName));
@@ -293,6 +323,12 @@ void CalibrationWindow::checkImagePairs(CalibrationSet* set) const
 		}
 
 		if (leftName == nullptr || rightName == nullptr)
+			set->pairs->at(i) = CalibrationValidity::Uncaptured;
+
+		if(!QFile::exists(imagePath + leftName))
 			set->pairs->at(i) = CalibrationValidity::Missing;
+		else if (!QFile::exists(imagePath + rightName))
+			set->pairs->at(i) = CalibrationValidity::Missing;
+		else set->pairs->at(i) = CalibrationValidity::Pending;
 	}
 }

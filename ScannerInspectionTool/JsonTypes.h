@@ -24,6 +24,7 @@ enum CalibrationValidity
 	Pending,
 	Valid,
 	Invalid,
+	Uncaptured,
 	Missing
 };
 

@@ -2,9 +2,12 @@
 #include <qrunnable.h>
 #include <qobjectdefs.h>
 #include <QString>
+#include <QObject>
 
-class CalibrationImageValidityTask : public QRunnable
+class CalibrationImageValidityTask : public QObject, public QRunnable
 {
+	Q_OBJECT
+
 public:
 	CalibrationImageValidityTask(QString path);
 	~CalibrationImageValidityTask();

@@ -36,6 +36,7 @@ QVariant CalibrationListModel::data(const QModelIndex& index, int role) const
 				if (icon != Pending) icon = Valid;
 				break;
 			case Missing:
+			case Uncaptured:
 				continue;
 			}
 		}
@@ -49,6 +50,8 @@ QVariant CalibrationListModel::data(const QModelIndex& index, int role) const
 		case Valid:
 			return done;
 		case Missing:
+			return pending;
+		case Uncaptured:
 			return pending;
 		}
 	}
@@ -71,7 +74,11 @@ void CalibrationListModel::addItem(CalibrationSet* set)
 void CalibrationListModel::clearData()
 {
 	beginResetModel();
+
+	for (int i = 0; i < sets->size(); ++i)
+		delete sets->at(i);
 	sets->clear();
+
 	endResetModel();
 }
 

@@ -27,6 +27,7 @@ public:
 	void projectChanged(QString path);
 	void triggerImagePreview(QString);
 	void newProjectImageDetected();
+	void imageTransfered(int setId, int imageId);
 
 	public slots:
 	void changeTargetProject(int);

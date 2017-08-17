@@ -99,7 +99,6 @@ void projectTransfer::changeTargetProject(int project)
 	projectId = project;
 	initialLoad = true;
 
-	emit projectChanged(newPath + "/" + QString::number(projectId));
 	emit connector->requestScanner(ScannerCommands::ProjectDetails,
 		parameterBuilder().addParam("id", QString::number(project))->toString(), this);
 }
@@ -224,6 +223,8 @@ void projectTransfer::processProjectDetails(QByteArray data)
 
 		initalTransferSetup();
 		initialLoad = false;
+
+		emit projectChanged(path->text() + "/" + QString::number(projectId));
 	}
 }
 
@@ -257,15 +258,16 @@ void projectTransfer::continueTransfer(QByteArray data)
 		if (!QDir().exists(dirPath)) QDir().mkdir(dirPath);
 
 		QString savePath = dirPath + "/" + setData->at(transferSet)->images->at(transferImage)->fileName;
-		QFile projectFile(savePath);
+		QFile imageFile(savePath);
 
 		try {
-			projectFile.open(QIODevice::WriteOnly);
-			projectFile.write(data);
-			projectFile.close();
+			imageFile.open(QIODevice::WriteOnly);
+			imageFile.write(data);
+			imageFile.close();
 		}
 		catch (std::exception) {}
-		if (projectFile.isOpen()) projectFile.close();
+		if (imageFile.isOpen()) imageFile.close();
+		emit imageTransfered(transferSet, transferImage);
 
 		if (fileExists(savePath))
 		{
@@ -275,7 +277,7 @@ void projectTransfer::continueTransfer(QByteArray data)
 			bool allTransfered = true;
 			for (int j = 0; j < setData->at(transferSet)->images->size(); ++j)
 			{
-				QString path = this->path->text() + "/" + QString::number(projectId) + "/" + setData->at(transferSet)->name + "/" + setData->at(transferSet)->images->at(j)->fileName;
+				QString path = dirPath + "/" + setData->at(transferSet)->images->at(j)->fileName;
 				if (!fileExists(path)) allTransfered = false;
 			}
 
