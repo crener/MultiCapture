@@ -267,7 +267,7 @@ void projectTransfer::continueTransfer(QByteArray data)
 		}
 		catch (std::exception) {}
 		if (imageFile.isOpen()) imageFile.close();
-		emit imageTransfered(transferSet, transferImage);
+		emit imageTransfered(transferSet, setData->at(transferSet)->images->at(transferImage)->cameraId);
 
 		if (fileExists(savePath))
 		{

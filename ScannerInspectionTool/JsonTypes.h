@@ -32,11 +32,12 @@ struct CalibrationImage
 {
 	int cameraId;
 	QString fileName;
+	CalibrationValidity valid = Pending;
 };
 
 struct CameraPair
 {
-	int leftId, rightId;
+	int leftId, rightId, id;
 	CalibrationValidity valid = Pending;
 };
 

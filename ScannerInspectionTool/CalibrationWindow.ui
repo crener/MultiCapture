@@ -15,9 +15,12 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_4">
    <item>
-    <widget class="QSplitter" name="splitter">
+    <widget class="QSplitter" name="mainSplitter">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="childrenCollapsible">
+      <bool>true</bool>
      </property>
      <widget class="QListView" name="imageSets">
       <property name="editTriggers">
@@ -25,6 +28,9 @@
       </property>
       <property name="flow">
        <enum>QListView::TopToBottom</enum>
+      </property>
+      <property name="isWrapping" stdset="0">
+       <bool>false</bool>
       </property>
       <property name="viewMode">
        <enum>QListView::IconMode</enum>
@@ -36,7 +42,7 @@
         <layout class="QHBoxLayout" name="CameraPairSelection"/>
        </item>
        <item>
-        <widget class="QSplitter" name="splitter_2">
+        <widget class="QSplitter" name="imageSplitter">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>

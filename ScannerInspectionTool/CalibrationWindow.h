@@ -33,6 +33,7 @@ public:
 	private slots:
 	void selctionChanged(QModelIndex index);
 	void pairChange(const int &id);
+	void splitterChanged(int pos, int index);
 
 private:
 	void respondToScanner(ScannerCommands, QByteArray) override;
@@ -40,10 +41,16 @@ private:
 	void processCameraPairs(QByteArray data);
 	void updateCameraImages();
 	void calculateButtonStates();
+	void resizePreviews() const;
+	void resizeEvent(QResizeEvent *event) override;
+	QString getImageName(CalibrationSet* search, int camId) const;
 
 	CalibrationSet* generateCalibrationSet(nlohmann::json json) const;
 	void checkImagePairs(CalibrationSet* set) const;
 	void generateCalibrationTasks(CalibrationSet* set) const;
+
+	void imageTaskComplete(int, int);
+	void imageTaskFailed(int, int);
 
 	CalibrationListModel* model;
 	QSpacerItem* spacer;

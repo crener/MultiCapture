@@ -71,7 +71,8 @@ namespace Hub.ResponseSystem.Responses
                 CameraPair[] defaultPairs = {
                     new CameraPair {
                         LeftCamera = 1,
-                        RightCamera = 0
+                        RightCamera = 0,
+                        pairId = 0
                     }
                 };
 
@@ -100,6 +101,7 @@ namespace Hub.ResponseSystem.Responses
         {
             public int LeftCamera { get; set; }
             public int RightCamera { get; set; }
+            public int pairId { get; set; }
         }
     }
 }
