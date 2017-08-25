@@ -1,5 +1,7 @@
 ﻿
+using System.IO;
 using System.Text;
+using SharedDeviceItems;
 
 namespace Hub.DesktopInterconnect
 {
@@ -10,6 +12,10 @@ namespace Hub.DesktopInterconnect
 
         public const string SuccessString = "Success";
         public const string FailString = "Fail";
+
+        public static readonly string PairConfigPath =
+            Constants.DefaultHubSaveLocation() + "pairs" + Path.DirectorySeparatorChar;
+        public const string PairFileType = ".json";
 
         public static readonly byte[] SuccessResponse = Encoding.ASCII.GetBytes(SuccessString);
         public static readonly byte[] ApiResponse = Encoding.ASCII.GetBytes(ApiVersion.ToString("F"));
@@ -31,6 +37,8 @@ namespace Hub.DesktopInterconnect
         LogDiff = 121,
         CurrentProjects = 130,
         CameraPairs = 140,
+        getCameraPairConfiguration = 143,
+        setCameraPairConfiguration = 144,
         Capacity = 150,
 
         //Camera Commands
@@ -42,7 +50,7 @@ namespace Hub.DesktopInterconnect
         ImageSetMetaData = 320,
         ImageSetImageData = 321,
         ProjectDetails = 330,
-        ProjectNameChange = 350,
         CurrentProject = 331,
+        ProjectNameChange = 350,
     }
 }

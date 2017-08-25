@@ -49,7 +49,17 @@ namespace Hub.DesktopInterconnect
             foreach (Type type in Assembly.GetAssembly(typeof(IResponse)).GetTypes()
                     .Where(myType => myType.IsClass && !myType.IsAbstract && myType.IsSubclassOf(typeof(BaseResponse))))
             {
-                Activator.CreateInstance(type);
+                try
+                {
+                    Activator.CreateInstance(type);
+                }
+                catch (MissingMethodException meth)
+                {
+                    Console.WriteLine("Could not start response type \"" + type.Name + "\" due to exception. Message: " + meth.Message);
+#if DEBUG
+                    Console.WriteLine(meth);
+#endif
+                }
             }
         }
 
@@ -100,7 +110,7 @@ namespace Hub.DesktopInterconnect
             IPEndPoint endpoint = new IPEndPoint(IPAddress.Any, DiscoveryPort);
 
             byte[] data = state.EndReceive(result, ref endpoint);
-            if(data == null) return;
+            if (data == null) return;
 
             Console.WriteLine("Discovery connection from: {0}, message: {1}", endpoint, Encoding.ASCII.GetString(data));
 

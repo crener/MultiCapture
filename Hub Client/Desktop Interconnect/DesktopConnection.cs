@@ -15,7 +15,7 @@ namespace Hub.DesktopInterconnect
     /// </summary>
     public class DesktopConnection
     {
-        private const int BufferSize = 1024;
+        private const int BufferSize = 10240;
         private const int ConnectionCheckMs = 15000;
         public const char Separator = '&';
         public const char ParamSeperator = '=';

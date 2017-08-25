@@ -112,8 +112,9 @@ namespace Hub.Helpers
         public struct Data : IEquatable<Data>
         {
             public string name { get; set; }
+            public List<int> cameraPairs { get; set; }
 
-            //internal camera stuff
+            #region internal camera stuff
             public bool enableInternalCamera { get; set; }
             public int internalCameraId { get; set; }
             public bool internalCameraVFlip { get; set; }
@@ -121,12 +122,13 @@ namespace Hub.Helpers
             public int internalCameraYRez { get; set; }
             public int internalCameraXRez { get; set; }
             public Rotation internalCameraRotation { get; set; }
-            //end internal camera
-            
+            #endregion
+
             public CameraConfiguration[] Cameras { get; set; }
 
             [JsonIgnore]
             public int CameraCount => Cameras == null ? 0 : Cameras.Length;
+
             public Data Default()
             {
                 name = "3D Scanner";
@@ -137,6 +139,8 @@ namespace Hub.Helpers
                 internalCameraYRez = 1080;
                 internalCameraId = 0;
                 internalCameraRotation = Rotation.Zero;
+
+                cameraPairs = new List<int>(5);
 
                 List<CameraConfiguration> cameras = new List<CameraConfiguration>();
                 cameras.Add(new CameraConfiguration
