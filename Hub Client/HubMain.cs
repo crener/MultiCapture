@@ -37,9 +37,13 @@ namespace Hub
                     manager.SavePath = Console.ReadLine();
                 }
 #if DEBUG
-                else if (command == "clear") manager.ClearSockets();
+                else if(command == "clear") manager.ClearSockets();
 #endif
-                else manager.CaptureImageSet();
+                else
+                {
+                    Console.WriteLine("Text Capture: " + command);
+                    manager.CaptureImageSet();
+                }
             }
 
             Console.WriteLine("Quitting");

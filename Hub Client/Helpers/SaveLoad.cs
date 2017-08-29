@@ -31,7 +31,7 @@ namespace Hub.Helpers
             }
             catch (FileNotFoundException)
             {
-                Conf = new Data().Default();
+                Conf = Data.Default();
                 Save();
                 return Conf;
             }
@@ -45,6 +45,7 @@ namespace Hub.Helpers
         public static Data Load(string path)
         {
             if (!File.Exists(path)) throw new FileNotFoundException();
+            Conf = Data.Default();
 
             try
             {
@@ -113,6 +114,7 @@ namespace Hub.Helpers
         {
             public string name { get; set; }
             public List<int> cameraPairs { get; set; }
+            public int startupDelay { get; set; }
 
             #region internal camera stuff
             public bool enableInternalCamera { get; set; }
@@ -129,18 +131,22 @@ namespace Hub.Helpers
             [JsonIgnore]
             public int CameraCount => Cameras == null ? 0 : Cameras.Length;
 
-            public Data Default()
+            public static Data Default()
             {
-                name = "3D Scanner";
-                enableInternalCamera = true;
-                internalCameraVFlip = false;
-                internalCameraHFlip = false;
-                internalCameraXRez = 1920;
-                internalCameraYRez = 1080;
-                internalCameraId = 0;
-                internalCameraRotation = Rotation.Zero;
+                Data standard = new Data();
 
-                cameraPairs = new List<int>(5);
+                standard.name = "3D Scanner";
+                standard.startupDelay = 8000; //8 seconds
+
+                standard.enableInternalCamera = true;
+                standard.internalCameraVFlip = false;
+                standard.internalCameraHFlip = false;
+                standard.internalCameraXRez = 1920;
+                standard.internalCameraYRez = 1080;
+                standard.internalCameraId = 0;
+                standard.internalCameraRotation = Rotation.Zero;
+
+                standard.cameraPairs = new List<int>(5);
 
                 List<CameraConfiguration> cameras = new List<CameraConfiguration>();
                 cameras.Add(new CameraConfiguration
@@ -151,8 +157,8 @@ namespace Hub.Helpers
                     Id = 1
                 });
 
-                Cameras = cameras.ToArray();
-                return this;
+                standard.Cameras = cameras.ToArray();
+                return standard;
             }
 
             public bool Equals(Data other)

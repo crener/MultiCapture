@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Hub.DesktopInterconnect;
 using Hub.Helpers;
 using Hub.Helpers.Interface;
@@ -41,6 +42,8 @@ namespace Hub.Util
             }
 
             SysConfig = SaveLoad.Load();
+            Thread.Sleep(SysConfig.startupDelay);
+
             if (!Mock) Manager = new TaskManager(SysConfig);
             DesktopThread.Instance.Start();
 

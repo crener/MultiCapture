@@ -48,6 +48,7 @@
     <Compile Include="Desktop Interconnect\ResponseConstants.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\BaseResponse.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\IResponse.cs" />
+    <Compile Include="Desktop Interconnect\ResponseSystem\Responses\CaptureResponse.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\PairCalibration.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\CameraPairs.cs" />
     <Compile Include="Desktop Interconnect\ResponseSystem\Responses\CurrentProject.cs" />

@@ -80,7 +80,7 @@ namespace CameraServer
                         Console.WriteLine("Request Size: " + request.Length);
 
                         //process and send next request
-                            byte[] response;
+                        byte[] response;
                         try
                         {
                             response = process.ProcessRequest(request);
@@ -118,7 +118,6 @@ namespace CameraServer
             }
 #if DEBUG
             Console.WriteLine("SHUTDOWN");
-            Console.Read();
 #endif
         }
 

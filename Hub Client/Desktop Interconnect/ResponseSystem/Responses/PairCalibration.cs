@@ -81,6 +81,7 @@ namespace Hub.ResponseSystem.Responses
             }
 
             SaveLoad.Conf.cameraPairs.Add(pairId);
+            SaveLoad.Save();
             return ResponseConstants.SuccessResponse;
         }
     }

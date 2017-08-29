@@ -20,23 +20,33 @@ namespace Shell_Camera
         private string location;
         private Rotation rotation = Rotation.Zero;
         private bool vFlip = false, hFlip = false;
-        private string currentDir = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar;
+        private string currentDir;
 
-        public ShellCamera(string name, string saveLocation = "/scanImage/")
+        public ShellCamera(string name, string saveLocation = "/scanimage/")
         {
             this.name = name;
             location = saveLocation;
+
+            try
+            {
+                currentDir = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar;
+            }
+            catch(FileNotFoundException)
+            {
+                currentDir = Path.GetTempPath();
+            }
         }
 
         public string CaptureImage(string identifier)
         {
             Console.WriteLine("--- Shell Capture ---");
+            string loc = currentDir + name + identifier + ".jpg";
             try
             {
                 ProcessStartInfo startInfo = new ProcessStartInfo
                 {
                     FileName = "/usr/bin/raspistill",
-                    Arguments = "-o " + name + identifier + ".jpg -w " + resX + " -h " + resY + " -q 100 -t 100" + 
+                    Arguments = "-o " + loc + " -w " + resX + " -h " + resY + " -q 100 -t 100" +
                         (rotation == Rotation.Zero ? "" : " -rot " + (int)rotation) + (vFlip ? " -vf" : "") + (hFlip ? " -hf" : ""),
                     UseShellExecute = false
                 };
@@ -50,7 +60,6 @@ namespace Shell_Camera
                 throw new CaptureFailedException();
             }
 
-            string loc = currentDir + name + identifier + ".jpg";
             int i = 0;
 
             do

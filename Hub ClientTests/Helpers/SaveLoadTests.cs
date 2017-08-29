@@ -47,7 +47,7 @@ namespace Hub.Helpers.Tests
         public void StandardLoadSave()
         {
             SaveLoad.CustomSaveDirectory = null;
-            SaveLoad.Conf = new SaveLoad.Data().Default();
+            SaveLoad.Conf = SaveLoad.Data.Default();
             try
             {
                 SaveLoad.Save();
@@ -124,7 +124,7 @@ namespace Hub.Helpers.Tests
                 if (File.Exists(save)) File.Delete(save);
 
                 SaveLoad.Data config = SaveLoad.Load();
-                Assert.True(config.Equals(new SaveLoad.Data().Default()));
+                Assert.True(config.Equals(SaveLoad.Data.Default()));
             }
             catch (Exception)
             {
@@ -145,7 +145,7 @@ namespace Hub.Helpers.Tests
             Exception ex = null;
 
             //Invlid path exception
-            SaveLoad.Conf = new SaveLoad.Data().Default();
+            SaveLoad.Conf = SaveLoad.Data.Default();
             try
             {
                 SaveLoad.Save(null);
@@ -187,7 +187,7 @@ namespace Hub.Helpers.Tests
             Assert.IsTrue(testObject.Cameras == null);
             Assert.IsTrue(testObject.CameraCount == 0);
 
-            testObject = new SaveLoad.Data().Default();
+            testObject = SaveLoad.Data.Default();
 
             //size test
             //Assert.IsTrue(testObject.Cameras.Length == 1);
@@ -212,7 +212,7 @@ namespace Hub.Helpers.Tests
             Assert.IsTrue(File.Exists(fileLocation));
 
             //check that the loaded file is identicle
-            SaveLoad.Conf = new SaveLoad.Data().Default();
+            SaveLoad.Conf = SaveLoad.Data.Default();
             SaveLoad.Data loadData = SaveLoad.Load(fileLocation);
             File.Delete(fileLocation);
 
