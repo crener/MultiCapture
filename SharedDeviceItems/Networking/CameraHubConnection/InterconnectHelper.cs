@@ -12,7 +12,7 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
         /// <summary>
         /// Formats the send byte array so that it can be used to send successfully
         /// </summary>
-        /// <param name="send">datat that needs to be sent</param>
+        /// <param name="send">data that needs to be sent</param>
         /// <returns>send bytes in correct format for sending</returns>
         public static byte[] FormatSendData(byte[] send)
         {
@@ -21,16 +21,17 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
             int position = 0;
             byte[] temp = Encoding.ASCII.GetBytes(send.Length.ToString());
 
+            //add data length
             Array.Copy(temp, 0, formatted, position, temp.Length);
             position += temp.Length;
 
+            //add message break
             temp = Constants.EndOfMessageBytes;
-
             Array.Copy(temp, 0, formatted, position, temp.Length);
             position += temp.Length;
 
+            //add data
             Array.Copy(send, 0, formatted, position, send.Length);
-
             return formatted;
         }
 
@@ -54,7 +55,6 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
             if (length > buffer.Length - end - Constants.EndOfMessageBytes.Length || filled < length)
             {
                 //the data must be collected over multiple recieves
-
                 Array.Copy(buffer, throwAwayData, output, 0, filled);
 
                 while (filled < length)

@@ -49,20 +49,23 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
         {
             if (!Connected()) throw new SocketNotConnectedException();
 
-
-            //Inform the hub how large the data will be
+            //Inform the how large the data will be
             socket.Send(GenerateInformationPackage(data));
 
+            //check if request has been canceled
             int recieve = socket.Receive(buffer);
             byte[] command = InterconnectHelper.RecieveData(buffer, recieve, socket);
-            if (command == Constants.EndTransferBytes) return;
+            if(command.SequenceEqual(Constants.EndTransferBytes))
+            {
+                waitingForResponse = false;
+                return;
+            }
 
             int chunkSize = int.Parse(Encoding.ASCII.GetString(command));
-
             int chunkAmount = data.Length / chunkSize;
-
             List<byte[]> chunks = new List<byte[]>(chunkAmount);
 
+            //move the byte data into a chunk cache
             for (int i = 0; i < chunkAmount; i++)
             {
                 byte[] sampleChunks = new byte[chunkSize];

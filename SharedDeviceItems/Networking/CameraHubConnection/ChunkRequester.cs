@@ -48,6 +48,7 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
                 if(dataSize % chunkSize != 0) ++chunkAmount;
                 byte[] returnData = new byte[dataSize];
 
+                //Ensure the requester is ready for data transfer and no errors have occured
                 recieved = socket.Receive(buffer);
                 recievedData = InterconnectHelper.RecieveData(buffer, recieved, socket);
                 if(!recievedData.SequenceEqual(Constants.ReadyTransferBytes))
