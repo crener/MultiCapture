@@ -35,8 +35,6 @@ namespace Hub.Helpers
                     if (response.Length <= 0)
                     {
                         Console.WriteLine("Camera not active, No data received");
-                        DataSocket.Shutdown(SocketShutdown.Both);
-                        DataSocket.Close();
                         return false;
                     }
                     else
