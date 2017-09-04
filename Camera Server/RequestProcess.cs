@@ -35,13 +35,15 @@ namespace CameraServer
 
             if (requestLookup.Count <= 0)
             {
-                Console.WriteLine("request initialisation");
+                Console.WriteLine("request initialization");
                 CameraRequest[] enums = (CameraRequest[])Enum.GetValues(typeof(CameraRequest));
                 foreach (CameraRequest value in enums)
                 {
                     Console.WriteLine("Key = " + (int)value + ", value = " + value);
                     requestLookup.Add("" + (int)value, value);
                 }
+
+                Console.WriteLine();
             }
         }
 

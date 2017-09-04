@@ -3,7 +3,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using Hub.Networking;
+using Hub.ResponseSystem;
 using SharedDeviceItems;
+using SharedDeviceItems.Exceptions;
 using SharedDeviceItems.Networking.CameraHubConnection;
 
 namespace Hub.Helpers
@@ -21,6 +23,34 @@ namespace Hub.Helpers
         {
             if (Config.Address == 0) throw new InvalidOperationException("Configuration address not configured");
             if (Config.Port == 0) throw new InvalidOperationException("Configuration port not configured");
+
+            //check using ping if the camera is using http
+            if(Config.useHttpClient)
+            {
+                try
+                {
+                    IRequester request = new HttpCameraRequester(Config.Address, Config.Port);
+                    byte[] response = request.Request(CameraRequest.Alive);
+
+                    if (response.Length <= 0)
+                    {
+                        Console.WriteLine("Camera not active, No data received");
+                        DataSocket.Shutdown(SocketShutdown.Both);
+                        DataSocket.Close();
+                        return false;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Camera response = {0}", Encoding.ASCII.GetString(response));
+                        return true;
+                    }
+                }
+                catch(CaptureFailedException)
+                {
+                    Console.WriteLine("No response from camera");
+                    return false;
+                }
+            }
 
             try
             {

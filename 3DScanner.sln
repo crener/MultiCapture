@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Camera ServerTests", "Camer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C++ Camera Adapter", "C++ Camera Adapter\C++ Camera Adapter.csproj", "{B5619A2A-C916-48C1-BA3E-7BAB7D763171}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpCameraServer", "HttpCameraServer\HttpCameraServer.csproj", "{CF1CDC9D-7C2E-46F4-9183-61EA1097D3E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -185,6 +187,18 @@ Global
 		{B5619A2A-C916-48C1-BA3E-7BAB7D763171}.Release|x64.Build.0 = Release|Any CPU
 		{B5619A2A-C916-48C1-BA3E-7BAB7D763171}.Release|x86.ActiveCfg = Release|Any CPU
 		{B5619A2A-C916-48C1-BA3E-7BAB7D763171}.Release|x86.Build.0 = Release|Any CPU
+		{CF1CDC9D-7C2E-46F4-9183-61EA1097D3E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF1CDC9D-7C2E-46F4-9183-61EA1097D3E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF1CDC9D-7C2E-46F4-9183-61EA1097D3E5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CF1CDC9D-7C2E-46F4-9183-61EA1097D3E5}.Debug|x64.Build.0 = Debug|Any CPU
+		{CF1CDC9D-7C2E-46F4-9183-61EA1097D3E5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CF1CDC9D-7C2E-46F4-9183-61EA1097D3E5}.Debug|x86.Build.0 = Debug|Any CPU
+		{CF1CDC9D-7C2E-46F4-9183-61EA1097D3E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF1CDC9D-7C2E-46F4-9183-61EA1097D3E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF1CDC9D-7C2E-46F4-9183-61EA1097D3E5}.Release|x64.ActiveCfg = Release|Any CPU
+		{CF1CDC9D-7C2E-46F4-9183-61EA1097D3E5}.Release|x64.Build.0 = Release|Any CPU
+		{CF1CDC9D-7C2E-46F4-9183-61EA1097D3E5}.Release|x86.ActiveCfg = Release|Any CPU
+		{CF1CDC9D-7C2E-46F4-9183-61EA1097D3E5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

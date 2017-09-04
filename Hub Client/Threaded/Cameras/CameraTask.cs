@@ -21,9 +21,15 @@ namespace Hub.Threaded
         {
             config = socket;
             socket.DataSocket.ReceiveBufferSize = Constants.CameraBufferSize * 2;
-            connection = new ChunkRequester(socket.DataSocket);
-            connection.ClearSocket();
             SavePath = saveLocation;
+
+            if(socket.Config.useHttpClient)
+                connection = new HttpCameraRequester(socket.Config.Address, socket.Config.Port);
+            else
+            {
+                connection = new ChunkRequester(socket.DataSocket);
+                connection.ClearSocket();
+            }
         }
 
         public Task ProcessRequest(CameraRequest request)

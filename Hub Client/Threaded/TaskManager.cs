@@ -112,7 +112,7 @@ namespace Hub.Threaded
                 {
                     Console.WriteLine("Failed to connect to camera " + config.Cameras[i].Id + "!!");
                     Console.WriteLine("\tPort:\t\t " + config.Cameras[i].Port);
-                    Console.WriteLine("\tlong addr:\t " + config.Cameras[i].Address);
+                    Console.WriteLine("\tLong addr:\t " + config.Cameras[i].Address);
                     Console.WriteLine("\tFile ID:\t " + config.Cameras[i].CamFileIdentity);
                 }
             }
@@ -121,7 +121,7 @@ namespace Hub.Threaded
             {
                 threadConfiguration.Add(new InternalCameraTask(config));
                 projectFile.AddCamera(config.internalCameraId, "Hub");
-                Console.WriteLine("Hub Camera Initialised");
+                Console.WriteLine("Hub Camera Initialized");
             }
 
             cameras = threadConfiguration.ToArray();

@@ -30,12 +30,12 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
                 socket.Send(correct);
             }
 
-            //recieve data and return the result
+            //receive data and return the result
             try
             {
                 byte[] buffer = new byte[Constants.CameraBufferSize];
-                int recieved = socket.Receive(buffer);
-                byte[] recievedData = InterconnectHelper.RecieveData(buffer, recieved, socket);
+                int received = socket.Receive(buffer);
+                byte[] recievedData = InterconnectHelper.RecieveData(buffer, received, socket);
 
                 int dataSize = int.Parse(Encoding.ASCII.GetString(recievedData));
 
@@ -45,12 +45,12 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
 
                 //assemble the chunk array
                 int chunkAmount = dataSize / chunkSize;
-                if(dataSize % chunkSize != 0) ++chunkAmount;
+                if (dataSize % chunkSize != 0) ++chunkAmount;
                 byte[] returnData = new byte[dataSize];
 
-                //Ensure the requester is ready for data transfer and no errors have occured
-                recieved = socket.Receive(buffer);
-                recievedData = InterconnectHelper.RecieveData(buffer, recieved, socket);
+                //Ensure the requester is ready for data transfer and no errors have occurred
+                received = socket.Receive(buffer);
+                recievedData = InterconnectHelper.RecieveData(buffer, received, socket);
                 if(!recievedData.SequenceEqual(Constants.ReadyTransferBytes))
                     throw new SocketUnexpectedDataException("Transfer ready message expected");
 
@@ -59,9 +59,8 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
                 for(int i = 0; i < chunkAmount; i++)
                 {
                     socket.Send(InterconnectHelper.FormatSendData(Encoding.ASCII.GetBytes(i.ToString())));
-
-                    recieved = socket.Receive(buffer);
-                    recievedData = InterconnectHelper.RecieveData(buffer, recieved, socket);
+                    received = socket.Receive(buffer);
+                    recievedData = InterconnectHelper.RecieveData(buffer, received, socket);
 
                     Array.Copy(recievedData, 0, returnData, i * chunkSize, recievedData.Length);
                 }

@@ -157,22 +157,6 @@ namespace Hub.Helpers.Tests
             }
 
             Assert.IsTrue(ex != null);
-            ex = null;
-
-            //Other exception for when there is another issue
-            try
-            {
-                SaveLoad.Save(@"C:\foob.test");
-
-                //wow, ok that should't work so let's delete that file
-                File.Delete(@"C:\foob.test");
-            }
-            catch (Exception e)
-            {
-                Assert.IsFalse(e is NullReferenceException);
-                ex = e;
-            }
-            Assert.IsNotNull(ex);
         }
 
         /// <summary>
@@ -183,7 +167,7 @@ namespace Hub.Helpers.Tests
         {
             SaveLoad.Data testObject = new SaveLoad.Data();
 
-            //uninitialised
+            //uninitialized
             Assert.IsTrue(testObject.Cameras == null);
             Assert.IsTrue(testObject.CameraCount == 0);
 

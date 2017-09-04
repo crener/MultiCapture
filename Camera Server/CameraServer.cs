@@ -19,7 +19,7 @@ namespace CameraServer
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Console.WriteLine("CRITICAL EXCEPTION SHUTING DOWN!!!");
+                Console.WriteLine("CRITICAL EXCEPTION SHUTTING DOWN!!!");
             }
             return 0;
         }

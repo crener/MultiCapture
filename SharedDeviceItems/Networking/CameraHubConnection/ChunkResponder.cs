@@ -53,8 +53,8 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
             socket.Send(GenerateInformationPackage(data));
 
             //check if request has been canceled
-            int recieve = socket.Receive(buffer);
-            byte[] command = InterconnectHelper.RecieveData(buffer, recieve, socket);
+            int receive = socket.Receive(buffer);
+            byte[] command = InterconnectHelper.RecieveData(buffer, receive, socket);
             if(command.SequenceEqual(Constants.EndTransferBytes))
             {
                 waitingForResponse = false;
@@ -71,7 +71,7 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
                 byte[] sampleChunks = new byte[chunkSize];
                 Array.Copy(data, i * chunkSize, sampleChunks, 0, chunkSize);
 
-                chunks.Add(sampleChunks);
+                chunks.Add(InterconnectHelper.FormatSendData(sampleChunks));
             }
 
             if (data.Length % chunkSize != 0)
@@ -79,22 +79,22 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
                 byte[] sampleChunks = new byte[data.Length % chunkSize];
                 Array.Copy(data, chunkAmount * chunkSize, sampleChunks, 0, data.Length % chunkSize);
 
-                chunks.Add(sampleChunks);
+                chunks.Add(InterconnectHelper.FormatSendData(sampleChunks));
             }
 
             socket.Send(InterconnectHelper.FormatSendData(Constants.ReadyTransferBytes));
 
             int sendChunk;
-            recieve = socket.Receive(buffer);
-            command = InterconnectHelper.RecieveData(buffer, recieve, socket);
+            receive = socket.Receive(buffer);
+            command = InterconnectHelper.RecieveData(buffer, receive, socket);
 
             while (!command.SequenceEqual(Constants.EndTransferBytes))
             {
                 sendChunk = int.Parse(Encoding.ASCII.GetString(command));
-                socket.Send(InterconnectHelper.FormatSendData(chunks[sendChunk]));
+                socket.Send(chunks[sendChunk]);
 
-                recieve = socket.Receive(buffer);
-                command = InterconnectHelper.RecieveData(buffer, recieve, socket);
+                receive = socket.Receive(buffer);
+                command = InterconnectHelper.RecieveData(buffer, receive, socket);
             }
 
             waitingForResponse = false;

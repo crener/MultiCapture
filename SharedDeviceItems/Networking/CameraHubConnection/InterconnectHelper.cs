@@ -60,7 +60,6 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
                 while (filled < length)
                 {
                     if (!Helpers.NetworkHelpers.Connected(socket)) throw new SocketDisconnectedException();
-
                     recieved = socket.Receive(buffer);
                     Array.Copy(buffer, 0, output, filled, recieved);
                     filled += recieved;

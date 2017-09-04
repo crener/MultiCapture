@@ -151,10 +151,11 @@ namespace Hub.Helpers
                 List<CameraConfiguration> cameras = new List<CameraConfiguration>();
                 cameras.Add(new CameraConfiguration
                 {
-                    Address = 2222222222,
+                    Address = 0,
                     CamFileIdentity = "name",
-                    Port = 11020,
-                    Id = 1
+                    Port = 0,
+                    Id = 1,
+                    useHttpClient = true
                 });
 
                 standard.Cameras = cameras.ToArray();
@@ -171,6 +172,7 @@ namespace Hub.Helpers
                     if (Cameras[i].Id != other.Cameras[i].Id) return false;
                     if (Cameras[i].Port != other.Cameras[i].Port) return false;
                     if (Cameras[i].CamFileIdentity != other.Cameras[i].CamFileIdentity) return false;
+                    if (Cameras[i].useHttpClient != other.Cameras[i].useHttpClient) return false;
                 }
 
                 return true;
@@ -188,5 +190,6 @@ namespace Hub.Helpers
         public int Port { get; set; }
         public int Id { get; set; }
         public string CamFileIdentity { get; set; }
+        public bool useHttpClient { get; set; }
     }
 }
