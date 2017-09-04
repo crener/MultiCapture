@@ -14,17 +14,23 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
     {
         private readonly string savePath;
         private string basicAddress;
-        private ProcessStartInfo basicStart;
+        private readonly ProcessStartInfo basicStart;
 
         public HttpCameraRequester(long address, int port)
         {
             savePath = "/tmp/response" + port;
-
             basicAddress = "http://" + new IPEndPoint(address, port).Address + ":" + port + "/";
-            basicStart = new ProcessStartInfo();
-            basicStart.FileName = "/usr/bin/wget";
-            basicStart.WindowStyle = ProcessWindowStyle.Hidden;
-            basicStart.UseShellExecute = false;
+
+            basicStart = new ProcessStartInfo
+            {
+                FileName = "/usr/bin/wget",
+                WindowStyle = ProcessWindowStyle.Hidden,
+                UseShellExecute = false,
+                RedirectStandardError = true,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true
+            };
         }
 
         public byte[] Request(CameraRequest request)
@@ -58,7 +64,7 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
             }
 
             //load and return the request data
-            if(!File.Exists(savePath))
+            if (!File.Exists(savePath))
                 throw new CaptureFailedException("No data file was found");
 
             try
@@ -71,7 +77,7 @@ namespace SharedDeviceItems.Networking.CameraHubConnection
                 {
                     File.Delete(savePath);
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     // ignored
                 }
