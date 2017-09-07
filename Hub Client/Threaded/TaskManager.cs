@@ -100,7 +100,18 @@ namespace Hub.Threaded
                     Config = config.Cameras[i]
                 };
 
-                if (tempCameraSockets.Setup())
+                bool setup;
+                try
+                {
+                    setup = tempCameraSockets.Setup();
+                }
+                catch(InvalidOperationException)
+                {
+                    Console.WriteLine("Camera not configured correctly, check the configuration! Id: " + config.Cameras[i].Id);
+                    continue;
+                }
+
+                if (setup)
                 {
                     Console.WriteLine("Connected to camera " + config.Cameras[i].Id);
                     ICameraTask threadTask = new CameraTask(tempCameraSockets, savePath);

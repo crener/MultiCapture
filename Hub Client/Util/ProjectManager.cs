@@ -22,6 +22,9 @@ namespace Hub.Util
             RecalculateData();
         }
 
+        /// <summary>
+        /// calculate a summary of all the different projects
+        /// </summary>
         public void RecalculateData()
         {
             List<string> directories =
@@ -36,6 +39,8 @@ namespace Hub.Util
 
                 ProjectMapper.Data statistics = ProjectMapper.ExtractSaveData(dataPath);
                 ProjectInfo info;
+
+                if(statistics == null) continue;
 
                 if (Deployer.CurrentProject != null && statistics.ProjectId == Deployer.CurrentProject.ProjectId)
                     info = new DynamicProjectInfo(Deployer.CurrentProject);

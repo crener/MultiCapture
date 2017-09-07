@@ -42,6 +42,7 @@ namespace Hub.Util
             }
 
             SysConfig = SaveLoad.Load();
+            Console.WriteLine("Sleeping for " + SysConfig.startupDelay + " ms");
             Thread.Sleep(SysConfig.startupDelay);
 
             if (!Mock) Manager = new TaskManager(SysConfig);

@@ -14,7 +14,7 @@ using SharedDeviceItems.Networking;
 namespace Hub.DesktopInterconnect
 {
     /// <summary>
-    /// Responsible for handeling incoming connection and handing that resulting socket connection to the a DesktopConnection
+    /// Responsible for handling incoming connection and handing that resulting socket connection to the a DesktopConnection
     /// </summary>
     /// <seealso cref="DesktopConnection"/>
     public class DesktopThread
@@ -45,7 +45,7 @@ namespace Hub.DesktopInterconnect
 
         public DesktopThread()
         {
-            //activate and itialiase all responders with the base responder as a sub class
+            //activate and initialize all responders with the base responder as a sub class
             foreach (Type type in Assembly.GetAssembly(typeof(IResponse)).GetTypes()
                     .Where(myType => myType.IsClass && !myType.IsAbstract && myType.IsSubclassOf(typeof(BaseResponse))))
             {
@@ -112,12 +112,20 @@ namespace Hub.DesktopInterconnect
             byte[] data = state.EndReceive(result, ref endpoint);
             if (data == null) return;
 
-            Console.WriteLine("Discovery connection from: {0}, message: {1}", endpoint, Encoding.ASCII.GetString(data));
+            Console.WriteLine("Discovery connection from: {0}, message: {1}", endpoint,
+                Encoding.ASCII.GetString(data));
 
             byte[] response = Encoding.ASCII.GetBytes(Deployer.SysConfig.name);
             endpoint.Port = DiscoveryResponsePort;
 
-            state.Send(response, response.Length, endpoint);
+            try
+            {
+                state.Send(response, response.Length, endpoint);
+            }
+            catch (SocketException socket)
+            {
+                Console.WriteLine("Exception sending discovery response! " + socket.Message);
+            }
         }
 
 
