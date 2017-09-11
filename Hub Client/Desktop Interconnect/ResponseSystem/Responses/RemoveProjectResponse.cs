@@ -12,17 +12,15 @@ namespace Hub.ResponseSystem.Responses
     {
         public override byte[] GenerateResponse(ScannerCommands command, Dictionary<string, string> parameters)
         {
-            if (!parameters.ContainsKey("id"))
-            {
-                Console.WriteLine(command + " is missisng parameter: id");
-                return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?\"id\" parameters is missing");
-            }
+            int project = -1;
+            byte[] response;
+
+            if (!ExtractParameter(command, parameters, "id", out project, out response))
+                return response;
 
             string path = SharedDeviceItems.Constants.DefaultHubSaveLocation() + parameters["id"];
-            int project = -1;
-            bool validId = int.TryParse(parameters["id"], out project);
 
-            if (!Directory.Exists(path) || !validId || !Deployer.ProjectManager.ProjectExists(project))
+            if (!Directory.Exists(path) || !Deployer.ProjectManager.ProjectExists(project))
             {
                 Console.WriteLine(command + " project not found, cannot remove");
 #if DEBUG

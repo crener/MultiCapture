@@ -11,27 +11,14 @@ namespace Hub.DesktopInterconnect.ResponseSystem.Responses
     {
         public override byte[] GenerateResponse(ScannerCommands command, Dictionary<string, string> parameters)
         {
-            if (!parameters.ContainsKey("id"))
-            {
-                Console.WriteLine(command + " is missisng parameter: id");
-                return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?\"id\" parameter is missing");
-            }
-
-            if (!parameters.ContainsKey("name"))
-            {
-                Console.WriteLine(command + " is missisng parameter: name");
-                return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?\"name\" parameter is missing");
-            }
-
             int projectid;
-            bool success = int.TryParse(parameters["id"], out projectid);
+            byte[] response;
 
-            if (!success)
-            {
-                Console.WriteLine(command + " could't convert parameter: id");
-                return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?\"id\" could not be converted. Is \"" +
-                                               parameters["id"] + "\" valid?");
-            }
+            if (!ExtractParameter(command, parameters, "id", out projectid, out response))
+                return response;
+
+            if (!hasParameter(command, parameters, "set", out response))
+                return response;
 
             try
             {

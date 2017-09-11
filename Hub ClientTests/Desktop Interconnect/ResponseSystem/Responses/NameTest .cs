@@ -27,7 +27,7 @@ namespace Hub.ResponseSystem.Responses
             string convertValue = Encoding.ASCII.GetString(value);
 
             Assert.IsTrue(convertValue.Contains(ResponseConstants.FailString));
-            Assert.IsTrue(convertValue.Contains("parameter missing"));
+            Assert.IsTrue(convertValue.Contains("parameter is missing"));
             Assert.IsTrue(convertValue.Contains("name"));
         }
 

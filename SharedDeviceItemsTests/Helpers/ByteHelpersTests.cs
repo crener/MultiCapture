@@ -56,28 +56,6 @@ namespace SharedDeviceItems.Helpers.Tests
             }
         }
 
-        [Test]
-        public void codeTest()
-        {
-            byte[] one = new byte[20],
-                two = new byte[20],
-                three = new byte[40];
-
-            for (int i = 0; i < one.Length; i++)
-            {
-                one[i] = Convert.ToByte(i);
-            }
-
-            for (int i = 0; i < two.Length; i++)
-            {
-                two[i] = Convert.ToByte(i + one.Length);
-            }
-
-            Array.Copy(one, 0, three, 0, one.Length);
-            Array.Copy(two, 0, three, 20, two.Length);
-        }
-
-
         //Has permission issues under standard visual studio tests
         [Test]
         public void ReadFile()

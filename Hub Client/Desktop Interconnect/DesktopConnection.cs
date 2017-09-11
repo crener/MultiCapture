@@ -159,8 +159,8 @@ namespace Hub.DesktopInterconnect
                 return;
             }
 
-            Console.WriteLine("\t"+command + " No Response Avaliable");
-            SendResponse(stream, FailString + "?No Response avaliable!");
+            Console.WriteLine("\t"+command + " No Response Available");
+            SendResponse(stream, FailString + "?No Response available!");
         }
 
 

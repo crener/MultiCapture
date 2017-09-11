@@ -15,40 +15,20 @@ namespace Hub.ResponseSystem.Responses
         public override byte[] GenerateResponse(ScannerCommands command, Dictionary<string, string> parameters)
         {
             //check that all parameters are met
-            if (!parameters.ContainsKey("id"))
-            {
-                Console.WriteLine(command + "is missing parameter: id");
-                return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?\"id\" parameter is missing");
-            }
-
-            if (!parameters.ContainsKey("set"))
-            {
-                Console.WriteLine(command + "is missing parameter: set");
-                return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?\"set\" parameter is missing");
-            }
-
             int project, set;
-            bool success = int.TryParse(parameters["id"], out project);
+            byte[] response;
 
-            //check that the parameters are valid
-            if (!success)
-            {
-                Console.WriteLine(command + " Failed to convert project id to a valid number");
-                return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?\"id\" could not be interprited. Is it possible the value is not a number?");
-            }
+            if (!ExtractParameter(command, parameters, "id", out project, out response))
+                return response;
 
-            success = int.TryParse(parameters["set"], out set);
-            if (!success)
-            {
-                Console.WriteLine(command + " Failed to convert image-set id to a valid number");
-                return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?\"set\" could not be interprited. Is it possible the value is not a number?");
-            }
+            if (!ExtractParameter(command, parameters, "set", out set, out response))
+                return response;
 
             //find the project
             if (!FindProject(project))
             {
-                    Console.WriteLine(command + " project couldn't be found");
-                    return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?Project could not be found");
+                Console.WriteLine(command + " project couldn't be found");
+                return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?Project could not be found");
             }
 
             //get the actual data
@@ -58,20 +38,9 @@ namespace Hub.ResponseSystem.Responses
             }
             else if (command == ScannerCommands.ImageSetImageData)
             {
-                if (!parameters.ContainsKey("image"))
-                {
-                    Console.WriteLine(command + "is missing parameter: image");
-                    return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?\"image\" parameter is missing");
-                }
-
                 int image;
-                success = int.TryParse(parameters["image"], out image);
-
-                if (!success)
-                {
-                    Console.WriteLine(command + " Failed to convert image id to a valid number");
-                    return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?\"image\" could not be interprited. Is it possible the value is not a number?");
-                }
+                if (!ExtractParameter(command, parameters, "image", out image, out response))
+                    return response;
 
                 return GenerateImageData(project, set, image);
             }
@@ -86,7 +55,7 @@ namespace Hub.ResponseSystem.Responses
                 ProjectCache.RetrieveProject(projectId);
                 return true;
             }
-            catch(KeyNotFoundException)
+            catch (KeyNotFoundException)
             {
                 return false;
             }
@@ -118,7 +87,7 @@ namespace Hub.ResponseSystem.Responses
                 projectMapper = ProjectCache.RetrieveProject(project);
                 imageSet = projectMapper.saveData.sets.First(p => p.ImageSetId == imageSetNo);
             }
-            catch(KeyNotFoundException)
+            catch (KeyNotFoundException)
             {
                 return Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?image could not be found! image: " + image);
             }

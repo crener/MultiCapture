@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading;
 using SharedDeviceItems;
 using Hub.Helpers;
-using Hub.Networking;
 using SharedDeviceItems.Networking.CameraHubConnection;
 
 namespace Hub.Threaded

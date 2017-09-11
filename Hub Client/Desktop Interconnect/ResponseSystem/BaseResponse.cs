@@ -67,10 +67,10 @@ namespace Hub.ResponseSystem
             if(!success)
             {
                 extractResult = -1;
-                Console.WriteLine(command + " could't convert parameter: " + wanted);
+                Console.WriteLine(command + " couldn't convert parameter: " + wanted);
                 failMessage =
                     Encoding.ASCII.GetBytes(ResponseConstants.FailString + "?could not extract\"" + wanted + 
-                    "\". Is \"" + parameters[wanted] + "\" valid?");
+                    "\". Is \"" + parameters[wanted] + "\" a valid Integer?");
                 return false;
             }
 

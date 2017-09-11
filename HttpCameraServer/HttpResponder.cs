@@ -51,7 +51,7 @@ namespace HttpCameraServer
 
                     try
                     {
-                        if(context.Request.RawUrl.Length <= 1)
+                        if(context.Request.RawUrl.Length <= 0)
                         {
                             Console.WriteLine("No command in the request header");
                             context.Response.StatusCode = 400;

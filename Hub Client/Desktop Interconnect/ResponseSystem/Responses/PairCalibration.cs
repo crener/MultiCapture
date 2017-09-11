@@ -77,7 +77,7 @@ namespace Hub.ResponseSystem.Responses
             {
                 Console.WriteLine(ScannerCommands.setCameraPairConfiguration + "could not save due to exception. Message: " + io.Message);
                 return Encoding.ASCII.GetBytes(ResponseConstants.FailString +
-                                               "? exception thrown while saving. message: " + io.Message);
+                                               "?Exception thrown while saving. message: " + io.Message);
             }
 
             SaveLoad.Conf.cameraPairs.Add(pairId);
